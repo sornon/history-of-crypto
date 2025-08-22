@@ -1,339 +1,40 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Crypto简史 · 在线阅读</title>
-<meta name="theme-color" content="#0b6efd">
-<style>
-:root{
-  --ink:#202124;--muted:#5f6368;--bg:#ffffff;--bg-soft:#f6f8fa;--border:#e5e7eb;
-  --brand:#0b6efd;--brand2:#8b5cf6;
-  --shadow:0 1px 2px rgba(0,0,0,.06),0 10px 30px rgba(0,0,0,.12);
-  --top-offset: 0px;   /* 阅读时脚本计算 */
-  --bottom-offset: 56px;
-}
-@media (prefers-color-scheme: dark){
-  :root{--ink:#e5e7eb;--muted:#9aa0a6;--bg:#0b0d12;--bg-soft:#10131a;--border:#242730;--brand:#4f8cff;--brand2:#a78bfa;}
-  body{color-scheme:dark;}
-}
-html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);height:100%;
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Noto Sans CJK SC","Source Han Sans SC","Microsoft Yahei",Arial,Helvetica,sans-serif;
-  line-height:1.78; -webkit-tap-highlight-color: transparent;}
-/* body 作为滚动容器，避让顶/底栏 */
-body{padding-top:var(--top-offset); padding-bottom:calc(var(--bottom-offset) + env(safe-area-inset-bottom));}
-*{box-sizing:border-box;}
-button{font:inherit;cursor:pointer;}
-a{color:inherit;text-decoration:none;}
-
-/* ===== Earliest-style COVER ===== */
-.cover{position:fixed;inset:0;overflow:hidden;}
-.cover svg{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover;}
-.cover .text{position:relative;z-index:2;display:flex;flex-direction:column;align-items:flex-start;
-  gap:10px;padding:calc(env(safe-area-inset-top) + 10vh) 6vw 0;}
-.title-cn{font-weight:900;letter-spacing:.3px;line-height:1.1;
-  font-size:clamp(32px,10vw,64px);color:#fff;text-shadow:0 2px 20px rgba(0,0,0,.25);}
-.title-en{font-weight:600;opacity:.95;line-height:1.2;
-  font-size:clamp(14px,3.8vw,22px);color:#f3f4f6;text-shadow:0 2px 20px rgba(0,0,0,.25);}
-.author{margin-top:.4rem;color:#e5e7eb;opacity:.9;font-size:clamp(12px,3.4vw,16px);}
-.tagline{color:#e5e7eb;opacity:.75;font-size:clamp(11px,3.2vw,14px);max-width:80ch;}
-.open{position:absolute;left:50%;transform:translateX(-50%);
-  bottom:calc(env(safe-area-inset-bottom) + 14vh);
-  background:#ffffff;color:#111;border:none;border-radius:12px;padding:14px 18px;
-  box-shadow:var(--shadow);z-index:2;}
-.hint-bottom{position:absolute;left:6vw;right:6vw;bottom:calc(env(safe-area-inset-bottom) + 16px);
-  color:#eef2ff;opacity:.75;font-size:.92rem;z-index:2;}
-
-/* ===== Reading Chrome ===== */
-#progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--brand),var(--brand2));width:0%;z-index:50;}
-header{position:fixed;top:0;left:0;right:0;z-index:40;background:var(--bg);backdrop-filter:blur(6px);
-  border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px;
-  padding:calc(env(safe-area-inset-top) + 8px) 14px 8px; transition:transform .2s ease, opacity .2s ease;}
-.brand{font-weight:800;letter-spacing:.3px;}
-.brand small{color:var(--muted);}
-.controls{display:flex;gap:8px;align-items:center;}
-.btn{appearance:none;border:1px solid var(--border);background:var(--bg-soft);padding:8px 10px;border-radius:10px;color:var(--ink);}
-.btn:active{transform:scale(.98);}
-
-/* ===== Content area (SPA) ===== */
-#content{min-height:100dvh;}
-#content img, #content video{max-width:100%;height:auto;}
-#content table{width:100%;border-collapse:collapse;}
-#content h1, #content h2, #content h3{scroll-margin-top:calc(var(--top-offset) + 8px);}
-
-/* 去掉章节里的卡片/固定宽度，保持全屏但留阅读边距 */
-#content, #content *{box-sizing:border-box;}
-#content .page, #content .card, #content .wrap, #content .wrapper, #content .container, 
-#content main, #content article, #content .prose {
-  max-width:none !important; width:auto !important; 
-  margin:0 !important; border-radius:0 !important; box-shadow:none !important; 
-  border:none !important; background:transparent !important;
-  padding-left:min(5vw,20px) !important; padding-right:min(5vw,20px) !important;
-}
-#content > *{padding-left:min(5vw,20px); padding-right:min(5vw,20px);}
-
-/* ===== Bottom nav ===== */
-.nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 12px);z-index:45;display:flex;gap:6px;
-  background:var(--bg);border:1px solid var(--border);box-shadow:var(--shadow);border-radius:999px;padding:6px;}
-.nav button{border:none;background:transparent;padding:10px 14px;border-radius:999px;color:var(--ink);font-weight:600;}
-.nav button:active{transform:scale(.98);}
-
-/* States: Cover vs Reading */
-.app:not(.open) header,
-.app:not(.open) #nav,
-.app:not(.open) #progress,
-.app:not(.open) #content,
-.app:not(.open) .toc,
-.app:not(.open) .bookmarks { display:none !important; }
-
-.app.chrome-hidden header{transform:translateY(-100%);opacity:0;pointer-events:none;}
-.app.chrome-hidden{--top-offset: 0px;}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0d0d0d"/>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="styles.css" />
+  <title>第一编（1970s–2008）观念与技术的源流 · 手机阅读书壳</title>
 </head>
 <body>
-<div class="app" id="app">
-
-  <!-- COVER -->
-  <section class="cover" id="cover" aria-label="书籍封面">
-    <svg viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-      <defs>
-        <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#0b6efd"/>
-          <stop offset="100%" stop-color="#8b5cf6"/>
-        </linearGradient>
-        <radialGradient id="glow" cx="70%" cy="30%" r="70%">
-          <stop offset="0%" stop-color="rgba(255,255,255,.75)"/>
-          <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
-        </radialGradient>
-        <pattern id="grid" width="42" height="42" patternUnits="userSpaceOnUse">
-          <path d="M 42 0 L 0 0 0 42" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="1"/>
-        </pattern>
-      </defs>
-      <rect width="100%" height="100%" fill="url(#g1)"/>
-      <rect width="100%" height="100%" fill="url(#grid)"/>
-      <circle cx="740" cy="180" r="260" fill="url(#glow)"/>
-      <g stroke="rgba(255,255,255,.45)" fill="none" stroke-width="1.2">
-        <ellipse cx="520" cy="360" rx="360" ry="180"/>
-        <ellipse cx="520" cy="360" rx="240" ry="120" stroke="rgba(255,255,255,.3)"/>
-        <ellipse cx="520" cy="360" rx="120" ry="60" stroke="rgba(255,255,255,.18)"/>
-      </g>
-    </svg>
-    <div class="text">
-      <div class="title-cn">Crypto简史</div>
-      <div class="title-en">A Brief History of Crypto</div>
-      <div class="author">Zino · 2025</div>
-      <div class="tagline">经历了比特币从 0 到 100 个，最后全被盗；痛定思痛重回币圈。</div>
-    </div>
-    <button class="open" id="openBtn">翻开阅读</button>
-    <div class="hint-bottom">轻点“翻开阅读”进入目录；再次打开会从上次阅读位置继续。</div>
-  </section>
-
-  <!-- Reading chrome -->
-  <div id="progress"></div>
-  <header id="topbar">
-    <div style="display:flex;align-items:center;gap:8px;">
-      <button class="btn" id="tocBtn">目录</button>
-      <div class="brand">Crypto简史 <small id="chapterBadge"></small></div>
-    </div>
-    <div class="controls">
-      <button class="btn" id="bmAddBtn">加书签</button>
-      <button class="btn" id="bmListBtn">书签</button>
-    </div>
+  <header class="book-meta">
+    <h1 class="book-title" id="meta-title">第一编（1970s–2008）观念与技术的源流</h1>
+    <div class="book-sub" id="meta-sub">作者：Zino｜2025年著 · 版本 2025-08-23</div>
   </header>
 
-  <main id="content" aria-live="polite"></main>
+  <main class="container">
+    <section id="index" aria-label="章节列表">
+      <div class="searchbar">
+        <input id="q" type="search" placeholder="搜索章节…" aria-label="搜索章节" />
+      </div>
+      <div id="list"></div>
+    </section>
 
-  <div class="nav" id="nav">
-    <button id="prevBtn">上一章</button>
-    <button id="chromeToggle">隐藏工具栏</button>
-    <button id="nextBtn">下一章</button>
-  </div>
+    <section id="viewer" style="display:none" aria-label="阅读器">
+      <div class="reader">
+        <button id="back">← 返回</button>
+        <div id="reader"></div>
+      </div>
+    </section>
+  </main>
 
-  <!-- TOC -->
-  <div class="toc" id="toc" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.35); backdrop-filter:blur(2px); z-index:60;">
-    <div class="toc-panel" role="dialog" aria-modal="true" aria-label="目录面板" style="position:absolute;top:0;left:0;height:100%;width:min(92%,380px);background:var(--bg);border-right:1px solid var(--border);box-shadow:var(--shadow);padding:10px 12px;overflow:auto;">
-      <h2 style="margin:.5rem 0 .5rem 6px;font-size:1rem;color:var(--muted);">章节目录</h2>
-      <ol id="tocList" style="list-style:none;margin:0;padding:0;"></ol>
-    </div>
-  </div>
+  <footer class="site">
+    《Crypto简史》本书作者：Zino，2025年著。<br/>
+    本作品采用知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议（CC BY-NC-ND 4.0）授权。
+  </footer>
 
-  <!-- BOOKMARKS -->
-  <div class="bookmarks" id="bm" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.35); backdrop-filter:blur(2px); z-index:60;">
-    <div class="bm-panel" role="dialog" aria-modal="true" aria-label="书签面板" style="position:absolute;right:0;top:0;height:100%;width:min(92%,380px);background:var(--bg);border-left:1px solid var(--border);box-shadow:var(--shadow);padding:10px 12px;overflow:auto;">
-      <h2 style="margin:.5rem 0 .5rem 6px;font-size:1rem;color:var(--muted);">书签</h2>
-      <ul class="bm-list" id="bmList" style="list-style:none;margin:0;padding:0;"></ul>
-    </div>
-  </div>
-
-  <!-- hidden loader for file:// fallback -->
-  <iframe id="loader" style="position:absolute;width:0;height:0;border:0;clip:rect(0,0,0,0);"></iframe>
-
-</div>
-
-<script>
-  var CHAPTERS = [{"part": "第一编（1970s–2008）观念与技术的源流", "title": "第1章 密码学奠基", "file": "第一编_第1章_密码学奠基.html"}, {"part": "第一编（1970s–2008）观念与技术的源流", "title": "第2章 赛博空间的政治", "file": "第一编_第2章_赛博空间的政治.html"}, {"part": "第一编（1970s–2008）观念与技术的源流", "title": "第3章 电子现金先驱", "file": "第一编_第3章_电子现金先驱.html"}, {"part": "第一编（1970s–2008）观念与技术的源流", "title": "第4章 未竟之业：共识、容错与激励的三角困境", "file": "第一编_第4章_未竟之业.html"}];
-  var state = { idx: 0, ratio: 0 };
-
-  var $app = document.getElementById('app');
-  var $openBtn = document.getElementById('openBtn');
-  var $content = document.getElementById('content');
-  var $toc = document.getElementById('toc');
-  var $tocList = document.getElementById('tocList');
-  var $bm = document.getElementById('bm');
-  var $bmList = document.getElementById('bmList');
-  var $chapterBadge = document.getElementById('chapterBadge');
-  var $progress = document.getElementById('progress');
-  var $topbar = document.getElementById('topbar');
-  var $chromeToggle = document.getElementById('chromeToggle');
-  var $nav = document.getElementById('nav');
-  var $loader = document.getElementById('loader');
-
-  function setVar(name, value){ document.documentElement.style.setProperty(name, value); }
-  function setProgress(pct){ var p=Math.max(0,Math.min(1,pct)); $progress.style.width = (p*100) + '%'; }
-
-  function syncChromeLayout(){
-    var hTop = $topbar.getBoundingClientRect().height || 56;
-    var hNav = $nav.getBoundingClientRect().height || 48;
-    if ($app.classList.contains('chrome-hidden')) hTop = 0;
-    setVar('--top-offset', hTop + 'px');
-    setVar('--bottom-offset', (hNav + 8) + 'px');
-  }
-
-  function renderTOC(){
-    $tocList.innerHTML = '';
-    for (var i=0;i<CHAPTERS.length;i++){
-      var c = CHAPTERS[i];
-      var li = document.createElement('li');
-      li.style.cssText = 'border:1px solid var(--border);background:var(--bg-soft);border-radius:10px;margin:8px 6px;padding:8px 10px;cursor:pointer;';
-      li.innerHTML = '<div style="font-weight:700;margin-bottom:2px;">'+ c.part +'</div><div style="font-size:.98rem;">'+ c.title +'</div>';
-      (function(idx){ li.onclick = function(){ $toc.style.display='none'; loadChapter(idx, true); }; })(i);
-      $tocList.appendChild(li);
-    }
-  }
-
-  function tryFetch(url, ok, fail){
-    try {
-      fetch(url).then(function(res){
-        if (!res.ok) throw new Error('HTTP '+res.status);
-        return res.text();
-      }).then(function(html){ ok(html); }).catch(function(err){ fail(err); });
-    } catch(e){ fail(e); }
-  }
-  function iframeLoad(url, ok, fail){
-    try {
-      $loader.onload = function(){
-        try {
-          var doc = $loader.contentDocument || $loader.contentWindow.document;
-          var html = doc.documentElement ? doc.documentElement.innerHTML : doc.body.innerHTML;
-          ok(html);
-        } catch(e){ fail(e); }
-      };
-      $loader.src = url + '?t=' + Date.now();
-    } catch(e){ fail(e); }
-  }
-  function extractBodyHTML(raw){
-    try{
-      var m = raw.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
-      if (m && m[1]) return m[1];
-    }catch(e){}
-    return raw;
-  }
-  function sanitize(inner){
-    // Remove <script> and <style> to avoid hostile/global overrides; keep structural HTML.
-    inner = inner.replace(/<script[\s\S]*?<\/script>/gi, '');
-    inner = inner.replace(/<style[\s\S]*?<\/style>/gi, '');
-    // Optional: strip body-level class wrappers
-    return inner;
-  }
-  function insertChapterHTML(inner){
-    $content.innerHTML = sanitize(inner);
-    syncChromeLayout();
-    var stored = null;
-    try{ stored = JSON.parse(localStorage.getItem('bhoc_last') || 'null'); }catch(e){ stored = null; }
-    setTimeout(function(){
-      if (stored && stored.idx === state.idx && stored.ratio){
-        var el = document.scrollingElement || document.documentElement;
-        el.scrollTop = stored.ratio * (el.scrollHeight - el.clientHeight);
-      }
-      updateProgress();
-    }, 60);
-  }
-  function loadChapter(i, pushHash){
-    state.idx = i;
-    var url = 'chapters/' + CHAPTERS[i].file;
-    $chapterBadge.textContent = CHAPTERS[i].title;
-    if (pushHash){ try{ history.replaceState(null, '', '#/' + encodeURIComponent(CHAPTERS[i].file)); }catch(e){} }
-    setProgress(0.02);
-    tryFetch(url, function(html){ insertChapterHTML(extractBodyHTML(html)); }, function(){
-      iframeLoad(url, function(html){ insertChapterHTML(extractBodyHTML(html)); }, function(){
-        $content.innerHTML = '<p style="padding:16px;color:#d14343;">无法加载章节：'+ CHAPTERS[i].title +'。请检查文件路径或网络。</p>';
-      });
-    });
-  }
-  function updateProgress(){
-    var el = document.scrollingElement || document.documentElement;
-    var max = Math.max(1, el.scrollHeight - el.clientHeight);
-    var ratio = el.scrollTop / max;
-    state.ratio = ratio;
-    setProgress(ratio);
-    try { localStorage.setItem('bhoc_last', JSON.stringify({idx: state.idx, ratio: state.ratio, file: CHAPTERS[state.idx].file, t: Date.now()})); }catch(e){}
-  }
-
-  // Events
-  window.addEventListener('scroll', function(){ updateProgress(); }, {passive:true});
-  window.addEventListener('resize', function(){ syncChromeLayout(); });
-  document.getElementById('prevBtn').onclick = function(){ if (state.idx>0) loadChapter(state.idx-1, true); };
-  document.getElementById('nextBtn').onclick = function(){ if (state.idx<CHAPTERS.length-1) loadChapter(state.idx+1, true); };
-  document.getElementById('chromeToggle').onclick = function(){
-    var hidden = $app.classList.toggle('chrome-hidden');
-    document.getElementById('chromeToggle').textContent = hidden ? '显示工具栏' : '隐藏工具栏';
-    syncChromeLayout();
-  };
-  document.getElementById('tocBtn').onclick = function(){ $toc.style.display='block'; };
-  $toc.onclick = function(e){ if (e.target === $toc) $toc.style.display='none'; };
-
-  document.getElementById('bmAddBtn').onclick = function(){
-    var list = []; try{ list = JSON.parse(localStorage.getItem('bhoc_bookmarks')||'[]'); }catch(e){}
-    var entry = { idx: state.idx, file: CHAPTERS[state.idx].file, title: CHAPTERS[state.idx].title, ratio: state.ratio||0, t: Date.now() };
-    list.unshift(entry); try{ localStorage.setItem('bhoc_bookmarks', JSON.stringify(list)); }catch(e){};
-    alert('已添加书签：' + entry.title);
-  };
-  document.getElementById('bmListBtn').onclick = function(){
-    var list = []; try{ list = JSON.parse(localStorage.getItem('bhoc_bookmarks')||'[]'); }catch(e){}
-    $bmList.innerHTML = '';
-    if (!list.length){ var n = document.createElement('li'); n.className='bm-item'; n.textContent='暂无书签'; $bmList.appendChild(n); }
-    for (var idx=0; idx<list.length; idx++){
-      (function(idx){
-        var b = list[idx];
-        var li = document.createElement('li'); li.className='bm-item';
-        var pct = b.ratio ? Math.round(b.ratio*100)+'%' : '—';
-        li.innerHTML = '<div><strong>'+ b.title +'</strong><br><small>'+ new Date(b.t).toLocaleString() +' · 进度 '+ pct +'</small></div>';
-        var actions = document.createElement('div'); actions.className = 'bm-actions';
-        var go = document.createElement('button'); go.className='btn'; go.textContent='前往';
-        go.onclick = function(){ loadChapter(b.idx, true); setTimeout(function(){ var el = document.scrollingElement || document.documentElement; el.scrollTop = b.ratio*(el.scrollHeight - el.clientHeight); }, 200); $bm.style.display='none'; };
-        var del = document.createElement('button'); del.className='btn'; del.textContent='删除';
-        del.onclick = function(){ var x = list.slice(); x.splice(idx,1); try{ localStorage.setItem('bhoc_bookmarks', JSON.stringify(x)); }catch(e){}; document.getElementById('bmListBtn').click(); };
-        actions.appendChild(go); actions.appendChild(del); li.appendChild(actions); $bmList.appendChild(li);
-      })(idx);
-    }
-    $bm.style.display='block';
-  };
-  $bm.onclick = function(e){ if (e.target === $bm) $bm.style.display='none'; };
-
-  function startReading(){
-    $app.classList.add('open');
-    renderTOC(); syncChromeLayout();
-    var slug = decodeURIComponent(location.hash.replace(/^#\/?/, ''));
-    var stored = null;
-    try{ stored = JSON.parse(localStorage.getItem('bhoc_last') || 'null'); }catch(e){ stored = null; }
-    if (slug){
-      for (var i=0;i<CHAPTERS.length;i++){ if (CHAPTERS[i].file === slug){ loadChapter(i, true); return; } }
-    }
-    if (stored && stored.idx < CHAPTERS.length){ loadChapter(stored.idx, true); return; }
-    loadChapter(0, true);
-  }
-  document.getElementById('openBtn').onclick = startReading;
-  if (location.hash) { startReading(); }
-</script>
+  <script defer src="app.js"></script>
 </body>
 </html>
