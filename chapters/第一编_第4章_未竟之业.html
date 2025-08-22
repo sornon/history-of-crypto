@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>第一编 · 第4章 · 未竟之业：共识、容错与激励的三角困境</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+
+:root{
+  --ink:#202124;--muted:#5f6368;--accent:#0b6efd;--accent-2:#8b5cf6;--bg:#ffffff;--warn:#b42318;
+  --shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.1);
+}
+html,body{background:var(--bg);color:var(--ink);margin:0;padding:0;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Noto Sans CJK SC","Source Han Sans SC","Microsoft Yahei",Arial,Helvetica,sans-serif;
+  line-height:1.78;}
+.container{max-width:860px;margin:48px auto 120px;padding:0 20px;}
+h1,h2,h3{line-height:1.28;margin:1.2em 0 .6em;}
+h1{font-size:2rem;letter-spacing:.01em;}
+h2{font-size:1.5rem;border-bottom:2px solid #eee;padding-bottom:.25rem;}
+h3{font-size:1.12rem;color:var(--muted);}
+.subtitle{color:var(--muted);}
+.small{font-size:.95rem;color:var(--muted);}
+ul,ol{padding-left:1.2rem;}
+.sidebar{background:#fbfbff;border:1px solid #e6e8ff;border-left:5px solid var(--accent-2);
+  border-radius:10px;padding:10px 12px 10px 14px;box-shadow:var(--shadow);margin:12px 0;}
+.sidebar .sb-title{font-weight:700;color:#4f46e5;margin-bottom:.2rem;font-size:1.02rem;}
+.sidebar .sb-list,.sidebar .sb-metrics{padding-left:1.0rem;margin:.1rem 0;}
+.timeline-card{border-left-color:#8b5cf6;}
+.compare-card{border-left-color:#0ea5e9;}
+.controversy{border:1px solid #fde2e1;background:#fff5f5;border-left:5px solid var(--warn);
+  border-radius:10px;padding:10px 12px 10px 14px;box-shadow:var(--shadow);margin:12px 0;}
+.controversy .ct-title{font-weight:800;color:var(--warn);margin-bottom:.2rem;font-size:1.02rem;}
+.recap{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:10px;}
+.card{background:#ffffff;border:1px solid #e5e7eb;border-radius:10px;padding:10px 12px;box-shadow:var(--shadow);}
+.inline-card{border:1px solid #e5e7eb;border-left:4px solid #6366f1;background:#ffffff;border-radius:10px;
+  padding:8px 10px;margin:8px 0 12px 0;box-shadow:var(--shadow);}
+.inline-card .ic-title{font-weight:700;margin-bottom:.2rem;font-size:1.0rem;}
+.inline-card.person{border-left-color:#6366f1;}
+.concept{border:1px dashed #c7d2fe;background:#f8fafc;border-radius:10px;padding:10px 12px;margin:10px 0 14px 0;}
+.concept .cp-title{font-weight:700;color:#4f46e5;margin-bottom:.2rem;}
+.concept .cp-analogy{margin-top:.2rem;color:#5f6368;font-style:italic;}
+.milestone{border:1px solid #e5e7eb;border-left:4px solid #0ea5e9;background:#ffffff;border-radius:10px;
+  padding:10px 12px;margin:10px 0 14px 0;box-shadow:var(--shadow);}
+.milestone .ms-title{font-weight:700;margin-bottom:.25rem;}
+.milestone ul{margin:.2rem 0 .2rem 1.0rem;padding:0;}
+table{border-collapse:collapse;width:100%;font-size:.96rem;}
+th,td{border:1px solid #e5e7eb;padding:6px 8px;vertical-align:top;}
+th{background:#f8fafc;text-align:left;}
+
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>第4章 未竟之业：共识、容错与激励的三角困境 <span class="subtitle">（第一编（1970s–2008）观念与技术的源流）</span></h1>
+  <p class="small">作者：Zino ｜ 2025年著</p>
+</header>
+
+<h2>1982–1999：容错与共识的学术底色</h2>
+<p>1982 年，<strong>Leslie Lamport</strong> 等提出“<strong>拜占庭将军问题</strong>”，刻画“部分节点作恶时系统如何达成一致”；1985 年，<strong>Fischer–Lynch–Paterson</strong> 证明在完全异步且可能崩溃的网络中，确定性共识不可能；1989/1998 年，<strong>Paxos</strong> 给出容错共识的工程范式；1999 年，<strong>Castro–Liskov</strong> 提出 <strong>PBFT</strong>，在小规模、已知身份的环境里实现拜占庭容错。</p>
+<div class="inline-card person">
+  <div class="ic-title">人物卡 · Leslie Lamport / Barbara Liskov</div>
+  <div class="ic-body">Lamport：分布式系统奠基者，提出拜占庭问题与 Paxos；Liskov：图灵奖得主，PBFT 指导教授，共识工程化的重要推动者。</div>
+</div>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · 拜占庭容错（BFT）</div>
+  <div class="cp-body">在最多 f 个节点任意作恶的情况下，只要总数 ≥ 3f+1，诚实节点仍能就同一结果达成一致。</div>
+  <div class="cp-analogy">像合伙人投票：只要四人里最多一人撒谎，其他三人通过交叉核对仍能确认账本真相。</div>
+</div>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · FLP 不可能</div>
+  <div class="cp-body">完全异步网络里，任何确定性算法都无法保证既终止又一致；工程上常通过随机化或弱同步假设绕过。</div>
+  <div class="cp-analogy">全城交通灯完全不同步且可能永远等不到绿灯，于是引入“最久等待先行”的规则降低卡死概率。</div>
+</div>
+
+<h2>1999–2004：P2P 的胜利与缺席的账本</h2>
+<p><strong>Napster</strong>（1999）以中心索引带来分发革命，随即被法律精准打击；<strong>Gnutella</strong>（2000）与 <strong>Freenet</strong>（2000）去中心但性能低下；<strong>Bram Cohen</strong> 的 <strong>BitTorrent</strong>（2001）用 <em>tit-for-tat</em> 激励提升吞吐，却只在“群”内有效，没有全局一致的余额或状态；<strong>Kademlia</strong>（2002）等 DHT 解决寻址，仍回避了“谁拥有了什么”这种需要全网一致的难题。2002 年，<strong>John Douceur</strong> 指出 <strong>Sybil 攻击</strong>：在没有身份成本的网络里，作恶者可以伪造海量身份掌控投票。</p>
+<div class="inline-card person">
+  <div class="ic-title">人物卡 · Bram Cohen / John Douceur</div>
+  <div class="ic-body">Cohen：BitTorrent 创始人，以局部激励解决带宽博弈；Douceur：提出 Sybil 攻击，指出“免费身份=可被劫持的多数”。</div>
+</div>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · 去中心化共识</div>
+  <div class="cp-body">在缺乏统一控制者的开放网络里，让参与者对同一组状态达成一致。</div>
+  <div class="cp-analogy">没有班主任的自习室，大家仍能按时同意“哪几道题是本节要交的答案”。</div>
+</div>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · 女巫攻击（Sybil）</div>
+  <div class="cp-body">攻击者伪造大量身份影响投票或路由。</div>
+  <div class="cp-analogy">社区投票按“每人一票”，有人搬来一车“充气人偶”登记，瞬间改变结果。</div>
+</div>
+
+<h2>1998–2005：电子现金的“差一口气”</h2>
+<p><strong>Wei Dai</strong> 的 <strong>b-money</strong>、<strong>Nick Szabo</strong> 的 <strong>bit gold</strong> 把“工作量证明→货币”写成草图，但实现层面仍留下三问：谁来记账、如何抵抗女巫、奖励从何而来。<strong>Hal Finney</strong> 的 <strong>RPOW</strong> 让工作量可复用，却把信任压在可信硬件与单点服务器之上。</p>
+<div class="inline-card person">
+  <div class="ic-title">人物卡 · Wei Dai / Nick Szabo / Hal Finney</div>
+  <div class="ic-body">Dai：b-money 提出者；Szabo：bit gold 与智能合约早期倡导者；Finney：RPOW 设计者与后续加密货币早期参与者。</div>
+</div>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · 激励相容（Incentive Compatibility）</div>
+  <div class="cp-body">让个体在追求自身利益时，自发做出有利于系统安全与可用的行动。</div>
+  <div class="cp-analogy">把“随手关门”设计为“关了门的人能先领演出票”，人人自然配合。</div>
+</div>
+
+<h2>里程碑模板：复盘何以未成</h2>
+
+<div class="milestone">
+  <div class="ms-title">模板卡 · DigiCash（1989–1998）</div>
+  <ul>
+    <li><b>问题</b>：匿名电子现金。</li>
+    <li><b>技术诀窍</b>：盲签名、防双花清算。</li>
+    <li><b>制度接口</b>：依赖银行与牌照合作。</li>
+    <li><b>失败模式</b>：商业推广与生态冷启动失败。</li>
+    <li><b>缺了什么</b>：无需许可的记账者集合与抗审查铸币。</li>
+  </ul>
+</div>
+
+<div class="milestone">
+  <div class="ms-title">模板卡 · e-gold（1996–2007）</div>
+  <ul>
+    <li><b>问题</b>：跨境低成本结算。</li>
+    <li><b>技术诀窍</b>：账户记账+黄金背书。</li>
+    <li><b>制度接口</b>：强依赖运营主体与司法辖区。</li>
+    <li><b>失败模式</b>：监管打击与单点故障。</li>
+    <li><b>缺了什么</b>：去中心化所有权证明与抗女巫的参与门槛。</li>
+  </ul>
+</div>
+
+<div class="milestone">
+  <div class="ms-title">模板卡 · Hashcash（1997）</div>
+  <ul>
+    <li><b>问题</b>：垃圾邮件成本过低。</li>
+    <li><b>技术诀窍</b>：工作量证明，验证廉价。</li>
+    <li><b>制度接口</b>：无需许可，任何人可算。</li>
+    <li><b>失败模式</b>：缺少全球账本与价值承接。</li>
+    <li><b>缺了什么</b>：把 PoW 链接进“所有权变化”的一致历史。</li>
+  </ul>
+</div>
+
+<div class="milestone">
+  <div class="ms-title">模板卡 · b-money / bit gold（1998/2005）</div>
+  <ul>
+    <li><b>问题</b>：开放生成的稀缺性与记账一致。</li>
+    <li><b>技术诀窍</b>：PoW 输出序列化+时间戳。</li>
+    <li><b>制度接口</b>：设想分布式数据库与复制容错。</li>
+    <li><b>失败模式</b>：缺实施细节与经济闭环。</li>
+    <li><b>缺了什么</b>：抗女巫的“身份成本”与内生激励。</li>
+  </ul>
+</div>
+
+<div class="milestone">
+  <div class="ms-title">模板卡 · RPOW（2004）</div>
+  <ul>
+    <li><b>问题</b>：让一次性工作量可转移。</li>
+    <li><b>技术诀窍</b>：可信硬件证明。</li>
+    <li><b>制度接口</b>：信任运行服务器的个体。</li>
+    <li><b>失败模式</b>：中心点与硬件信任的脆弱。</li>
+    <li><b>缺了什么</b>：开放网络上的共识与铸币规则。</li>
+  </ul>
+</div>
+
+<h2>三角困境：为何屡败屡起</h2>
+<ul>
+  <li><b>共识</b>：工程上已有 Paxos/PBFT，但前提是已知身份与有限规模，与开放网络的“万人协作”不匹配。</li>
+  <li><b>容错</b>：BFT 理论把作恶节点限制在少数；开放网络若无身份成本，作恶者可制造“多数”。</li>
+  <li><b>激励</b>：缺乏把“参与记账”转化为“可计价收益”的内生机制，志愿者难以长期维持秩序。</li>
+</ul>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · 资源绑定的身份</div>
+  <div class="cp-body">让身份与可度量的稀缺资源绑定（算力、持有量、真实世界成本），提高伪造身份的代价。</div>
+  <div class="cp-analogy">业委会按“房产面积加权投票”，想刷票就得真掏钱买房。</div>
+</div>
+
+<h2>2006–2008：最后的悬念</h2>
+<p>技术侧：GPU 计算崛起、哈希函数族成熟、P2P 叠加 DHT 可全球扩散；理念侧：<strong>主权个人</strong>式的数字社群与价值网络需求日益清晰。悬而未决的是：<b>如何在开放网络中，用一种可自我调节的资源成本来抵抗女巫，并把“做正确事的人”稳定地奖励出来，同时把每一次状态变更写入人人可验的历史</b>。</p>
+
+<h2>关键时间线</h2>
+<div class="sidebar timeline-card">
+  <div class="sb-title">三角困境的历史坐标（1982–2008）</div>
+  <ul class="sb-list">
+    <li>1982：拜占庭将军问题（Lamport 等）</li>
+    <li>1985：FLP 不可能（Fischer–Lynch–Paterson）</li>
+    <li>1989/1998：Paxos（Lamport）</li>
+    <li>1991：数字时间戳（Haber–Stornetta）</li>
+    <li>1997：Hashcash（Adam Back）</li>
+    <li>1998：b-money（Wei Dai）</li>
+    <li>1999：PBFT（Castro–Liskov）</li>
+    <li>2000–2002：Gnutella/Freenet；Sybil 攻击（Douceur）</li>
+    <li>2001：BitTorrent（Bram Cohen）</li>
+    <li>2002：Kademlia DHT</li>
+    <li>2004：RPOW（Hal Finney）</li>
+    <li>2005：bit gold（Szabo）</li>
+    <li>2007：e-gold 受监管打击</li>
+    <li>2008：全球金融危机加剧“去中介信任”的需求</li>
+  </ul>
+</div>
+
+<div class="sidebar compare-card">
+  <div class="sb-title">对照表 · “三要素”核查（至 2008）</div>
+  <table>
+    <thead>
+      <tr><th>方案/系统</th><th>去中心化共识</th><th>BFT/抗女巫</th><th>内生激励</th><th>时间戳/顺序</th><th>结局</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>DigiCash</td><td>否（银行）</td><td>弱（中心）</td><td>无</td><td>中心清算</td><td>商化失败</td></tr>
+      <tr><td>e-gold</td><td>否（运营方）</td><td>弱（单点）</td><td>部分（手续费）</td><td>中心记账</td><td>监管打击</td></tr>
+      <tr><td>Hashcash</td><td>无账本</td><td>PoW 抗滥用</td><td>无</td><td>无链</td><td>限于反垃圾</td></tr>
+      <tr><td>b-money</td><td>设想</td><td>未具体化</td><td>设想</td><td>设想</td><td>缺实现</td></tr>
+      <tr><td>bit gold</td><td>局部复制容错</td><td>部分</td><td>未闭环</td><td>有序 PoW</td><td>概念为主</td></tr>
+      <tr><td>RPOW</td><td>中心服务器</td><td>硬件信任</td><td>无</td><td>可转移凭证</td><td>难扩展</td></tr>
+      <tr><td>P2P 文件分发</td><td>否（无全局状态）</td><td>受 Sybil 影响</td><td>局部（tit-for-tat）</td><td>无</td><td>缺“谁拥有什么”的账本</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="controversy compact">
+  <div class="ct-title">争点 · 资源消耗是否必需？</div>
+  <ol>
+    <li><b>命题</b>：开放网络要抗女巫，必须引入显著资源成本。</li>
+    <li><b>证据</b>：无成本身份导致投票被劫；PoW 提供可验证成本。</li>
+    <li><b>反证</b>：已知身份/许可链可用 BFT 低成本达成，但难以开放、跨边界扩张。</li>
+    <li><b>小结</b>：在 2008 年前，尚无兼顾开放性与强抗女巫又能内生激励的统一答案。</li>
+  </ol>
+</div>
+
+<h2>章末复盘</h2>
+<div class="recap compact">
+  <div class="card">
+    <strong>要点</strong>
+    <ul class="small">
+      <li>共识、容错与激励构成“最后三角”。任一角缺失，都难以在开放网络上维持价值与历史。</li>
+      <li>BFT 与 Paxos 解决的是“小圈子、已知身份”的一致；开放网络还需“身份成本”。</li>
+      <li>PoW、时间戳、P2P、DHT 各自成熟，却缺把它们编织成经济闭环的机制。</li>
+    </ul>
+  </div>
+  <div class="card">
+    <strong>悬念</strong>
+    <ul class="small">
+      <li>如何让“做正确事”获得系统内奖励？</li>
+      <li>如何把“工作成本”稳定映射为“货币稀缺”？</li>
+      <li>如何让任何人都能参与而不被“充气人偶大军”接管？</li>
+    </ul>
+  </div>
+</div>
+
+<footer>
+  <p class="small">© 2025 Zino. 保留所有权利。<br>本作品采用知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议（CC BY-NC-ND 4.0）授权。<br><a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh-Hans" target="_blank" rel="noopener">查看许可协议</a></p>
+</footer>
+
+</div>
+</body>
+</html>
