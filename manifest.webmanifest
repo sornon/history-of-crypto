@@ -1,0 +1,9 @@
+{
+  "name": "Crypto简史（书壳）",
+  "short_name": "Crypto简史",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0b6efd",
+  "icons": []
+}
