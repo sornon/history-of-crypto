@@ -1,10 +1,4 @@
 /* UTF-8 */
-:root {
-  --fg:#121212; --bg:#fff; --muted:#666; --card:#f6f6f6; --border:#e5e5e5;
-}
-@media (prefers-color-scheme: dark) {
-  :root { --fg:#eaeaea; --bg:#0d0d0d; --muted:#9b9b9b; --card:#151515; --border:#222; }
-}
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:#fff;color:#121212;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Hiragino Sans GB","Segoe UI",Roboto,Arial,"Noto Sans CJK SC",sans-serif}
 .container-shell{max-width:740px;margin:0 auto;padding:16px}
