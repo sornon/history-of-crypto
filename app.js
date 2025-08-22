@@ -1,6 +1,5 @@
 /* UTF-8 */
 const VERSION_DATE = "2025-08-23";
-const BOOK_PART_TITLE = "第一编（1970s–2008）观念与技术的源流"; // 固定显示
 
 async function loadChapters() {
   const res = await fetch('chapters.json');
