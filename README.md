@@ -1,4 +1,4 @@
-# Crypto: A Brief History of Crypto （《Crypto简史》）
+# 《Crypto简史》《A Brief History of Crypto》
 
 > **Author:** Zino(赵择能) · **First edition:** 2025 · **Scope:** 1970s–2035  
 > A book-length history of crypto — origins, protocols, markets, and politics — written for serious readers and policy/industry practitioners.
