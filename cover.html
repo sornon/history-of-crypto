@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0d0d0d" />
+  <title>封面 · 《Crypto简史》</title>
+  <style>
+    :root {
+      --fg:#eaeef9;
+      --muted:#aab3c5;
+      --accent:#7aa2ff;
+      --accent2:#9a7aff;
+      --btn:#0f172a;
+      --btn-fg:#e8ecff;
+    }
+    * { box-sizing:border-box; }
+    html, body {
+      margin:0; padding:0; height:100%; width:100%;
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Hiragino Sans GB","Segoe UI",Roboto,Arial,"Noto Sans CJK SC",sans-serif;
+      color:var(--fg); background:#05060b; overflow:hidden;
+    }
+    .stage {
+      position:fixed; inset:0; display:grid; place-items:center;
+    }
+    .overlay {
+      position:fixed; inset:0;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      text-align:center; padding:24px; pointer-events:none;
+    }
+    h1 { margin:0 0 8px 0; font-size: clamp(28px, 6vw, 56px); letter-spacing: .5px; }
+    h2 { margin:0 0 20px 0; font-weight:500; font-size: clamp(14px, 3.2vw, 22px); color:var(--muted); }
+    .author { margin-top:8px; font-size: clamp(12px, 2.6vw, 16px); color:var(--muted); }
+    .cta-wrap {
+      position:fixed; left:0; right:0;
+      bottom: min(28vh, 240px);
+      display:flex; justify-content:center;
+      pointer-events:auto;
+    }
+    .cta {
+      display:inline-flex; align-items:center; gap:.6em;
+      background:linear-gradient(135deg, var(--accent), var(--accent2));
+      color:var(--btn-fg); text-decoration:none; font-weight:700;
+      padding:14px 20px; border-radius:999px; box-shadow:0 8px 24px rgba(122,162,255,.25);
+      transform:translateZ(0); will-change:transform, filter;
+    }
+    .cta:active { transform:scale(.98); filter:brightness(.98); }
+    .cta svg { width:18px; height:18px; }
+    footer {
+      position:fixed; left:0; right:0; bottom:0; padding:14px 18px; text-align:center;
+      color:var(--muted); font-size:12px; backdrop-filter: blur(4px);
+    }
+    @supports (padding: max(0px)) {
+      footer { padding-bottom: max(12px, env(safe-area-inset-bottom)); }
+    }
+    svg.bg { position:fixed; inset:0; width:100%; height:100%; display:block; }
+  </style>
+</head>
+<body>
+  <svg class="bg" viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label="科技感背景">
+    <defs>
+      <radialGradient id="gRad" cx="50%" cy="40%" r="70%">
+        <stop offset="0%" stop-color="#10142a"/>
+        <stop offset="60%" stop-color="#0a0f23"/>
+        <stop offset="100%" stop-color="#05060b"/>
+      </radialGradient>
+      <linearGradient id="gLine" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#7aa2ff" stop-opacity=".85"/>
+        <stop offset="50%" stop-color="#9a7aff" stop-opacity=".65"/>
+        <stop offset="100%" stop-color="#7aa2ff" stop-opacity=".85"/>
+      </linearGradient>
+      <pattern id="pGrid" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="scale(.8)">
+        <path d="M6 0H0M0 0V6" stroke="#6b7280" stroke-opacity=".14" stroke-width=".2"/>
+      </pattern>
+      <filter id="fNoise">
+        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="8" />
+        <feColorMatrix type="saturate" values="0"/>
+        <feComponentTransfer>
+          <feFuncA type="table" tableValues="0 0 .03 .045 .05"/>
+        </feComponentTransfer>
+      </filter>
+      <filter id="glow">
+        <feGaussianBlur stdDeviation="0.6" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <rect x="0" y="0" width="100" height="100" fill="url(#gRad)"/>
+    <g opacity=".8" transform="translate(0,0) skewX(-8)">
+      <rect x="-10" y="-10" width="120" height="120" fill="url(#pGrid)"/>
+    </g>
+    <g opacity=".45" filter="url(#glow)">
+      <circle cx="50" cy="55" r="26" fill="none" stroke="url(#gLine)" stroke-width=".35" stroke-dasharray="2 1">
+        <animate attributeName="stroke-dashoffset" from="0" to="-12" dur="12s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="50" cy="55" r="38" fill="none" stroke="url(#gLine)" stroke-width=".25" stroke-dasharray="1.5 .9">
+        <animate attributeName="stroke-dashoffset" from="0" to="12" dur="18s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="50" cy="55" r="14" fill="none" stroke="url(#gLine)" stroke-width=".4" stroke-dasharray="3 .8">
+        <animate attributeName="stroke-dashoffset" from="0" to="-8" dur="10s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+    <g opacity=".55" filter="url(#glow)">
+      <path d="M -10,30 Q 30,20 70,30 T 110,30" stroke="url(#gLine)" stroke-width=".5" fill="none">
+        <animate attributeName="opacity" values=".15;.55;.15" dur="7s" repeatCount="indefinite"/>
+      </path>
+      <path d="M -10,75 Q 30,65 70,75 T 110,75" stroke="url(#gLine)" stroke-width=".45" fill="none">
+        <animate attributeName="opacity" values=".25;.8;.25" dur="9s" repeatCount="indefinite"/>
+      </path>
+    </g>
+    <g opacity=".55">
+      <radialGradient id="blob1" cx="0" cy="0">
+        <stop offset="0" stop-color="#7aa2ff" stop-opacity=".9"/>
+        <stop offset=".9" stop-color="#7aa2ff" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="blob2" cx="0" cy="0">
+        <stop offset="0" stop-color="#9a7aff" stop-opacity=".9"/>
+        <stop offset=".9" stop-color="#9a7aff" stop-opacity="0"/>
+      </radialGradient>
+      <circle cx="15" cy="20" r="18" fill="url(#blob1)">
+        <animate attributeName="cx" values="12;18;12" dur="14s" repeatCount="indefinite"/>
+        <animate attributeName="cy" values="18;24;18" dur="14s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="88" cy="82" r="22" fill="url(#blob2)">
+        <animate attributeName="cx" values="84;92;84" dur="16s" repeatCount="indefinite"/>
+        <animate attributeName="cy" values="78;86;78" dur="16s" repeatCount="indefinite"/>
+      </circle>
+    </g>
+    <rect x="0" y="0" width="100" height="100" filter="url(#fNoise)" opacity=".25"/>
+  </svg>
+
+  <div class="overlay" aria-live="polite">
+    <h1>Crypto简史</h1>
+    <h2>A Brief History of Crypto</h2>
+    <div class="author">作者：Zino · 版本 2025-08-23</div>
+  </div>
+
+  <div class="cta-wrap">
+    <a class="cta" href="./index.html?v1" aria-label="开始阅读，进入章节列表">
+      开始阅读
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </div>
+
+  <footer>
+    《Crypto简史》本书作者：Zino，2025年著。<br/>
+    本作品采用知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议（CC BY-NC-ND 4.0）授权。
+  </footer>
+</body>
+</html>
