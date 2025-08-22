@@ -23,12 +23,12 @@ function renderList(groups) {
   listEl.innerHTML = '';
   for (const [part, items] of groups.entries()) {
     const h = document.createElement('div');
-    h.className = 'section-title';
+    h.className = 'section-title-shell';
     h.textContent = part;
     listEl.appendChild(h);
     for (const it of items) {
       const li = document.createElement('div');
-      li.className = 'chapter-item';
+      li.className = 'chapter-item-shell';
       li.innerHTML = `<a href="#read?file=${encodeURIComponent(it.file)}&title=${encodeURIComponent(it.title)}">${it.title.replace(/^第一编_/,'')}</a><small>· 版本 ${VERSION_DATE}</small>`;
       listEl.appendChild(li);
     }
