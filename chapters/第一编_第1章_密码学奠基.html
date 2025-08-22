@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>第一编 · 第1章 · 密码学奠基</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+
+:root{
+  --ink:#202124;--muted:#5f6368;--accent:#0b6efd;--accent-2:#8b5cf6;--bg:#ffffff;--card:#f6f8fa;--warn:#b42318;
+  --shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.1);
+}
+html,body{background:var(--bg);color:var(--ink);margin:0;padding:0;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Noto Sans CJK SC","Source Han Sans SC","Microsoft Yahei",Arial,Helvetica,sans-serif;
+  line-height:1.78;}
+.container{max-width:860px;margin:48px auto 120px;padding:0 20px;}
+h1,h2,h3{line-height:1.28;margin:1.2em 0 .6em;}
+h1{font-size:2rem;letter-spacing:.01em;}
+h2{font-size:1.5rem;border-bottom:2px solid #eee;padding-bottom:.25rem;}
+h3{font-size:1.12rem;color:var(--muted);}
+.subtitle{color:var(--muted);}
+.small{font-size:.95rem;color:var(--muted);} 
+ul,ol{padding-left:1.2rem;}
+.sidebar{background:#fbfbff;border:1px solid #e6e8ff;border-left:5px solid var(--accent-2);
+  border-radius:10px;padding:10px 12px 10px 14px;box-shadow:var(--shadow);margin:12px 0;}
+.sidebar .sb-title{font-weight:700;color:#4f46e5;margin-bottom:.2rem;font-size:1.02rem;}
+.sidebar .sb-list,.sidebar .sb-metrics{padding-left:1.0rem;margin:.1rem 0;}
+.data-card{border-left-color:#0ea5e9;}
+.timeline-card{border-left-color:#8b5cf6;}
+.controversy{border:1px solid #fde2e1;background:#fff5f5;border-left:5px solid var(--warn);
+  border-radius:10px;padding:10px 12px 10px 14px;box-shadow:var(--shadow);margin:12px 0;}
+.controversy .ct-title{font-weight:800;color:var(--warn);margin-bottom:.2rem;font-size:1.02rem;}
+.recap{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:10px;}
+.card{background:#ffffff;border:1px solid #e5e7eb;border-radius:10px;padding:10px 12px;box-shadow:var(--shadow);} 
+.inline-card{border:1px solid #e5e7eb;border-left:4px solid #6366f1;background:#ffffff;border-radius:10px;
+  padding:8px 10px;margin:8px 0 12px 0;box-shadow:var(--shadow);}
+.inline-card .ic-title{font-weight:700;margin-bottom:.2rem;font-size:1.0rem;}
+.inline-card.person{border-left-color:#6366f1;}
+.concept{border:1px dashed #c7d2fe;background:#f8fafc;border-radius:10px;padding:10px 12px;margin:10px 0 14px 0;}
+.concept .cp-title{font-weight:700;color:#4f46e5;margin-bottom:.2rem;}
+.concept .cp-analogy{margin-top:.2rem;color:#5f6368;font-style:italic;}
+
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>第1章 密码学奠基 <span class="subtitle">（第一编（1970s–2008）观念与技术的源流）</span></h1>
+  <p class="small">作者：Zino ｜ 2025年著 · 版本 2025-08-22</p>
+</header>
+
+<h2>1976：公开密钥的诞生</h2>
+<p>加州斯坦福，<strong>Whitfield Diffie</strong> 与 <strong>Martin Hellman</strong> 在论文《New Directions in Cryptography》中，把“如何在公开网络上约定密钥”的难题变成数学可解的过程：在旁观者完全可见的通道里，双方仍能各自算出同一个秘密。</p>
+<div class="inline-card person">
+  <div class="ic-title">人物卡 · Diffie &amp; Hellman</div>
+  <div class="ic-body">公开密钥密码学先驱；提出“公开通道协商共同秘密”的方法，奠定现代网络安全基础。</div>
+</div>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · 公钥/私钥</div>
+  <div class="cp-body">每个人有一对钥匙：<b>公钥</b>像门牌号，给任何人；<b>私钥</b>像保险柜钥匙，只能自己留着。别人用你的公钥上锁，你用私钥开锁。</div>
+  <div class="cp-analogy">在嘈杂广场里，两人各自摇一瓶颜料（私钥不公开），把颜料滴入同一调色盘（公开参数）搅拌，得到同色但旁人无法逆推回原色——这就是 Diffie–Hellman 密钥交换。</div>
+</div>
+
+<h2>三大难题：密钥、签名、时间</h2>
+<ol>
+  <li><strong>密钥协商</strong>：Diffie–Hellman 让公开信道上的“私语”成为可能。</li>
+  <li><strong>签名与验证</strong>：消息需要“是谁发的、途中未改”的证据；<strong>RSA</strong> 给出通用的数字签名机制。</li>
+  <li><strong>完整性与顺序</strong>：哈希函数、<strong>Merkle 树</strong>与<strong>数字时间戳</strong>确保“没改过”“先后次序”可验证。</li>
+</ol>
+
+<h2>数字签名：把身份写进代码</h2>
+<p><strong>Ron Rivest、Adi Shamir、Leonard Adleman</strong> 在 MIT 提出 RSA：发送者用私钥对消息“指纹”（哈希）签名，任何人用公钥即可验真与验改。随后 <strong>DSA（NIST，1991）</strong>与证书体系把签名推向工业界与浏览器世界。</p>
+<div class="inline-card person">
+  <div class="ic-title">人物卡 · RSA 团队</div>
+  <div class="ic-body">Rivest、Shamir、Adleman：提出 RSA 算法；把“不可伪造签名”带到通用计算设备。</div>
+</div>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · 数字签名</div>
+  <div class="cp-body">用私钥对消息哈希签名，公钥可验证“确由此人所签”“内容未改”。</div>
+  <div class="cp-analogy">像蜡封上的独特印记：印章图案人人可见（公钥），但雕刻模具只有你有（私钥）。看到蜡封即可确认署名与未拆换。</div>
+</div>
+
+<h2>哈希与 Merkle 树：可验证的数据结构</h2>
+<p>哈希把任意长数据压成固定“指纹”，要求抗碰撞与难逆。<strong>Ralph Merkle</strong> 进一步提出哈希树：把上千条记录逐层“配对再哈希”得到根，验证单条记录只需检查一条路径，像查快递的“签收链”。</p>
+<div class="inline-card person">
+  <div class="ic-title">人物卡 · Ralph Merkle</div>
+  <div class="ic-body">哈希树提出者；让批量校验与轻节点验证成为可能，是后续区块链结构的关键积木。</div>
+</div>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · 哈希函数</div>
+  <div class="cp-body">把数据“碎纸”成固定长度指纹；相同输入必得相同指纹，稍改一字指纹就天差地别。</div>
+  <div class="cp-analogy">高转速碎纸机：看碎纸屑的“图案”能认出“这就是那封信”，却几乎复原不了全文。</div>
+</div>
+
+<h2>数字时间戳：为历史盖章</h2>
+<p>1991 年，<strong>Stuart Haber</strong> 与 <strong>W. Scott Stornetta</strong> 把每份文档的哈希同前一份链接，形成不可篡改的“时间链”，并定期将哈希登报公证，确证“某内容在某时刻已存在”。</p>
+<div class="inline-card person">
+  <div class="ic-title">人物卡 · Haber &amp; Stornetta</div>
+  <div class="ic-body">数字时间戳的提出者；把“不可逆顺序”变成可审计事实，为链式账本提供时间骨架。</div>
+</div>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · 数字时间戳</div>
+  <div class="cp-body">把“某内容在某时刻已存在”的事实写进公共可验证的记录，任何人都能独立核验。</div>
+  <div class="cp-analogy">把文件指纹登在当日报纸上；多年后翻报，仍能证明“那天之前已存在且未被改动”。</div>
+</div>
+
+<h2>工具如何改变叙事</h2>
+<ul>
+  <li><strong>密钥交换</strong> → 开放网络上的私语。</li>
+  <li><strong>数字签名</strong> → 机器可读的身份与不可否认。</li>
+  <li><strong>哈希/哈希树/时间戳</strong> → 不可篡改的历史与可验证顺序。</li>
+</ul>
+
+<div class="sidebar data-card compact">
+  <div class="sb-title">对照卡 · 原语 → 比特币模块映射</div>
+  <ul class="sb-metrics">
+    <li><b>数字签名</b> → 所有权证明（交易解锁脚本）</li>
+    <li><b>哈希函数</b> → 区块指纹/工作量难度计量</li>
+    <li><b>Merkle 树</b> → 交易批量摘要与轻节点验证</li>
+    <li><b>时间戳链</b> → 不可逆顺序与全网一致性基础</li>
+  </ul>
+  <div class="sb-note small">注：激励与共识闭环在后续章节展开。</div>
+</div>
+
+<div class="controversy compact">
+  <div class="ct-title">争点 · 强加密与公共利益</div>
+  <ol>
+    <li><b>命题</b>：普及强加密会妨碍执法与公共安全。</li>
+    <li><b>证据</b>：90s 密钥托管/出口管制倡议。</li>
+    <li><b>反证</b>：端到端加密、选择性披露与可验证审计正改进接口。</li>
+    <li><b>小结</b>：关键在接口与程序正义，而非把“加密”当敌人。</li>
+  </ol>
+</div>
+
+<h2>章末复盘</h2>
+<div class="recap compact">
+  <div class="card">
+    <strong>要点</strong>
+    <ul class="small">
+      <li>公钥/私钥、数字签名、哈希/哈希树、数字时间戳构成“工具库”。</li>
+      <li>“信任”被转化为可验证的计算对象。</li>
+      <li>尚缺激励闭环与无需许可的全局秩序（后续补齐）。</li>
+    </ul>
+  </div>
+  <div class="card">
+    <strong>人物索引</strong>
+    <ul class="small">
+      <li>Diffie/Hellman · 密钥交换</li>
+      <li>Rivest/Shamir/Adleman · 数字签名</li>
+      <li>Merkle · 哈希树</li>
+      <li>Haber/Stornetta · 时间戳</li>
+    </ul>
+  </div>
+</div>
+
+<footer>
+  <p class="small">© 2025 Zino. 保留所有权利。</p>
+</footer>
+
+</div>
+</body>
+</html>
