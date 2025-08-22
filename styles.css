@@ -7,21 +7,21 @@
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Hiragino Sans GB","Segoe UI",Roboto,Arial,"Noto Sans CJK SC",sans-serif}
-.container{max-width:740px;margin:0 auto;padding:16px}
-header.book-meta{position:sticky;top:0;background:var(--bg);z-index:5;border-bottom:1px solid var(--border);padding:12px 16px}
-.book-title{font-size:18px;font-weight:700;line-height:1.35;margin:0}
-.book-sub{font-size:12px;color:var(--muted);margin-top:6px}
-.searchbar{display:flex;gap:8px;margin:12px 0}
-.searchbar input{flex:1;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--fg)}
-.section-title{font-size:14px;color:var(--muted);margin:16px 0 8px 4px}
-.chapter-list{list-style:none;margin:0;padding:0}
-.chapter-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin:10px 0;display:flex;justify-content:space-between;align-items:center}
-.chapter-item a{text-decoration:none;color:var(--fg);font-weight:600}
-.chapter-item small{color:var(--muted)}
-.reader{padding:16px}
-.reader h1{font-size:20px;margin:0 0 6px 0}
-.reader .meta{font-size:12px;color:var(--muted);margin-bottom:14px}
-.reader .content.compact .card{border-left:3px solid var(--border);padding:8px 12px;margin:10px 0;background:var(--card);border-radius:8px}
-footer.site{text-align:center;color:var(--muted);font-size:12px;padding:24px 12px;border-top:1px solid var(--border);margin-top:24px}
+.container-shell{max-width:740px;margin:0 auto;padding:16px}
+header.book-meta-shell{position:sticky;top:0;background:var(--bg);z-index:5;border-bottom:1px solid var(--border);padding:12px 16px}
+.book-title-shell{font-size:18px;font-weight:700;line-height:1.35;margin:0}
+.book-sub-shell{font-size:12px;color:var(--muted);margin-top:6px}
+.searchbar-shell{display:flex;gap:8px;margin:12px 0}
+.searchbar-shell input{flex:1;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--fg)}
+.section-title-shell{font-size:14px;color:var(--muted);margin:16px 0 8px 4px}
+.chapter-list-shell{list-style:none;margin:0;padding:0}
+.chapter-item-shell{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin:10px 0;display:flex;justify-content:space-between;align-items:center}
+.chapter-item-shell a{text-decoration:none;color:var(--fg);font-weight:600}
+.chapter-item-shell small{color:var(--muted)}
+.reader-shell{padding:16px}
+.reader-shell h1{font-size:20px;margin:0 0 6px 0}
+.reader-shell .meta{font-size:12px;color:var(--muted);margin-bottom:14px}
+.reader-shell .content-shell.compact .card{border-left:3px solid var(--border);padding:8px 12px;margin:10px 0;background:var(--card);border-radius:8px}
+footer.site-shell{text-align:center;color:var(--muted);font-size:12px;padding:24px 12px;border-top:1px solid var(--border);margin-top:24px}
 /* Tap targets */
 button, a { touch-action: manipulation; }
