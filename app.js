@@ -45,8 +45,6 @@ function attachSearch(all) {
 }
 
 async function mountIndex() {
-  document.getElementById('meta-title').textContent = BOOK_PART_TITLE;
-  document.getElementById('meta-sub').textContent = `作者：Zino｜2025年著 · 版本 ${VERSION_DATE}`;
   const all = await loadChapters();
   const groups = groupByPart(all);
   renderList(groups);
