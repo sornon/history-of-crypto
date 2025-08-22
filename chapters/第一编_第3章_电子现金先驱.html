@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>第一编 · 第3章 · 电子现金先驱</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+
+:root{
+  --ink:#202124;--muted:#5f6368;--accent:#0b6efd;--accent-2:#8b5cf6;--bg:#ffffff;--warn:#b42318;
+  --shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.1);
+}
+html,body{background:var(--bg);color:var(--ink);margin:0;padding:0;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Noto Sans CJK SC","Source Han Sans SC","Microsoft Yahei",Arial,Helvetica,sans-serif;
+  line-height:1.78;}
+.container{max-width:860px;margin:48px auto 120px;padding:0 20px;}
+h1,h2,h3{line-height:1.28;margin:1.2em 0 .6em;}
+h1{font-size:2rem;letter-spacing:.01em;}
+h2{font-size:1.5rem;border-bottom:2px solid #eee;padding-bottom:.25rem;}
+h3{font-size:1.12rem;color:var(--muted);}
+.subtitle{color:var(--muted);}
+.small{font-size:.95rem;color:var(--muted);} 
+ul,ol{padding-left:1.2rem;}
+.sidebar{background:#fbfbff;border:1px solid #e6e8ff;border-left:5px solid var(--accent-2);
+  border-radius:10px;padding:10px 12px 10px 14px;box-shadow:var(--shadow);margin:12px 0;}
+.sidebar .sb-title{font-weight:700;color:#4f46e5;margin-bottom:.2rem;font-size:1.02rem;}
+.sidebar .sb-list,.sidebar .sb-metrics{padding-left:1.0rem;margin:.1rem 0;}
+.timeline-card{border-left-color:#8b5cf6;}
+.compare-card{border-left-color:#0ea5e9;}
+.controversy{border:1px solid #fde2e1;background:#fff5f5;border-left:5px solid var(--warn);
+  border-radius:10px;padding:10px 12px 10px 14px;box-shadow:var(--shadow);margin:12px 0;}
+.controversy .ct-title{font-weight:800;color:var(--warn);margin-bottom:.2rem;font-size:1.02rem;}
+.recap{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:10px;}
+.card{background:#ffffff;border:1px solid #e5e7eb;border-radius:10px;padding:10px 12px;box-shadow:var(--shadow);} 
+.inline-card{border:1px solid #e5e7eb;border-left:4px solid #6366f1;background:#ffffff;border-radius:10px;
+  padding:8px 10px;margin:8px 0 12px 0;box-shadow:var(--shadow);}
+.inline-card .ic-title{font-weight:700;margin-bottom:.2rem;font-size:1.0rem;}
+.inline-card.person{border-left-color:#6366f1;}
+.concept{border:1px dashed #c7d2fe;background:#f8fafc;border-radius:10px;padding:10px 12px;margin:10px 0 14px 0;}
+.concept .cp-title{font-weight:700;color:#4f46e5;margin-bottom:.2rem;}
+.concept .cp-analogy{margin-top:.2rem;color:#5f6368;font-style:italic;}
+table{border-collapse:collapse;width:100%;font-size:.96rem;}
+th,td{border:1px solid #e5e7eb;padding:6px 8px;vertical-align:top;}
+th{background:#f8fafc;text-align:left;}
+
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>第3章 电子现金先驱 <span class="subtitle">（第一编（1970s–2008）观念与技术的源流）</span></h1>
+  <p class="small">作者：Zino ｜ 2025年著</p>
+</header>
+
+<h2>1983–1990：盲签名与 DigiCash 的诞生</h2>
+<p>1983 年，<strong>David Chaum</strong> 提出“盲签名”与“不可追踪的电子现金”思想；1989 年他创立 DigiCash，发行 eCash：用户向银行申请盲化的代币，银行签名后返还，商家收款后再向银行兑换。系统实现了<strong>匿名支付</strong>与<strong>双花检测</strong>，但仍依赖中心银行来铸币与清算。</p>
+<div class="inline-card person">
+  <div class="ic-title">人物卡 · David Chaum</div>
+  <div class="ic-body">密码学家；盲签名与匿名电子现金先驱，DigiCash 创始人。</div>
+</div>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · 盲签名</div>
+  <div class="cp-body">在签名者看不见明文的情况下完成签名，之后可公开验证签名有效。</div>
+  <div class="cp-analogy">把纸条放进不透明信封里盖章：盖章者无法看到内容，但所有人都能验证“这是他盖的章”。</div>
+</div>
+
+<p>DigiCash 的商业化遇到两难：银行与支付网络对颠覆性隐私方案态度谨慎；用户又不会为“看不见的优势”额外迁移成本买单。1998 年，DigiCash 进入破产程序，技术领先未能转化为网络效应。</p>
+
+<h2>1996–2007：电子黄金与中心化的脆弱性</h2>
+<p>1996 年，<strong>Douglas Jackson</strong> 推出 <strong>e-gold</strong>：以实物黄金作为储备的记账系统，转账快捷、跨境摩擦小，也吸引了灰色用途。随着规模扩大，合规与监管压力骤增；2007 年，e-gold 因反洗钱、牌照等问题被起诉并达成和解，业务式微。事件显示：只要存在可识别的运营实体，<strong>监管钳制与单点故障</strong>难以避免。</p>
+<div class="inline-card person">
+  <div class="ic-title">人物卡 · Douglas Jackson</div>
+  <div class="ic-body">e-gold 联合创办人；以黄金储备背书的早期电子现金实践者。</div>
+</div>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · 双花</div>
+  <div class="cp-body">同一单位的“数字货币”被复制后同时花向两处，导致记账不一致。</div>
+  <div class="cp-analogy">一张演唱会门票被复印了两份同时入场——检票口需要一种全局一致的“已用名单”。</div>
+</div>
+
+<h2>1997–2004：工作量证明从反垃圾到安全原语</h2>
+<p><strong>Adam Back</strong> 提出的 <strong>Hashcash</strong>（1997）最初用于<strong>反垃圾邮件</strong>：发送者需解一道困难但可快速验证的哈希难题，滥发邮件的成本陡增。这套“用计算制造稀缺”的思路被视为<strong>发行与防滥用</strong>的基础原语。</p>
+<div class="inline-card person">
+  <div class="ic-title">人物卡 · Adam Back</div>
+  <div class="ic-body">密码学家；Hashcash 提出者，工作量证明思想的重要奠基人。</div>
+</div>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · 工作量证明（PoW）</div>
+  <div class="cp-body">通过计算难题证明你付出了可度量的资源；验证者只需很少工作即可确认。</div>
+  <div class="cp-analogy">在门口解一个数独题：做题者费时费力，检票员只要看答案是否正确。</div>
+</div>
+
+<h2>1998–2005：去中心化草图——b-money 与 bit gold</h2>
+<p>1998 年，<strong>Wei Dai</strong> 在邮件列表提出 <strong>b-money</strong>：任何人可用工作量证明生成货币，并在分布式数据库上记账；节点通过协议更新余额与合约。2005 年，<strong>Nick Szabo</strong> 描述 <strong>bit gold</strong>：把 PoW 输出按序链接并时间戳，形成可追溯的“工作链”，再以复制容错机制维持账本一致。</p>
+<div class="inline-card person">
+  <div class="ic-title">人物卡 · Wei Dai</div>
+  <div class="ic-body">计算机科学家；b-money 作者，提出 PoW 发行与分布式记账的早期蓝图。</div>
+</div>
+<div class="inline-card person">
+  <div class="ic-title">人物卡 · Nick Szabo</div>
+  <div class="ic-body">法律与计算交叉研究者；bit gold 提出者，“智能合约”概念早期倡导者。</div>
+</div>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · 去信任化记账</div>
+  <div class="cp-body">尽量减少对特定中介的依赖，把“诚实”转为可验证的协议与激励。</div>
+  <div class="cp-analogy">从“找熟人担保”改为“按制度走流程”：每一步都留痕，可被任何旁观者检查。</div>
+</div>
+
+<p>同一时期（1997 年），《主权个人》预言信息技术将削弱地理主权的垄断能力，催生跨国数字社区与网络货币。b-money/bit gold 的草图，恰是把这类宏观判断落到工程细节的尝试。</p>
+
+<h2>2004：RPOW 与“可复用的工作”</h2>
+<p><strong>Hal Finney</strong> 设计 <strong>RPOW</strong>（Reusable Proofs of Work）：用可信硬件把一次性 PoW 兑换为可转移的“代币”，避免重复计算的浪费。但系统仍需信任运行该硬件的服务器，无法彻底摆脱中心点约束。</p>
+<div class="inline-card person">
+  <div class="ic-title">人物卡 · Hal Finney</div>
+  <div class="ic-body">密码学与 PGP 早期贡献者；RPOW 设计者，后来也是比特币最早的参与者之一。</div>
+</div>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · 可信执行环境</div>
+  <div class="cp-body">硬件与软件协同，保证某段代码在受保护的环境中按预期运行，外界难以篡改。</div>
+  <div class="cp-analogy">在玻璃罩里的秤：任何人都能看见称重过程，但无法把手伸进去动手脚。</div>
+</div>
+
+<h2>2008 前夜：碎片就位</h2>
+<p>到 2008 年前夕，电子现金的关键零件已经就位：<strong>隐私</strong>（盲签名）、<strong>稀缺</strong>（PoW）、<strong>顺序</strong>（时间戳链）、<strong>分发</strong>（点对点），以及关于<strong>制度与主权</strong>的宏观叙事。差的，是把这些技术与激励闭环揉成一个无需许可、抗审查、能自我调节难度的体系。</p>
+
+<h2>关键时间线</h2>
+<div class="sidebar timeline-card">
+  <div class="sb-title">电子现金关键时间线（1982–2008）</div>
+  <ul class="sb-list">
+    <li>1982/83：Chaum 提出盲签名与不可追踪支付</li>
+    <li>1989：DigiCash 成立；90s 多轮试点</li>
+    <li>1996：e-gold 上线；2007 年遭起诉后式微</li>
+    <li>1997：Hashcash（Adam Back）</li>
+    <li>1997：《主权个人》出版</li>
+    <li>1998：b-money（Wei Dai）</li>
+    <li>2004：RPOW（Hal Finney）</li>
+    <li>2005：bit gold（Nick Szabo）</li>
+    <li>2008：一份白皮书即将把碎片拼合（下一章）</li>
+  </ul>
+</div>
+
+<div class="sidebar compare-card">
+  <div class="sb-title">对照表 · 设计抉择与取舍</div>
+  <table>
+    <thead>
+      <tr><th>方案</th><th>去中心</th><th>隐私</th><th>发行机制</th><th>双花处理</th><th>主要风险/失败点</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>DigiCash</td><td>否（银行）</td><td>强（盲签名）</td><td>中心签发</td><td>银行清算</td><td>商业落地难、单点故障</td>
+      </tr>
+      <tr>
+        <td>e-gold</td><td>否（运营方）</td><td>中（账户制）</td><td>黄金储备记账</td><td>中心记账</td><td>监管与法律风险</td>
+      </tr>
+      <tr>
+        <td>Hashcash</td><td>是（任何人算）</td><td>无直接目标</td><td>PoW 生成标记</td><td>未定义账本</td><td>缺乏全局记账与激励</td>
+      </tr>
+      <tr>
+        <td>b-money</td><td>是（分布式）</td><td>可选</td><td>PoW 发行</td><td>协议广播与余额更新</td><td>规范缺实现与细节</td>
+      </tr>
+      <tr>
+        <td>bit gold</td><td>是（复制容错）</td><td>偏强（链式可审计）</td><td>串联 PoW</td><td>时间戳与共识机制</td><td>缺统一激励与防女巫细节</td>
+      </tr>
+      <tr>
+        <td>RPOW</td><td>部分（硬件信任）</td><td>中</td><td>PoW→可转移凭证</td><td>可信硬件见证</td><td>仍有中心服务器信任</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="controversy compact">
+  <div class="ct-title">争点 · 隐私、合规与抗审查的三角</div>
+  <ol>
+    <li><b>命题</b>：匿名性与反洗钱/KYC 难以共存。</li>
+    <li><b>证据</b>：e-gold 的监管冲突，DigiCash 的商业合作瓶颈。</li>
+    <li><b>反证</b>：可验证凭证、零知识与可审计结构为“可分层的隐私”提供接口。</li>
+    <li><b>小结</b>：问题不是“要不要隐私”，而是“在何处、以何种粒度提供隐私与可审计”。</li>
+  </ol>
+</div>
+
+<h2>章末复盘</h2>
+<div class="recap compact">
+  <div class="card">
+    <strong>要点</strong>
+    <ul class="small">
+      <li>Chaum 的盲签名证明了“可用的匿名支付”，但中心化脆弱。</li>
+      <li>Hashcash 把“稀缺”与“成本”写进计算，成为发行与防滥用的原语。</li>
+      <li>b-money/bit gold/RPOW 提供了去中心记账与可转移工作量的蓝图，但缺统一的激励与全局秩序。</li>
+    </ul>
+  </div>
+  <div class="card">
+    <strong>人物索引</strong>
+    <ul class="small">
+      <li>David Chaum · 盲签名与 DigiCash</li>
+      <li>Douglas Jackson · e-gold</li>
+      <li>Adam Back · Hashcash/PoW</li>
+      <li>Wei Dai · b-money</li>
+      <li>Nick Szabo · bit gold</li>
+      <li>Hal Finney · RPOW</li>
+    </ul>
+  </div>
+</div>
+
+<footer>
+  <p class="small">© 2025 Zino. 保留所有权利。<br>本作品采用知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议（CC BY-NC-ND 4.0）授权。<br><a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh-Hans" target="_blank" rel="noopener">查看许可协议</a></p>
+</footer>
+
+</div>
+</body>
+</html>
