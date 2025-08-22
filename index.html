@@ -3,41 +3,48 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Crypto简史 · 移动阅读（SPA）</title>
+<title>Crypto简史 · 在线阅读</title>
+<meta name="theme-color" content="#0b6efd">
 <style>
 :root{
-  --ink:#1f2937;--muted:#6b7280;--bg:#ffffff;--bg-soft:#f8fafc;--border:#e5e7eb;
+  --ink:#202124;--muted:#5f6368;--bg:#ffffff;--bg-soft:#f6f8fa;--border:#e5e7eb;
   --brand:#0b6efd;--brand2:#8b5cf6;
   --shadow:0 1px 2px rgba(0,0,0,.06),0 10px 30px rgba(0,0,0,.12);
-  --top-offset: 0px;   /* 覆盖在阅读模式下由脚本设置 */
+  --top-offset: 0px;   /* 阅读时脚本计算 */
   --bottom-offset: 56px;
 }
 @media (prefers-color-scheme: dark){
-  :root{--ink:#e5e7eb;--muted:#9aa0a6;--bg:#0b0d12;--bg-soft:#0f1218;--border:#242730;--brand:#4f8cff;--brand2:#a78bfa;}
+  :root{--ink:#e5e7eb;--muted:#9aa0a6;--bg:#0b0d12;--bg-soft:#10131a;--border:#242730;--brand:#4f8cff;--brand2:#a78bfa;}
   body{color-scheme:dark;}
 }
-html,body{
-  margin:0;padding:0;background:var(--bg);color:var(--ink);height:100%;
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);height:100%;
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Noto Sans CJK SC","Source Han Sans SC","Microsoft Yahei",Arial,Helvetica,sans-serif;
-  line-height:1.78; -webkit-tap-highlight-color: transparent;
-}
-/* 滚动容器是 body，本身留出顶/底栏空间 */
+  line-height:1.78; -webkit-tap-highlight-color: transparent;}
+/* body 作为滚动容器，避让顶/底栏 */
 body{padding-top:var(--top-offset); padding-bottom:calc(var(--bottom-offset) + env(safe-area-inset-bottom));}
 *{box-sizing:border-box;}
 button{font:inherit;cursor:pointer;}
 a{color:inherit;text-decoration:none;}
 
-/* ===== Cover（仅按钮） ===== */
-.cover{position:fixed;inset:0;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+/* ===== Earliest-style COVER ===== */
+.cover{position:fixed;inset:0;overflow:hidden;}
 .cover svg{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover;}
-.cover .text{display:none;}
+.cover .text{position:relative;z-index:2;display:flex;flex-direction:column;align-items:flex-start;
+  gap:10px;padding:calc(env(safe-area-inset-top) + 10vh) 6vw 0;}
+.title-cn{font-weight:900;letter-spacing:.3px;line-height:1.1;
+  font-size:clamp(32px,10vw,64px);color:#fff;text-shadow:0 2px 20px rgba(0,0,0,.25);}
+.title-en{font-weight:600;opacity:.95;line-height:1.2;
+  font-size:clamp(14px,3.8vw,22px);color:#f3f4f6;text-shadow:0 2px 20px rgba(0,0,0,.25);}
+.author{margin-top:.4rem;color:#e5e7eb;opacity:.9;font-size:clamp(12px,3.4vw,16px);}
+.tagline{color:#e5e7eb;opacity:.75;font-size:clamp(11px,3.2vw,14px);max-width:80ch;}
 .open{position:absolute;left:50%;transform:translateX(-50%);
-  bottom:calc(env(safe-area-inset-bottom) + 18vh);
-  background:#ffffff;color:#111;border:none;border-radius:14px;padding:16px 20px;
-  box-shadow:var(--shadow);z-index:2;font-weight:700;}
-.open:active{transform:translateX(-50%) scale(.98);}
+  bottom:calc(env(safe-area-inset-bottom) + 14vh);
+  background:#ffffff;color:#111;border:none;border-radius:12px;padding:14px 18px;
+  box-shadow:var(--shadow);z-index:2;}
+.hint-bottom{position:absolute;left:6vw;right:6vw;bottom:calc(env(safe-area-inset-bottom) + 16px);
+  color:#eef2ff;opacity:.75;font-size:.92rem;z-index:2;}
 
-/* ===== Top progress & toolbar ===== */
+/* ===== Reading Chrome ===== */
 #progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--brand),var(--brand2));width:0%;z-index:50;}
 header{position:fixed;top:0;left:0;right:0;z-index:40;background:var(--bg);backdrop-filter:blur(6px);
   border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px;
@@ -48,13 +55,13 @@ header{position:fixed;top:0;left:0;right:0;z-index:40;background:var(--bg);backd
 .btn{appearance:none;border:1px solid var(--border);background:var(--bg-soft);padding:8px 10px;border-radius:10px;color:var(--ink);}
 .btn:active{transform:scale(.98);}
 
-/* ===== Content ===== */
+/* ===== Content area (SPA) ===== */
 #content{min-height:100dvh;}
 #content img, #content video{max-width:100%;height:auto;}
 #content table{width:100%;border-collapse:collapse;}
 #content h1, #content h2, #content h3{scroll-margin-top:calc(var(--top-offset) + 8px);}
 
-/* 关键：强力覆盖章节文件可能存在的卡片/容器样式，使其铺满屏幕 */
+/* 去掉章节里的卡片/固定宽度，保持全屏但留阅读边距 */
 #content, #content *{box-sizing:border-box;}
 #content .page, #content .card, #content .wrap, #content .wrapper, #content .container, 
 #content main, #content article, #content .prose {
@@ -63,16 +70,15 @@ header{position:fixed;top:0;left:0;right:0;z-index:40;background:var(--bg);backd
   border:none !important; background:transparent !important;
   padding-left:min(5vw,20px) !important; padding-right:min(5vw,20px) !important;
 }
-/* 让段落左右不顶边（若章节正文直接放在 body 子元素） */
 #content > *{padding-left:min(5vw,20px); padding-right:min(5vw,20px);}
 
-/* ===== Bottom nav（上一章 | 显/隐工具栏 | 下一章） ===== */
+/* ===== Bottom nav ===== */
 .nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 12px);z-index:45;display:flex;gap:6px;
   background:var(--bg);border:1px solid var(--border);box-shadow:var(--shadow);border-radius:999px;padding:6px;}
 .nav button{border:none;background:transparent;padding:10px 14px;border-radius:999px;color:var(--ink);font-weight:600;}
 .nav button:active{transform:scale(.98);}
 
-/* ===== States ===== */
+/* States: Cover vs Reading */
 .app:not(.open) header,
 .app:not(.open) #nav,
 .app:not(.open) #progress,
@@ -87,7 +93,7 @@ header{position:fixed;top:0;left:0;right:0;z-index:40;background:var(--bg);backd
 <body>
 <div class="app" id="app">
 
-  <!-- Cover -->
+  <!-- COVER -->
   <section class="cover" id="cover" aria-label="书籍封面">
     <svg viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
       <defs>
@@ -112,11 +118,17 @@ header{position:fixed;top:0;left:0;right:0;z-index:40;background:var(--bg);backd
         <ellipse cx="520" cy="360" rx="120" ry="60" stroke="rgba(255,255,255,.18)"/>
       </g>
     </svg>
-    <div class="text"></div>
-    <button class="open" id="openBtn">开始阅读</button>
+    <div class="text">
+      <div class="title-cn">Crypto简史</div>
+      <div class="title-en">A Brief History of Crypto</div>
+      <div class="author">Zino · 2025</div>
+      <div class="tagline">经历了比特币从 0 到 100 个，最后全被盗；痛定思痛重回币圈。</div>
+    </div>
+    <button class="open" id="openBtn">翻开阅读</button>
+    <div class="hint-bottom">轻点“翻开阅读”进入目录；再次打开会从上次阅读位置继续。</div>
   </section>
 
-  <!-- Progress Bar & Toolbar -->
+  <!-- Reading chrome -->
   <div id="progress"></div>
   <header id="topbar">
     <div style="display:flex;align-items:center;gap:8px;">
@@ -129,31 +141,31 @@ header{position:fixed;top:0;left:0;right:0;z-index:40;background:var(--bg);backd
     </div>
   </header>
 
-  <!-- Content -->
   <main id="content" aria-live="polite"></main>
 
-  <!-- Bottom nav -->
   <div class="nav" id="nav">
     <button id="prevBtn">上一章</button>
     <button id="chromeToggle">隐藏工具栏</button>
     <button id="nextBtn">下一章</button>
   </div>
 
-  <!-- Overlays -->
-  <div class="toc" id="toc" style="display:none;">
+  <!-- TOC -->
+  <div class="toc" id="toc" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.35); backdrop-filter:blur(2px); z-index:60;">
     <div class="toc-panel" role="dialog" aria-modal="true" aria-label="目录面板" style="position:absolute;top:0;left:0;height:100%;width:min(92%,380px);background:var(--bg);border-right:1px solid var(--border);box-shadow:var(--shadow);padding:10px 12px;overflow:auto;">
       <h2 style="margin:.5rem 0 .5rem 6px;font-size:1rem;color:var(--muted);">章节目录</h2>
       <ol id="tocList" style="list-style:none;margin:0;padding:0;"></ol>
     </div>
   </div>
-  <div class="bookmarks" id="bm" style="display:none;">
+
+  <!-- BOOKMARKS -->
+  <div class="bookmarks" id="bm" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.35); backdrop-filter:blur(2px); z-index:60;">
     <div class="bm-panel" role="dialog" aria-modal="true" aria-label="书签面板" style="position:absolute;right:0;top:0;height:100%;width:min(92%,380px);background:var(--bg);border-left:1px solid var(--border);box-shadow:var(--shadow);padding:10px 12px;overflow:auto;">
       <h2 style="margin:.5rem 0 .5rem 6px;font-size:1rem;color:var(--muted);">书签</h2>
       <ul class="bm-list" id="bmList" style="list-style:none;margin:0;padding:0;"></ul>
     </div>
   </div>
 
-  <!-- Hidden loader iframe -->
+  <!-- hidden loader for file:// fallback -->
   <iframe id="loader" style="position:absolute;width:0;height:0;border:0;clip:rect(0,0,0,0);"></iframe>
 
 </div>
@@ -207,7 +219,6 @@ header{position:fixed;top:0;left:0;right:0;z-index:40;background:var(--bg);backd
       }).then(function(html){ ok(html); }).catch(function(err){ fail(err); });
     } catch(e){ fail(e); }
   }
-
   function iframeLoad(url, ok, fail){
     try {
       $loader.onload = function(){
@@ -220,7 +231,6 @@ header{position:fixed;top:0;left:0;right:0;z-index:40;background:var(--bg);backd
       $loader.src = url + '?t=' + Date.now();
     } catch(e){ fail(e); }
   }
-
   function extractBodyHTML(raw){
     try{
       var m = raw.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
@@ -228,9 +238,15 @@ header{position:fixed;top:0;left:0;right:0;z-index:40;background:var(--bg);backd
     }catch(e){}
     return raw;
   }
-
+  function sanitize(inner){
+    // Remove <script> and <style> to avoid hostile/global overrides; keep structural HTML.
+    inner = inner.replace(/<script[\s\S]*?<\/script>/gi, '');
+    inner = inner.replace(/<style[\s\S]*?<\/style>/gi, '');
+    // Optional: strip body-level class wrappers
+    return inner;
+  }
   function insertChapterHTML(inner){
-    $content.innerHTML = inner;
+    $content.innerHTML = sanitize(inner);
     syncChromeLayout();
     var stored = null;
     try{ stored = JSON.parse(localStorage.getItem('bhoc_last') || 'null'); }catch(e){ stored = null; }
@@ -242,23 +258,18 @@ header{position:fixed;top:0;left:0;right:0;z-index:40;background:var(--bg);backd
       updateProgress();
     }, 60);
   }
-
   function loadChapter(i, pushHash){
     state.idx = i;
     var url = 'chapters/' + CHAPTERS[i].file;
     $chapterBadge.textContent = CHAPTERS[i].title;
     if (pushHash){ try{ history.replaceState(null, '', '#/' + encodeURIComponent(CHAPTERS[i].file)); }catch(e){} }
-
     setProgress(0.02);
-    tryFetch(url, function(html){
-      insertChapterHTML(extractBodyHTML(html));
-    }, function(){
+    tryFetch(url, function(html){ insertChapterHTML(extractBodyHTML(html)); }, function(){
       iframeLoad(url, function(html){ insertChapterHTML(extractBodyHTML(html)); }, function(){
-        $content.innerHTML = '<p style="padding:16px;color:#d14343;">无法加载章节：'+ CHAPTERS[i].title +'。请在 Safari 浏览器中打开或检查文件路径。</p>';
+        $content.innerHTML = '<p style="padding:16px;color:#d14343;">无法加载章节：'+ CHAPTERS[i].title +'。请检查文件路径或网络。</p>';
       });
     });
   }
-
   function updateProgress(){
     var el = document.scrollingElement || document.documentElement;
     var max = Math.max(1, el.scrollHeight - el.clientHeight);
@@ -268,6 +279,7 @@ header{position:fixed;top:0;left:0;right:0;z-index:40;background:var(--bg);backd
     try { localStorage.setItem('bhoc_last', JSON.stringify({idx: state.idx, ratio: state.ratio, file: CHAPTERS[state.idx].file, t: Date.now()})); }catch(e){}
   }
 
+  // Events
   window.addEventListener('scroll', function(){ updateProgress(); }, {passive:true});
   window.addEventListener('resize', function(){ syncChromeLayout(); });
   document.getElementById('prevBtn').onclick = function(){ if (state.idx>0) loadChapter(state.idx-1, true); };
@@ -277,7 +289,7 @@ header{position:fixed;top:0;left:0;right:0;z-index:40;background:var(--bg);backd
     document.getElementById('chromeToggle').textContent = hidden ? '显示工具栏' : '隐藏工具栏';
     syncChromeLayout();
   };
-  document.getElementById('tocBtn').onclick = function(){ $toc.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.35);backdrop-filter:blur(2px);display:block;z-index:60;'; };
+  document.getElementById('tocBtn').onclick = function(){ $toc.style.display='block'; };
   $toc.onclick = function(e){ if (e.target === $toc) $toc.style.display='none'; };
 
   document.getElementById('bmAddBtn').onclick = function(){
@@ -304,14 +316,13 @@ header{position:fixed;top:0;left:0;right:0;z-index:40;background:var(--bg);backd
         actions.appendChild(go); actions.appendChild(del); li.appendChild(actions); $bmList.appendChild(li);
       })(idx);
     }
-    $bm.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.35);backdrop-filter:blur(2px);display:block;z-index:60;';
+    $bm.style.display='block';
   };
   $bm.onclick = function(e){ if (e.target === $bm) $bm.style.display='none'; };
 
   function startReading(){
     $app.classList.add('open');
-    renderTOC();
-    syncChromeLayout();
+    renderTOC(); syncChromeLayout();
     var slug = decodeURIComponent(location.hash.replace(/^#\/?/, ''));
     var stored = null;
     try{ stored = JSON.parse(localStorage.getItem('bhoc_last') || 'null'); }catch(e){ stored = null; }
@@ -321,7 +332,6 @@ header{position:fixed;top:0;left:0;right:0;z-index:40;background:var(--bg);backd
     if (stored && stored.idx < CHAPTERS.length){ loadChapter(stored.idx, true); return; }
     loadChapter(0, true);
   }
-
   document.getElementById('openBtn').onclick = startReading;
   if (location.hash) { startReading(); }
 </script>
