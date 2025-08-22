@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>第一编 · 第2章 · 赛博空间的政治</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+
+:root{
+  --ink:#202124;--muted:#5f6368;--accent:#0b6efd;--accent-2:#8b5cf6;--bg:#ffffff;--card:#f6f8fa;--warn:#b42318;
+  --shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.1);
+}
+html,body{background:var(--bg);color:var(--ink);margin:0;padding:0;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Noto Sans CJK SC","Source Han Sans SC","Microsoft Yahei",Arial,Helvetica,sans-serif;
+  line-height:1.78;}
+.container{max-width:860px;margin:48px auto 120px;padding:0 20px;}
+h1,h2,h3{line-height:1.28;margin:1.2em 0 .6em;}
+h1{font-size:2rem;letter-spacing:.01em;}
+h2{font-size:1.5rem;border-bottom:2px solid #eee;padding-bottom:.25rem;}
+h3{font-size:1.12rem;color:var(--muted);}
+.subtitle{color:var(--muted);}
+.small{font-size:.95rem;color:var(--muted);}
+ul,ol{padding-left:1.2rem;}
+.sidebar{background:#fbfbff;border:1px solid #e6e8ff;border-left:5px solid var(--accent-2);
+  border-radius:10px;padding:10px 12px 10px 14px;box-shadow:var(--shadow);margin:12px 0;}
+.sidebar .sb-title{font-weight:700;color:#4f46e5;margin-bottom:.2rem;font-size:1.02rem;}
+.sidebar .sb-list,.sidebar .sb-metrics{padding-left:1.0rem;margin:.1rem 0;}
+.timeline-card{border-left-color:#8b5cf6;}
+.compare-card{border-left-color:#0ea5e9;}
+.controversy{border:1px solid #fde2e1;background:#fff5f5;border-left:5px solid var(--warn);
+  border-radius:10px;padding:10px 12px 10px 14px;box-shadow:var(--shadow);margin:12px 0;}
+.controversy .ct-title{font-weight:800;color:var(--warn);margin-bottom:.2rem;font-size:1.02rem;}
+.recap{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:10px;}
+.card{background:#ffffff;border:1px solid #e5e7eb;border-radius:10px;padding:10px 12px;box-shadow:var(--shadow);}
+/* inline person card + concept card */
+.inline-card{border:1px solid #e5e7eb;border-left:4px solid #6366f1;background:#ffffff;border-radius:10px;
+  padding:8px 10px;margin:8px 0 12px 0;box-shadow:var(--shadow);}
+.inline-card .ic-title{font-weight:700;margin-bottom:.2rem;font-size:1.0rem;}
+.inline-card.person{border-left-color:#6366f1;}
+.concept{border:1px dashed #c7d2fe;background:#f8fafc;border-radius:10px;padding:10px 12px;margin:10px 0 14px 0;}
+.concept .cp-title{font-weight:700;color:#4f46e5;margin-bottom:.2rem;}
+.concept .cp-analogy{margin-top:.2rem;color:#5f6368;font-style:italic;}
+table{border-collapse:collapse;width:100%;font-size:.96rem;}
+th,td{border:1px solid #e5e7eb;padding:6px 8px;vertical-align:top;}
+th{background:#f8fafc;text-align:left;}
+
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>第2章 赛博空间的政治 <span class="subtitle">（第一编（1970s–2008）观念与技术的源流）</span></h1>
+  <p class="small">作者：Zino ｜ 2025年著</p>
+</header>
+
+<h2>1987–1992：Cypherpunk 的开端</h2>
+<p>冷战尾声与个人计算崛起的交汇处，一群工程师与理想主义者把密码学从军工体制“搬回民间”。<strong>John Gilmore</strong> 等人在 1990 年创立电子前沿基金会（EFF），为网络自由提供法律与舆论支持；1992 年，<strong>Eric Hughes</strong>、<strong>Timothy C. May</strong> 与 <strong>John Gilmore</strong> 发起 <strong>Cypherpunks 邮件列表</strong>，主张“用代码实现政治”。“Cypherpunk”一词常被追溯到黑客与作家社群，<strong>Jude Milhon</strong> 被广泛认为推动了该称谓的流行。</p>
+<div class="inline-card person">
+  <div class="ic-title">人物卡 · John Gilmore / Jude Milhon</div>
+  <div class="ic-body">Gilmore：EFF 共同创办人、开放网络与开源倡导者；Milhon（St. Jude）：黑客/作家，被认为推动“Cypherpunk”一词的传播与精神。</div>
+</div>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · Cypherpunk</div>
+  <div class="cp-body">以开源加密工具与分布式系统捍卫个体自由与隐私的实践者社群，强调“代码即言论”。</div>
+  <div class="cp-analogy">像把“人权条文”写进协议与客户端：不是请愿，而是上线一个人人可用的工具。</div>
+</div>
+
+<h2>1991–1994：PGP 的扩散与出口争议</h2>
+<p><strong>Phil Zimmermann</strong> 1991 年发布 <strong>PGP</strong>；随着国际用户与镜像站点出现，涉及美国当时的加密出口限制。1993–1996 年间，执法机关对其开展长期调查，舆论聚焦“把代码当军火是否合理”。为抗衡“电子文件不可出口”的逻辑，社群采用“<strong>书籍可出口、软盘不可出口</strong>”的漏洞策略，将 PGP 源码印成书在海外重录，凸显管制的不合时宜。</p>
+<div class="inline-card person">
+  <div class="ic-title">人物卡 · Phil Zimmermann</div>
+  <div class="ic-body">PGP 作者；推动“人人可用的强加密”。发布引发“加密是否等同军火”的法律争论。</div>
+</div>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · 出口管制</div>
+  <div class="cp-body">把强加密视作军民两用，跨境输出需许可。</div>
+  <div class="cp-analogy">高强度锁具被当作战略物资——出口审批也会连带拖累民用安全。</div>
+</div>
+
+<h2>1993：隐私宣言与网络自由的基调</h2>
+<p>湾区聚会上，<strong>Eric Hughes</strong> 朗读《A Cypherpunk's Manifesto》：“隐私是选择性揭示。”宣言把加密工具与政治权利直接相连，给随后十年的公共辩论定下基调。</p>
+<div class="inline-card person">
+  <div class="ic-title">人物卡 · Eric Hughes</div>
+  <div class="ic-body">Cypherpunks 共同发起人；主张用开源加密捍卫个体自由。</div>
+</div>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · 赛博空间</div>
+  <div class="cp-body">人类通过网络连接形成的交互空间，既非纯物理也非纯虚构，却有真实的规则与权力。</div>
+  <div class="cp-analogy">城市不是楼房总和，而是“交通+法规+商业+人群”的生态；赛博空间亦然。</div>
+</div>
+
+<h2>1993–1995：匿名重邮与混淆网络</h2>
+<p>为保护言论的来源隐私，<strong>Eric Hughes</strong> 与 <strong>Hal Finney</strong> 实作“<strong>Cypherpunk remailer</strong>”，让邮件经由多跳节点与公钥加密转发，难以追踪真实发送者。其后 <strong>Lance Cottrell</strong> 提出 <strong>Mixmaster</strong>，用固定大小的消息包与批处理策略进一步抵抗流量分析。</p>
+<div class="inline-card person">
+  <div class="ic-title">人物卡 · Hal Finney / Lance Cottrell</div>
+  <div class="ic-body">Finney：PGP 贡献者、remailer 开发者；Cottrell：Mixmaster 作者，改进匿名邮件的抗分析能力。</div>
+</div>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · Remailer / Mix-net</div>
+  <div class="cp-body">把消息打散、加密、混洗后再发出，观察者难以把入口与出口对应起来。</div>
+  <div class="cp-analogy">把来信装进同色信封丢进转运箱，等到凑够一批再随机混合派送，旁观者只看到“箱子进出”，却对应不上每一封。</div>
+</div>
+
+<h2>1993–1996：密钥托管冲突与网络主权之辩</h2>
+<p>政府推动 <strong>Clipper Chip</strong> 与 <strong>密钥托管（Key Escrow）</strong>，试图在设备里保留“万能备用钥匙”；<strong>John Perry Barlow</strong> 撰写《赛博空间独立宣言》（1996），强调网络自治。</p>
+<div class="inline-card person">
+  <div class="ic-title">人物卡 · John Perry Barlow</div>
+  <div class="ic-body">作家、EFF 共同创办人；《赛博空间独立宣言》作者，反对以地理主权治理网络。</div>
+</div>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · 密钥托管</div>
+  <div class="cp-body">把用户密钥备份在“可信机构”，在合法授权下可解密。</div>
+  <div class="cp-analogy">把家门钥匙交给物业，承诺只有法院命令才开门——风险在于滥用或失窃。</div>
+</div>
+
+<h2>1996–2000：Reno v. ACLU 与出口管制松动</h2>
+<p>美国 <strong>CDA</strong>（1996）限制“猥亵/不适宜未成年人”的在线内容，<strong>Reno v. ACLU</strong>（1997）中最高法院裁定关键条款违宪，确立互联网言论的高强度保护；同阶段，以 <strong>Bernstein</strong> 与 <strong>Junger</strong> 等案为代表的司法路径，推动强加密出口逐步放宽并确立“代码即言论”。</p>
+
+<h3>Reno v. ACLU（1997）要点</h3>
+<ul>
+  <li><b>互联网受第一修正案的充分保护</b>：法院将互联网比作“广大的民主论坛”。</li>
+  <li><b>不得以保护未成年人为由普遍降低成年人可获取的信息水平</b>：避免把全网降格为“适合儿童”的标准。</li>
+  <li><b>过于模糊与过度宽泛</b>：CDA 关键术语难以清晰界定，寒蝉效应明显。</li>
+  <li><b>存在更少限制的手段</b>：如家长控制/过滤工具，而非全面刑事化。</li>
+</ul>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · 严格审查（Strict Scrutiny）</div>
+  <div class="cp-body">对内容为基础的言论限制，政府须证明“达到迫切利益且以最少限制手段实现”。</div>
+  <div class="cp-analogy">像开外科手术：目标明确且切口尽量小；切得更大就属过度。</div>
+</div>
+
+<h3>Bernstein / Junger：代码是言论</h3>
+<p><strong>Bernstein v. DOJ</strong>（1995–1999）在第九巡回确立加密源码受第一修正案保护；<strong>Junger v. Daley</strong>（2000，第六巡回）再次确认“源代码具有表达性”。两案与产业实践共同促成 1999–2000 年美国对民用加密出口的放宽。</p>
+<div class="inline-card person">
+  <div class="ic-title">人物卡 · Daniel J. Bernstein / Peter Junger</div>
+  <div class="ic-body">Bernstein：数学家，其案为“代码即言论”树立里程碑；Junger：法学教授，在第六巡回赢得源代码受保护的判决。</div>
+</div>
+
+<h2>1998：DMCA §1201 的反规避之网</h2>
+<p><strong>DMCA 1201</strong> 确立“反规避”与“反规避工具”条款：即便最终用途可能是合理使用，只要绕过技术保护措施（DRM）或传播相关工具，就可能构成侵权；这引发安全研究、加密工具、学术出版与新闻报道领域的争议。</p>
+
+<h3>DMCA 1201 争议点</h3>
+<ul>
+  <li><b>反规避即独立侵权</b>：不以直接版权侵权为要件，可能压制合理使用与互操作性。</li>
+  <li><b>对安全研究的寒蝉效应</b>：公开漏洞细节与 PoC 工具可能被指为“规避工具”。</li>
+  <li><b>言论自由冲突</b>：当“代码是言论”时，发布技术分析/工具会触及 1201 的边界。</li>
+  <li><b>豁免周期制</b>：由图书馆馆长每三年审议有限豁免，滞后于技术实践。</li>
+</ul>
+
+<h3>案例切片：DeCSS 与 Reimerdes（2000）</h3>
+<p>电影公司起诉网站与杂志发布或链接 <strong>DeCSS</strong>（DVD 解密程序），法院援引 1201 作出禁令，显示“<strong>链接/传播代码</strong>”也可能触犯反规避条款，引发新闻与科研社群的广泛担忧。</p>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · 合理使用（Fair Use）</div>
+  <div class="cp-body">在特定情形下以批评、研究、教学等目的有限引用受保护作品的权利。</div>
+  <div class="cp-analogy">图书馆里做读书笔记：引用几段分析无妨，但不能复印整本出售。</div>
+</div>
+
+<h2>1997：列表迁移与自治实验</h2>
+<p>为应对垃圾邮件与规模问题，Cypherpunks 邮件列表在 1997 年经历分歧与迁移，部分成员转向 <strong>alt.cypherpunks</strong> 与分布式列表。事件本身成为一次“<strong>去中心化治理</strong>”的实践：反对单点依赖、支持多入口与桥接机制。</p>
+
+<h2>2001–2008：安全叙事回潮与抗审查基础设施</h2>
+<p>“9·11”后 <strong>Patriot Act</strong> 扩权，平台与内容管控上升；同时，<strong>Tor</strong> 等抗审查基础设施成熟，使“访问与发布”不再依赖中心入口。临近 2008 年金融危机，社会对“中心化信任与权力”的质疑加深，为无需许可、抗审查的价值网络埋下伏笔。</p>
+<div class="inline-card person">
+  <div class="ic-title">人物卡 · Tor 项目团队</div>
+  <div class="ic-body">研究者与志愿者共建的洋葱路由网络；流量分层与中继隐藏来源与去向，提升匿名与抗审查。</div>
+</div>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · 抗审查</div>
+  <div class="cp-body">在存在封锁者时，仍能稳定传播信息的能力。</div>
+  <div class="cp-analogy">把水分流成无数细小暗渠，单点封堵不再致命。</div>
+</div>
+
+<h2>关键时间线</h2>
+<div class="sidebar timeline-card">
+  <div class="sb-title">法案与判例（1990–2008）</div>
+  <ul class="sb-list">
+    <li>1990：EFF 成立</li>
+    <li>1991：PGP 发布</li>
+    <li>1992：Cypherpunks 邮件列表发起</li>
+    <li>1993：Clipper Chip/密钥托管提出；Hughes《宣言》</li>
+    <li>1995：Mixmaster 萌芽；1995–1999 Bernstein 系列诉讼</li>
+    <li>1997：Reno v. ACLU；列表迁移至 alt.cypherpunks 等渠道</li>
+    <li>1998：DMCA 第 1201 条反规避</li>
+    <li>1999–2000：Junger 案；美国放宽加密出口</li>
+    <li>2001：Patriot Act</li>
+    <li>2003：Tor 面向公众</li>
+  </ul>
+</div>
+
+<div class="sidebar compare-card">
+  <div class="sb-title">对照表 · 判例/法案与实际影响</div>
+  <table>
+    <thead>
+      <tr><th>事件</th><th>要点/争议</th><th>对加密与网络的影响</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Reno v. ACLU（1997）</td>
+        <td>互联网获高强度言论保护；不得把成年人信息降格到“适合儿童”标准；CDA 模糊/过宽。</td>
+        <td>奠定“网络=言论自由核心场域”的基调，支持开源加密与抗审查理念的正当性。</td>
+      </tr>
+      <tr>
+        <td>DMCA §1201（1998）</td>
+        <td>反规避与工具禁令；即使非直接侵权也可能违法；三年期豁免滞后；<b>Reimerdes</b> 显示“链接/传播代码”风险。</td>
+        <td>对安全研究与加密工具扩散形成约束；学界/公民组织以“豁免+判例”争取空间。</td>
+      </tr>
+      <tr>
+        <td>Bernstein / Junger（1995–2000）</td>
+        <td>源码属言论；出口规制放宽。</td>
+        <td>强加密在民用产品中全球化扩散，奠定 HTTPS/电商与隐私工具普及。</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="controversy compact">
+  <div class="ct-title">争点 · “国家安全 vs 个人自由”是零和吗？</div>
+  <ol>
+    <li><b>命题</b>：强隐私让执法“看不见”。</li>
+    <li><b>证据</b>：9·11 后法律扩权与平台配合。</li>
+    <li><b>反证</b>：端到端加密与选择性披露、透明审计可兼顾部分需求。</li>
+    <li><b>小结</b>：问题在接口与程序正义，而非把“加密”当敌人。</li>
+  </ol>
+</div>
+
+<h2>章末复盘</h2>
+<div class="recap compact">
+  <div class="card">
+    <strong>要点</strong>
+    <ul class="small">
+      <li>Cypherpunk 把“隐私权”转译为“可用工具与协议”，并在 remailer 等实践中检验去中心治理。</li>
+      <li>Reno v. ACLU 确立互联网言论的高保护标准。</li>
+      <li>Bernstein/Junger 促成“代码即言论”与出口放宽。</li>
+      <li>DMCA 1201 与 Reimerdes 显示反规避条款与言论/研究的长期张力。</li>
+    </ul>
+  </div>
+  <div class="card">
+    <strong>人物索引</strong>
+    <ul class="small">
+      <li>Hughes/May/Gilmore/Milhon · Cypherpunk 起源</li>
+      <li>Zimmermann · PGP 与出口争议</li>
+      <li>Finney/Cottrell · remailer 与 Mixmaster</li>
+      <li>Bernstein/Junger · 代码即言论</li>
+      <li>Barlow · 网络独立宣言</li>
+      <li>Tor 团队 · 抗审查基础设施</li>
+    </ul>
+  </div>
+</div>
+
+<footer>
+  <p class="small">© 2025 Zino. 保留所有权利。<br>本作品采用知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议（CC BY-NC-ND 4.0）授权。<br><a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh-Hans" target="_blank" rel="noopener">查看许可协议</a></p>
+</footer>
+
+</div>
+</body>
+</html>
