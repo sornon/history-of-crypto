@@ -28,7 +28,7 @@ function renderList(groups) {
     for (const it of items) {
       const li = document.createElement('div');
       li.className = 'chapter-item-shell';
-      li.innerHTML = `<a href="#read?file=${encodeURIComponent(it.file)}&title=${encodeURIComponent(it.title)}">${it.title.replace(/^第一编_/,'')}</a><small>· 版本 ${VERSION_DATE}</small>`;
+      li.innerHTML = `<a href="#read?file=${encodeURIComponent(it.file)}&title=${encodeURIComponent(it.title)}">${it.title.replace(/^第一编_/,'')}</a>`;
       listEl.appendChild(li);
     }
   }
