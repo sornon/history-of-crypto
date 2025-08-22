@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Crypto简史 · 封面阅读</title>
+<style>
+:root{
+  --ink:#202124;--muted:#5f6368;--bg:#ffffff;--bg-soft:#f6f8fa;--border:#e5e7eb;
+  --brand:#0b6efd;--brand2:#8b5cf6;--accent:#16a34a;
+  --shadow:0 1px 2px rgba(0,0,0,.06),0 10px 30px rgba(0,0,0,.12);
+  --top-offset: 56px;
+}
+@media (prefers-color-scheme: dark){
+  :root{--ink:#e5e7eb;--muted:#9aa0a6;--bg:#0b0d12;--bg-soft:#12141a;--border:#242730;--brand:#4f8cff;--brand2:#a78bfa;}
+  body{color-scheme:dark;}
+}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+  height:100%; /* ensure full-viewport sizing cascades */
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Noto Sans CJK SC","Source Han Sans SC","Microsoft Yahei",Arial,Helvetica,sans-serif;
+  line-height:1.78; -webkit-tap-highlight-color: transparent;}
+button{font:inherit;cursor:pointer;}
+a{color:inherit;text-decoration:none;}
+
+.app{position:relative;min-height:100dvh;width:100%;}
+
+/* COVER fullscreen */
+.cover{position:relative;min-height:100dvh;overflow:hidden;}
+.cover svg{position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;display:block;object-fit:cover;}
+.cover .text{position:relative;z-index:2;display:flex;flex-direction:column;align-items:flex-start;
+  gap:8px;padding:calc(env(safe-area-inset-top) + 9vh) 6vw 0;}
+.title-cn{font-weight:900;letter-spacing:.3px;line-height:1.1;
+  font-size:clamp(34px,10vw,66px);color:#fff;text-shadow:0 2px 20px rgba(0,0,0,.25);}
+.title-en{font-weight:600;opacity:.95;line-height:1.2;
+  font-size:clamp(14px,3.8vw,22px);color:#f3f4f6;text-shadow:0 2px 20px rgba(0,0,0,.25);}
+.author{margin-top:.4rem;color:#e5e7eb;opacity:.9;font-size:clamp(12px,3.4vw,16px);}
+.tagline{color:#e5e7eb;opacity:.75;font-size:clamp(11px,3.2vw,14px);max-width:80ch;}
+
+.open{position:absolute;left:50%;transform:translateX(-50%);
+  bottom:calc(env(safe-area-inset-bottom) + 20vh);
+  background:#ffffff;color:#111;border:none;border-radius:12px;padding:14px 18px;
+  box-shadow:var(--shadow);z-index:2;}
+
+/* READER FULLSCREEN */
+.page{position:relative;display:none;min-height:100dvh;}
+.app.open .cover{display:none;}
+.app.open .page{display:block;}
+
+header{position:fixed;top:0;left:0;right:0;z-index:20;background:var(--bg);backdrop-filter:blur(6px);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;transition:transform .2s ease, opacity .2s ease;}
+.brand{font-weight:800;letter-spacing:.3px;}
+.brand small{color:var(--muted);}
+.controls{display:flex;gap:8px;align-items:center;}
+.btn{appearance:none;border:1px solid var(--border);background:var(--bg-soft);padding:8px 10px;border-radius:10px;color:var(--ink);}
+.btn:active{transform:scale(.98);}
+.progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--brand),var(--brand2));width:0%;z-index:30;}
+
+/* Key: full-screen reader layer with top padding matching header */
+.reader{
+  position:fixed; 
+  top:0; left:0; right:0; bottom:0;
+  padding-top:var(--top-offset);
+  background:var(--bg);
+  overflow:hidden;
+}
+/* Fill the reader box exactly */
+iframe#frame{
+  position:absolute; 
+  top:var(--top-offset); left:0; right:0; bottom:0; /* fallback if padding ignored */
+  width:100%; height:calc(100% - var(--top-offset));
+  border:0; display:block; background:var(--bg);
+}
+
+/* Hide chrome mode */
+#chromeHandle{position:fixed;top:8px;right:8px;z-index:40;background:rgba(0,0,0,.5);color:#fff;border:none;border-radius:999px;padding:8px 10px;font-size:.9rem;display:none;}
+.app.chrome-hidden header{transform:translateY(-100%);opacity:0;pointer-events:none;}
+.app.chrome-hidden .nav{transform:translate(-50%, 140%);opacity:0;pointer-events:none;}
+.app.chrome-hidden #chromeHandle{display:block;}
+.app.chrome-hidden{--top-offset: 0px;}
+.app.chrome-hidden iframe#frame{top:0;height:100%;}
+
+/* TOC PANEL */
+.toc{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.35);backdrop-filter:blur(2px);display:none;z-index:25;}
+.toc.open{display:block;}
+.toc-panel{position:absolute;top:0;left:0;height:100%;width:min(92%,380px);background:var(--bg);border-right:1px solid var(--border);box-shadow:var(--shadow);padding:10px 12px;overflow:auto;}
+.toc h2{margin:.5rem 0 .5rem 6px;font-size:1rem;color:var(--muted);}
+.toc ol{list-style:none;margin:0;padding:0;}
+.toc li{border:1px solid var(--border);background:var(--bg-soft);border-radius:10px;margin:8px 6px;padding:8px 10px;cursor:pointer;}
+.toc .part{font-weight:700;margin-bottom:2px;}
+.toc .title{font-size:.98rem;}
+
+/* BOOKMARKS */
+.bookmarks{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.35);backdrop-filter:blur(2px);display:none;z-index:26;}
+.bookmarks.open{display:block;}
+.bm-panel{position:absolute;right:0;top:0;height:100%;width:min(92%,380px);background:var(--bg);border-left:1px solid var(--border);box-shadow:var(--shadow);padding:10px 12px;overflow:auto;}
+.bm-panel h2{margin:.5rem 0 .5rem 6px;font-size:1rem;color:var(--muted);}
+.bm-list{list-style:none;margin:0;padding:0;}
+.bm-item{border:1px dashed var(--border);border-radius:10px;margin:8px 6px;padding:8px 10px;}
+.bm-item small{color:var(--muted);}
+.bm-actions{display:flex;gap:8px;margin-top:6px;}
+
+/* NAV (overlay) */
+.nav{display:flex;gap:8px;position:fixed;bottom:12px;left:50%;transform:translateX(-50%);background:var(--bg);border:1px solid var(--border);box-shadow:var(--shadow);border-radius:999px;padding:8px;z-index:22;transition:transform .2s ease, opacity .2s ease;}
+.nav button{border:none;background:transparent;padding:8px 12px;border-radius:999px;color:var(--ink);}
+.nav button.active{background:var(--bg-soft);}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<div class="app" id="app">
+
+  <!-- COVER -->
+  <section class="cover" id="cover" aria-label="书籍封面">
+    <svg viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs>
+        <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#0b6efd"/>
+          <stop offset="100%" stop-color="#8b5cf6"/>
+        </linearGradient>
+        <radialGradient id="glow" cx="70%" cy="30%" r="70%">
+          <stop offset="0%" stop-color="rgba(255,255,255,.75)"/>
+          <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+        </radialGradient>
+        <pattern id="grid" width="42" height="42" patternUnits="userSpaceOnUse">
+          <path d="M 42 0 L 0 0 0 42" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="1"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#g1)"/>
+      <rect width="100%" height="100%" fill="url(#grid)"/>
+      <circle cx="740" cy="180" r="260" fill="url(#glow)"/>
+      <g stroke="rgba(255,255,255,.45)" fill="none" stroke-width="1.2">
+        <ellipse cx="520" cy="360" rx="360" ry="180"/>
+        <ellipse cx="520" cy="360" rx="240" ry="120" stroke="rgba(255,255,255,.3)"/>
+        <ellipse cx="520" cy="360" rx="120" ry="60" stroke="rgba(255,255,255,.18)"/>
+      </g>
+    </svg>
+    <div class="text">
+      <div class="title-cn">Crypto简史</div>
+      <div class="title-en">A Brief History of Crypto</div>
+      <div class="author">Zino · 2025</div>
+      <div class="tagline">经历了比特币从 0 到 100 个，最后全被盗；痛定思痛重回币圈。</div>
+    </div>
+    <button class="open" id="openBtn">翻开阅读</button>
+  </section>
+
+  <!-- READER PAGE -->
+  <section class="page" id="page">
+    <header id="topbar">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button class="btn" id="tocBtn">目录</button>
+        <div class="brand">Crypto简史 <small id="chapterBadge"></small></div>
+      </div>
+      <div class="controls">
+        <button class="btn" id="bmAddBtn">加书签</button>
+        <button class="btn" id="bmListBtn">书签</button>
+        <button class="btn" id="chromeToggle">隐藏工具栏</button>
+      </div>
+    </header>
+    <div class="reader"><iframe id="frame" src=""></iframe></div>
+    <div class="nav">
+      <button id="prevBtn">上一章</button>
+      <button id="nextBtn">下一章</button>
+    </div>
+    <button id="chromeHandle" title="显示工具栏">显示工具栏</button>
+  </section>
+
+  <!-- TOC OVERLAY -->
+  <div class="toc" id="toc">
+    <div class="toc-panel" role="dialog" aria-modal="true" aria-label="目录面板">
+      <h2>章节目录</h2>
+      <ol id="tocList"></ol>
+    </div>
+  </div>
+
+  <!-- BOOKMARKS OVERLAY -->
+  <div class="bookmarks" id="bm">
+    <div class="bm-panel" role="dialog" aria-modal="true" aria-label="书签面板">
+      <h2>书签</h2>
+      <ul class="bm-list" id="bmList"></ul>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  var CHAPTERS = [{"part": "第一编（1970s–2008）观念与技术的源流", "title": "第1章 密码学奠基", "file": "第一编_第1章_密码学奠基.html"}, {"part": "第一编（1970s–2008）观念与技术的源流", "title": "第2章 赛博空间的政治", "file": "第一编_第2章_赛博空间的政治.html"}, {"part": "第一编（1970s–2008）观念与技术的源流", "title": "第3章 电子现金先驱", "file": "第一编_第3章_电子现金先驱.html"}, {"part": "第一编（1970s–2008）观念与技术的源流", "title": "第4章 未竟之业：共识、容错与激励的三角困境", "file": "第一编_第4章_未竟之业.html"}];
+  var state = { idx: 0, ratio: 0 };
+
+  var $app = document.getElementById('app');
+  var $openBtn = document.getElementById('openBtn');
+  var $frame = document.getElementById('frame');
+  var $toc = document.getElementById('toc');
+  var $tocList = document.getElementById('tocList');
+  var $bm = document.getElementById('bm');
+  var $bmList = document.getElementById('bmList');
+  var $chapterBadge = document.getElementById('chapterBadge');
+  var $progress = document.getElementById('progress');
+  var $topbar = document.getElementById('topbar');
+  var $chromeToggle = document.getElementById('chromeToggle');
+  var $chromeHandle = document.getElementById('chromeHandle');
+
+  function syncChromeLayout(){
+    // set --top-offset to header height unless hidden
+    var h = 0;
+    if (!$app.classList.contains('chrome-hidden')){
+      h = $topbar.getBoundingClientRect().height || 56;
+    }
+    document.documentElement.style.setProperty('--top-offset', h + 'px');
+  }
+
+  function setProgress(pct){
+    var p = Math.max(0, Math.min(1, pct));
+    $progress.style.width = (p * 100) + '%';
+  }
+
+  function openBook(){
+    $app.classList.add('open');
+    renderTOC();
+    var slug = decodeURIComponent(location.hash.replace(/^#\/?/, ''));
+    var stored = null;
+    try { stored = JSON.parse(localStorage.getItem('bhoc_last') || 'null'); } catch(e){ stored = null; }
+    if (slug){
+      for (var i=0;i<CHAPTERS.length;i++){ if (CHAPTERS[i].file === slug){ load(i, true); syncChromeLayout(); return; } }
+    }
+    if (stored && stored.idx < CHAPTERS.length){ load(stored.idx, true); syncChromeLayout(); return; }
+    load(0, true); syncChromeLayout();
+  }
+
+  function renderTOC(){
+    $tocList.innerHTML = '';
+    for (var i=0;i<CHAPTERS.length;i++){
+      var c = CHAPTERS[i];
+      var li = document.createElement('li');
+      li.innerHTML = '<div class="part">'+ c.part +'</div><div class="title">'+ c.title +'</div>';
+      (function(idx){ li.onclick = function(){ load(idx, true); $toc.classList.remove('open'); }; })(i);
+      $tocList.appendChild(li);
+    }
+  }
+
+  function bindFrameScroll(){
+    try {
+      var doc = $frame.contentWindow.document;
+      var el = doc.scrollingElement || doc.documentElement || doc.body;
+      function update(){
+        var top = el.scrollTop;
+        var max = Math.max(1, el.scrollHeight - el.clientHeight);
+        state.ratio = top / max;
+        setProgress(state.ratio);
+        try { localStorage.setItem('bhoc_last', JSON.stringify({idx: state.idx, ratio: state.ratio, file: CHAPTERS[state.idx].file, t: Date.now()})); } catch(e){}
+      }
+      doc.addEventListener('scroll', update, {passive:true});
+      var stored = null;
+      try { stored = JSON.parse(localStorage.getItem('bhoc_last') || 'null'); } catch(e){ stored = null; }
+      setTimeout(function(){
+        if (stored && stored.idx === state.idx && stored.ratio){
+          el.scrollTop = stored.ratio * (el.scrollHeight - el.clientHeight);
+        }
+        update();
+      }, 120);
+    } catch(err) {
+      setProgress((state.idx+1)/CHAPTERS.length);
+    }
+  }
+
+  function load(i, pushHash){
+    state.idx = i;
+    $frame.src = 'chapters/' + CHAPTERS[i].file;
+    $chapterBadge.textContent = CHAPTERS[i].title;
+    if (pushHash){ try { history.replaceState(null, '', '#/' + encodeURIComponent(CHAPTERS[i].file)); } catch(e){} }
+  }
+
+  $frame.addEventListener('load', bindFrameScroll);
+  document.getElementById('prevBtn').onclick = function(){ if (state.idx>0) load(state.idx-1, true); };
+  document.getElementById('nextBtn').onclick = function(){ if (state.idx<CHAPTERS.length-1) load(state.idx+1, true); };
+  document.getElementById('tocBtn').onclick = function(){ $toc.classList.add('open'); };
+  $toc.onclick = function(e){ if (e.target === $toc) $toc.classList.remove('open'); };
+
+  function readBookmarks(){ try{ return JSON.parse(localStorage.getItem('bhoc_bookmarks')||'[]'); }catch(_){ return []; } }
+  function writeBookmarks(list){ try{ localStorage.setItem('bhoc_bookmarks', JSON.stringify(list)); }catch(e){} }
+  function renderBookmarks(){
+    var list = readBookmarks(); $bmList.innerHTML = '';
+    if (!list.length){
+      var li = document.createElement('li'); li.className='bm-item'; li.textContent='暂无书签'; $bmList.appendChild(li); return;
+    }
+    for (var idx=0; idx<list.length; idx++){
+      (function(idx){
+        var b = list[idx];
+        var li = document.createElement('li'); li.className='bm-item';
+        var pct = b.ratio ? Math.round(b.ratio*100)+'%' : '—';
+        li.innerHTML = '<div><strong>'+ b.title +'</strong><br><small>'+ new Date(b.t).toLocaleString() +' · 进度 '+ pct +'</small></div>';
+        var actions = document.createElement('div'); actions.className = 'bm-actions';
+        var go = document.createElement('button'); go.className='btn'; go.textContent='前往';
+        go.onclick = function(){ load(b.idx, true); setTimeout(function(){ try{ var d=$frame.contentWindow.document.scrollingElement || $frame.contentWindow.document.documentElement; d.scrollTop = b.ratio*(d.scrollHeight-d.clientHeight); }catch(e){} }, 200); $bm.classList.remove('open'); };
+        var del = document.createElement('button'); del.className='btn'; del.textContent='删除';
+        del.onclick = function(){ var x = readBookmarks(); x.splice(idx,1); writeBookmarks(x); renderBookmarks(); };
+        actions.appendChild(go); actions.appendChild(del); li.appendChild(actions); $bmList.appendChild(li);
+      })(idx);
+    }
+  }
+  document.getElementById('bmAddBtn').onclick = function(){
+    var list = readBookmarks();
+    var entry = { idx: state.idx, file: CHAPTERS[state.idx].file, title: CHAPTERS[state.idx].title, ratio: state.ratio||0, t: Date.now() };
+    list.unshift(entry); writeBookmarks(list); alert('已添加书签：' + entry.title);
+  };
+  document.getElementById('bmListBtn').onclick = function(){ renderBookmarks(); $bm.classList.add('open'); };
+  $bm.onclick = function(e){ if (e.target === $bm) $bm.classList.remove('open'); };
+
+  // Show/Hide chrome
+  document.getElementById('chromeToggle').onclick = function(){
+    var hidden = $app.classList.toggle('chrome-hidden');
+    document.getElementById('chromeToggle').textContent = hidden ? '显示工具栏' : '隐藏工具栏';
+    syncChromeLayout();
+  };
+  document.getElementById('chromeHandle').onclick = function(){
+    $app.classList.remove('chrome-hidden');
+    document.getElementById('chromeToggle').textContent = '隐藏工具栏';
+    syncChromeLayout();
+  };
+  window.addEventListener('resize', syncChromeLayout);
+
+  document.getElementById('openBtn').onclick = openBook;
+  if (location.hash) { $app.classList.add('open'); openBook(); }
+</script>
+</body>
+</html>
