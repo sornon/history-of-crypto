@@ -25,7 +25,7 @@
     .cshell-section { margin-top:12px; }
     .cshell-part { color:var(--cshell-muted); font-size:14px; margin:20px 0 20px 14px; }
     .cshell-list { list-style:none; margin:0; padding:0; display:grid; grid-template-columns: 1fr; gap:10px; }
-    .cshell-item { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:14px 14px; border:1px solid var(--cshell-border); border-radius:12px; background: var(--cshell-card); }
+    .cshell-item { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:14px 14px; border:1px solid var(--cshell-border); border-radius:12px; background: var(--cshell-card);  cursor:pointer;}
     .cshell-item a { color:#fff; text-decoration:none; font-weight:600; }
 
     .cshell-resume { margin:16px 0 2px; padding:10px 12px; border:1px dashed rgba(122,162,255,.35); border-radius:10px; color:#d9e2ff; background: rgba(122,162,255,.08); display:flex; justify-content:space-between; align-items:center; gap:8px; }
@@ -350,31 +350,34 @@
           lastPart = c.part;
         }
         const li = document.createElement('li');
-        li.className = 'cshell-item';
-        const chapNo = i + 1;
-        li.innerHTML = `<a href="#read?i=${i}" data-i="${i}"><span class="cshell-chapno">第${chapNo}章</span>${c.title}</a>`;
+li.className = 'cshell-item';
+const chapNo = i + 1;
+li.setAttribute('data-i', i);
+li.setAttribute('role', 'button');
+li.setAttribute('tabindex', '0');
+li.innerHTML = `<div class=\"cshell-item__inner\"><span class=\"cshell-chapno\">第${chapNo}章</span>${c.title}</div>`;
         curUL.appendChild(li);
       }
 
       updateResumeCard();
 
       // click handlers
-      QSA('a[data-i]', $tocListWrap).forEach(a => {
-        a.addEventListener('click', (e)=>{
-          e.preventDefault();
-          const i = parseInt(a.getAttribute('data-i'),10);
-          openChapter(i);
-          history.pushState({read:i}, '', `#read?i=${i}`);
-        });
-      });
+      QSA('.cshell-item[data-i]', $tocListWrap).forEach(li => {
+  li.addEventListener('click', () => {
+    const i = parseInt(li.getAttribute('data-i'), 10);
+    openChapter(i);
+    history.pushState({read:i}, '', `#read?i=${i}`);
+  });
+  li.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      const i = parseInt(li.getAttribute('data-i'), 10);
+      openChapter(i);
+      history.pushState({read:i}, '', `#read?i=${i}`);
+    }
+  });
+});
 
-      $resumeBtn.addEventListener('click', ()=>{
-        const last2 = getLast();
-        if (last2 && CHAPTERS[last2.index]){
-          openChapter(last2.index, { restoreLast: true });
-          history.pushState({read:last2.index}, '', `#read?i=${last2.index}`);
-        }
-      });
       $resumeBtn.addEventListener('click', ()=>{ const last2 = getLast(); if (last2 && CHAPTERS[last2.index]){ openChapter(last2.index, { restoreLast: true }); history.pushState({read:last2.index}, '', `#read?i=${last2.index}`); } });
     }
 
