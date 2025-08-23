@@ -386,57 +386,10 @@
       $resumeBtn.addEventListener('click', ()=>{ const last2 = getLast(); if (last2 && CHAPTERS[last2.index]){ openChapter(last2.index, { restoreLast: true }); history.pushState({read:last2.index}, '', `#read?i=${last2.index}`); } });
     }
 
-    
-function renderBookmarks(){
-  const raw = getBmk() || [];
-  // Dedup by chapter index, keep latest ts
-  const map = new Map();
-  for (const b of raw){
-    const ex = map.get(b.index);
-    if (!ex || (b.ts||0) > (ex.ts||0)) map.set(b.index, b);
-  }
-  const list = Array.from(map.values()).sort((a,b)=> (b.ts||0)-(a.ts||0));
-  setBmk(list); // persist canonical unique list
-
-  $bmkItems.innerHTML = '';
-  if (!list.length){ show($bmkEmpty); return; } else { hide($bmkEmpty); }
-
-  list.forEach((bmk, idx) => {
-    const li = document.createElement('li');
-    li.className = 'cshell-bmk';
-    const c = CHAPTERS[bmk.index] || {title:bmk.title || '未知章节', file:bmk.file || ''};
-    const chapNo = (bmk.index||0) + 1;
-    const pct = Math.round(((bmk.scrollRatio||0)*100));
-    li.innerHTML = `<div>
-        <div><strong><span class="cshell-chapno">第${chapNo}章</span>${c.title}</strong></div>
-        <div class="meta">${pct}%</div>
-      </div>
-      <div class="act">
-        <button data-act="go" data-i="${bmk.index}">前往</button>
-        <button data-act="del" data-k="${idx}">删除</button>
-      </div>`;
-    $bmkItems.appendChild(li);
-  });
-
-  // Actions
-  QSA('button[data-act="go"]', $bmkItems).forEach(btn => {
-    btn.addEventListener('click', ()=> {
-      const i = parseInt(btn.getAttribute('data-i'),10);
-      openChapter(i, { restoreFromBookmark: true });
-      history.pushState({read:i}, '', `#read?i=${i}`);
-      selectTab('toc');
-    });
-  });
-  QSA('button[data-act="del"]', $bmkItems).forEach(btn => {
-    btn.addEventListener('click', ()=> {
-      const k = parseInt(btn.getAttribute('data-k'),10);
-      const cur = getBmk() || [];
-      if (k>=0 && k<cur.length){ cur.splice(k,1); setBmk(cur); }
-      renderBookmarks();
-      toast('书签已删除');
-    });
-  });
-}
+    function renderBookmarks(){
+      const list = getBmk();
+      $bmkItems.innerHTML = '';
+      if (!list.length){ show($bmkEmpty); return; } else { hide($bmkEmpty); }
       list.forEach((bmk, idx) => {
         const li = document.createElement('li');
         li.className = 'cshell-bmk';
@@ -499,32 +452,18 @@ function renderBookmarks(){
     $next.addEventListener('click', ()=>{ if (currentIndex<CHAPTERS.length-1){ snapshotProgress(); openChapter(currentIndex+1); history.pushState({read:currentIndex+1}, '', `#read?i=${currentIndex+1}`); } });
     $tocBtn.addEventListener('click', ()=>{ toTOC(); history.pushState({toc:true}, '', '#toc'); });
 
-    
     $bookmarkBtn.addEventListener('click', ()=>{
       try {
         const list = getBmk();
         const ch = CHAPTERS[currentIndex];
-        let ratio = 0;
-        try { const doc = $frame.contentDocument; ratio = pxToRatio(doc); } catch(e){ ratio = 0; }
-
-        // Unique per chapter: update if exists, else add new
-        const idx = list.findIndex(b => b.index === currentIndex);
-        if (idx >= 0){
-          const updated = Object.assign({}, list[idx], { scrollRatio: ratio, ts: Date.now(), file: ch.file, title: ch.title });
-          list.splice(idx, 1);
-          list.unshift(updated);
-          setBmk(list.slice(0,200));
-          renderBookmarks();
-          toast('已更新书签进度');
-        } else {
-          list.unshift({ index: currentIndex, file: ch.file, title: ch.title, ts: Date.now(), scrollRatio: ratio });
-          setBmk(list.slice(0,200));
-          renderBookmarks();
-          toast('已添加书签');
-        }
+        let ratio = 0; try { const doc = $frame.contentDocument; ratio = pxToRatio(doc); } catch(e){ ratio = 0; }
+        const exists = list.some(b => b.index===currentIndex && Math.abs((b.scrollRatio||0) - ratio) <= 0.01);
+        if (exists){ toast('该位置已在书签中'); return; }
+        list.unshift({ index: currentIndex, file: ch.file, title: ch.title, ts: Date.now(), scrollRatio: ratio });
+        setBmk(list.slice(0,200));
+        toast('已添加书签');
       } catch(e){ toast('无法添加书签'); }
     });
-    
 
     window.addEventListener('popstate', ()=>{ const hash = location.hash || ''; if (hash.startsWith('#read')){ const params = new URLSearchParams(hash.split('?')[1] || ''); const i = parseInt(params.get('i') || '-1', 10); if (!isNaN(i) && i>=0){ openChapter(i, { restoreLast: true }); } } else { toTOC(); } });
 
@@ -535,9 +474,8 @@ function renderBookmarks(){
     })();
 
   })();
-  </script>
-<script>
-// --- Mobile viewport fit (iOS Safari 100vh fix) ---
+
+  // --- Mobile viewport fit (iOS Safari 100vh fix) ---
   (function(){
     function fitViewport(){
       var h = window.innerHeight;
@@ -589,6 +527,6 @@ function renderBookmarks(){
     });
   })();
 
+  </script>
 </body>
 </html>
-</script>
