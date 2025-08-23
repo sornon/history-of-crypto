@@ -70,10 +70,7 @@
         <button id="cshell-resume-btn">继续阅读</button>
       </div>
 
-      <div id="cshell-toc-list" class="cshell-section">
-        <div class="cshell-part">第一编（1970s–2008）观念与技术的源流</div>
-        <ul id="cshell-chapter-list" class="cshell-list"></ul>
-      </div>
+      <div id="cshell-toc-list" class="cshell-section"></div>
 
       <div id="cshell-bmk-list" class="cshell-section cshell-hidden">
         <div class="cshell-part">我的书签</div>
@@ -119,7 +116,7 @@
     const $resumeWrap = QS('#cshell-resume');
     const $resumeTitle = QS('#cshell-resume-title');
     const $resumeBtn = QS('#cshell-resume-btn');
-    const $chapterList = QS('#cshell-chapter-list');
+    const $tocListWrap = QS('#cshell-toc-list');
     const $bmkListWrap = QS('#cshell-bmk-list');
     const $bmkEmpty = QS('#cshell-bmk-empty');
     const $bmkItems = QS('#cshell-bmk-items');
@@ -138,6 +135,22 @@
     let scrollTimer = null;
 
     const ENABLE_SEGMENTED_RESTORE = true;
+    // Map each 编 to its full display title
+    const PART_TITLES = {
+      '第一编': '第一编（1970s–2008）观念与技术的源流',
+      '第二编': '第二编（2008–2014）比特币的发明与早期扩散',
+      '第三编': '第三编（2014–2016）智能合约与通用计算',
+      '第四编': '第四编（2017–2019）ICO 狂潮与监管觉醒',
+      '第五编': '第五编（2020–2021）DeFi 与链上文化',
+      '第六编': '第六编（2022–2023）危机、治理与行业重构',
+      '第七编': '第七编（2024–2025）制度化与扩展性与 RWA 起势',
+      '终编':   '终编（2025–2035）未来情景与领先指标'
+    };
+    function partDisplay(part, years){
+      if (PART_TITLES[part]) return PART_TITLES[part];
+      return years ? `${part}（${years}）` : `${part}`;
+    }
+
 
     function show(el){ el.classList.remove('cshell-hidden'); }
     function hide(el){ el.classList.add('cshell-hidden'); }
@@ -292,7 +305,52 @@
       "file": "第二编_第11章_小结.html"
     }
         ];
-      $chapterList.innerHTML = '';
+
+      // Render grouped by 编（part），不改变 CHAPTERS 的数据结构
+      $tocListWrap.innerHTML = '';
+      let lastPart = null;
+      let curUL = null;
+      for (let i = 0; i < CHAPTERS.length; i++){
+        const c = CHAPTERS[i];
+        if (c.part !== lastPart){
+          const hd = document.createElement('div');
+          hd.className = 'cshell-part';
+          hd.textContent = partDisplay(c.part, c.years);
+          $tocListWrap.appendChild(hd);
+
+          curUL = document.createElement('ul');
+          curUL.className = 'cshell-list';
+          curUL.setAttribute('data-part', c.part);
+          $tocListWrap.appendChild(curUL);
+
+          lastPart = c.part;
+        }
+        const li = document.createElement('li');
+        li.className = 'cshell-item';
+        li.innerHTML = `<a href="#read?i=${i}" data-i="${i}">${c.title}</a>`;
+        curUL.appendChild(li);
+      }
+
+      updateResumeCard();
+
+      // click handlers
+      QSA('a[data-i]', $tocListWrap).forEach(a => {
+        a.addEventListener('click', (e)=>{
+          e.preventDefault();
+          const i = parseInt(a.getAttribute('data-i'),10);
+          openChapter(i);
+          history.pushState({read:i}, '', `#read?i=${i}`);
+        });
+      });
+
+      $resumeBtn.addEventListener('click', ()=>{
+        const last2 = getLast();
+        if (last2 && CHAPTERS[last2.index]){
+          openChapter(last2.index, { restoreLast: true });
+          history.pushState({read:last2.index}, '', `#read?i=${last2.index}`);
+        }
+      });
+
       for (let i=0;i<CHAPTERS.length;i++){
         const c = CHAPTERS[i];
         const li = document.createElement('li');
