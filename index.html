@@ -334,6 +334,61 @@
       $tocListWrap.innerHTML = '';
       let lastPart = null;
       let curUL = null;
+      for (let i = 0; i < CHAPTERS.length; i++){
+        const c = CHAPTERS[i];
+        if (c.part !== lastPart){
+          const hd = document.createElement('div');
+          hd.className = 'cshell-part';
+          hd.textContent = partDisplay(c.part, c.years);
+          $tocListWrap.appendChild(hd);
+
+          curUL = document.createElement('ul');
+          curUL.className = 'cshell-list';
+          curUL.setAttribute('data-part', c.part);
+          $tocListWrap.appendChild(curUL);
+
+          lastPart = c.part;
+        }
+        const li = document.createElement('li');
+        li.className = 'cshell-item';
+        const chapNo = i + 1;
+        li.innerHTML = `<a href="#read?i=${i}" data-i="${i}"><span class="cshell-chapno">第${chapNo}章</span>${c.title}</a>`;
+        curUL.appendChild(li);
+      }
+
+      updateResumeCard();
+
+      // click handlers
+      QSA('a[data-i]', $tocListWrap).forEach(a => {
+        a.addEventListener('click', (e)=>{
+          e.preventDefault();
+          const i = parseInt(a.getAttribute('data-i'),10);
+          openChapter(i);
+          history.pushState({read:i}, '', `#read?i=${i}`);
+        });
+      });
+
+      $resumeBtn.addEventListener('click', ()=>{
+        const last2 = getLast();
+        if (last2 && CHAPTERS[last2.index]){
+          openChapter(last2.index, { restoreLast: true });
+          history.pushState({read:last2.index}, '', `#read?i=${last2.index}`);
+        }
+      });
+
+      for (let i=0;i<CHAPTERS.length;i++){
+        const c = CHAPTERS[i];
+        const li = document.createElement('li');
+        li.className = 'cshell-item';
+        li.innerHTML = `<a href="#read?i=${i}" data-i="${i}">${c.title.replace(/^第一编_/,'')}</a>`;
+        $chapterList.appendChild(li);
+      }
+      updateResumeCard();
+      QSA('a[data-i]', $chapterList).forEach(a => {
+        a.addEventListener('click', (e)=>{ e.preventDefault(); const i = parseInt(a.getAttribute('data-i'),10); openChapter(i); history.pushState({read:i}, '', `#read?i=${i}`); });
+      });
+      $resumeBtn.addEventListener('click', ()=>{ const last2 = getLast(); if (last2 && CHAPTERS[last2.index]){ openChapter(last2.index, { restoreLast: true }); history.pushState({read:last2.index}, '', `#read?i=${last2.index}`); } });
+    }
 
     function renderBookmarks(){
       const list = getBmk();
@@ -401,30 +456,13 @@
     $next.addEventListener('click', ()=>{ if (currentIndex<CHAPTERS.length-1){ snapshotProgress(); openChapter(currentIndex+1); history.pushState({read:currentIndex+1}, '', `#read?i=${currentIndex+1}`); } });
     $tocBtn.addEventListener('click', ()=>{ toTOC(); history.pushState({toc:true}, '', '#toc'); });
 
-    
     $bookmarkBtn.addEventListener('click', ()=>{
       try {
         const list = getBmk();
         const ch = CHAPTERS[currentIndex];
-        let ratio = 0;
-        try { const doc = $frame.contentDocument; ratio = pxToRatio(doc); } catch(e){ ratio = 0; }
-
-        // 若该章节已有书签：更新其进度与时间戳并移到最前，而不是新增一条
-        const idx = list.findIndex(b => b.index === currentIndex);
-        if (idx >= 0){
-          const item = list.splice(idx, 1)[0] || {};
-          item.index = currentIndex;
-          item.file = ch.file;
-          item.title = ch.title;
-          item.scrollRatio = ratio;
-          item.ts = Date.now();
-          list.unshift(item);
-          setBmk(list.slice(0,200));
-          toast('书签已更新');
-          return;
-        }
-
-        // 否则新增
+        let ratio = 0; try { const doc = $frame.contentDocument; ratio = pxToRatio(doc); } catch(e){ ratio = 0; }
+        const exists = list.some(b => b.index===currentIndex && Math.abs((b.scrollRatio||0) - ratio) <= 0.01);
+        if (exists){ toast('该位置已在书签中'); return; }
         list.unshift({ index: currentIndex, file: ch.file, title: ch.title, ts: Date.now(), scrollRatio: ratio });
         setBmk(list.slice(0,200));
         toast('已添加书签');
