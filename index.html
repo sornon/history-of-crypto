@@ -456,15 +456,36 @@
     $next.addEventListener('click', ()=>{ if (currentIndex<CHAPTERS.length-1){ snapshotProgress(); openChapter(currentIndex+1); history.pushState({read:currentIndex+1}, '', `#read?i=${currentIndex+1}`); } });
     $tocBtn.addEventListener('click', ()=>{ toTOC(); history.pushState({toc:true}, '', '#toc'); });
 
+    
     $bookmarkBtn.addEventListener('click', ()=>{
       try {
         const list = getBmk();
         const ch = CHAPTERS[currentIndex];
-        let ratio = 0; try { const doc = $frame.contentDocument; ratio = pxToRatio(doc); } catch(e){ ratio = 0; }
-        const exists = list.some(b => b.index===currentIndex && Math.abs((b.scrollRatio||0) - ratio) <= 0.01);
-        if (exists){ toast('该位置已在书签中'); return; }
+        let ratio = 0;
+        try { const doc = $frame.contentDocument; ratio = pxToRatio(doc); } catch(e){ ratio = 0; }
+
+        // 若该章节已有书签：更新其进度与时间戳并移到最前，而不是新增一条
+        const idx = list.findIndex(b => b.index === currentIndex);
+        if (idx >= 0){
+          const item = list.splice(idx, 1)[0] || {};
+          item.index = currentIndex;
+          item.file = ch.file;
+          item.title = ch.title;
+          item.scrollRatio = ratio;
+          item.ts = Date.now();
+          list.unshift(item);
+          setBmk(list.slice(0,200));
+          toast('书签已更新');
+          return;
+        }
+
+        // 否则新增
         list.unshift({ index: currentIndex, file: ch.file, title: ch.title, ts: Date.now(), scrollRatio: ratio });
         setBmk(list.slice(0,200));
+        toast('已添加书签');
+      } catch(e){ toast('无法添加书签'); }
+    });
+setBmk(list.slice(0,200));
         toast('已添加书签');
       } catch(e){ toast('无法添加书签'); }
     });
