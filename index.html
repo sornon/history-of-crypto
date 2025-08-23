@@ -485,10 +485,6 @@
         toast('已添加书签');
       } catch(e){ toast('无法添加书签'); }
     });
-setBmk(list.slice(0,200));
-        toast('已添加书签');
-      } catch(e){ toast('无法添加书签'); }
-    });
 
     window.addEventListener('popstate', ()=>{ const hash = location.hash || ''; if (hash.startsWith('#read')){ const params = new URLSearchParams(hash.split('?')[1] || ''); const i = parseInt(params.get('i') || '-1', 10); if (!isNaN(i) && i>=0){ openChapter(i, { restoreLast: true }); } } else { toTOC(); } });
 
