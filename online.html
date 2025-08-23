@@ -12,7 +12,7 @@
     #cshell-app { position: fixed; inset: 0; background: var(--cshell-bg); color: var(--cshell-fg);
       font-family: -apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Hiragino Sans GB","Segoe UI",Roboto,Arial,"Noto Sans CJK SC",sans-serif; overflow: hidden; }
 
-    /* top reading progress (per chapter) */
+    /* top reading progress (per chapter scroll) */
     #cshell-progress { position: fixed; left:0; right:0; top:0; height: 3px; z-index:6; background: rgba(255,255,255,.06); }
     #cshell-progress.hidden { display:none; }
     #cshell-progress-bar { height:100%; width:0%; background: linear-gradient(90deg, var(--cshell-accent), var(--cshell-accent2)); transition: width .15s ease; }
@@ -47,7 +47,7 @@
     .cshell-btn .cshell-btn-bar { position:absolute; left:0; top:0; bottom:0; width:0%; background: linear-gradient(135deg, rgba(255,255,255,.25), rgba(255,255,255,.15)); pointer-events:none; }
     .cshell-btn .cshell-btn-label { position:relative; z-index:1; }
 
-    .cshell-hidden { display:none !重要; }
+    .cshell-hidden { display:none !important; }
 
     #cshell-bookmark { position: fixed; top: max(8px, calc(env(safe-area-inset-top) + 8px)); right: 10px; z-index:6; background: #e11d48; color:#fff; border:none; border-radius:12px; padding:10px 12px; box-shadow: 0 8px 24px rgba(225,29,72,.3); }
 
@@ -136,12 +136,13 @@
     let CHAPTERS = [];
     let currentIndex = -1;
     let scrollTimer = null;
+
     const ENABLE_SEGMENTED_RESTORE = true;
 
     function show(el){ el.classList.remove('cshell-hidden'); }
     function hide(el){ el.classList.add('cshell-hidden'); }
     function toast(msg='已添加到书签'){ $toast.textContent = msg; $toast.classList.add('show'); setTimeout(()=> $toast.classList.remove('show'), 1400); }
-    function loadJSON(url){ return fetch(url).then(r=>r.json()); }
+    function loadJSON(url){ return fetch(url).then(r=>{ if(!r.ok) throw new Error('fetch failed'); return r.json(); }); }
     function getLast(){ try { return JSON.parse(LS.getItem(KEY_LAST) || 'null'); } catch(e){ return null; } }
     function setLast(obj){ try { LS.setItem(KEY_LAST, JSON.stringify(obj)); } catch(e){} }
     function getBmk(){ try { return JSON.parse(LS.getItem(KEY_BMK) || '[]'); } catch(e){ return []; } }
@@ -153,12 +154,13 @@
     function updateResumeCard(){ const last = getLast(); if (last && CHAPTERS[last.index]){ $resumeTitle.textContent = CHAPTERS[last.index].title.replace(/^第一编_/,'') + (typeof last.scrollRatio==='number' ? ` · ${Math.round(last.scrollRatio*100)}%` : ''); show($resumeWrap); } else { hide($resumeWrap); } }
     function snapshotProgress(){ try { const doc = $frame.contentDocument; if (!doc) return; const ratio = pxToRatio(doc); const cur = getLast() || {}; if (typeof ratio === 'number' && cur && cur.index === currentIndex){ cur.scrollRatio = ratio; setLast(cur); } } catch(e){} }
 
-    // Promise-based robust & segmented restore
+    // Promise-based robust restore
     function robustRestore(doc, desiredRatio){
       return new Promise((resolve) => {
         try{
           const el = doc.scrollingElement || doc.documentElement || doc.body;
-          let attempts = 50; let lastH = 0;
+          let attempts = 50; // up to ~2.5s
+          let lastH = 0;
           function tick(){
             try{
               const H = el.scrollHeight;
@@ -181,8 +183,28 @@
         }catch(e){ resolve(false); }
       });
     }
-    function stagedRatios(t){ t = Math.max(0, Math.min(1, t)); const stages = []; if (t < 0.15) return [t]; stages.push(0.2); if (t > 0.35) stages.push(0.5); if (t > 0.70) stages.push(0.8); if (t > 0.90) stages.push(0.95); stages.push(t); return [...new Set(stages)].sort((a,b)=>a-b); }
-    async function segmentedRestore(doc, t){ if (!ENABLE_SEGMENTED_RESTORE) return robustRestore(doc, t); const seq = stagedRatios(t); for (const r of seq){ await robustRestore(doc, r); } }
+
+    // staged ratios for segmented restore
+    function stagedRatios(t){
+      t = Math.max(0, Math.min(1, t));
+      const stages = [];
+      if (t < 0.15) return [t];
+      stages.push(0.2);
+      if (t > 0.35) stages.push(0.5);
+      if (t > 0.70) stages.push(0.8);
+      if (t > 0.90) stages.push(0.95);
+      stages.push(t);
+      const uniq = [...new Set(stages)].sort((a,b)=>a-b);
+      return uniq;
+    }
+
+    async function segmentedRestore(doc, t){
+      if (!ENABLE_SEGMENTED_RESTORE) return robustRestore(doc, t);
+      const seq = stagedRatios(t);
+      for (const r of seq){
+        await robustRestore(doc, r);
+      }
+    }
 
     function selectTab(which){
       if (which === 'toc'){ $tabToc.setAttribute('aria-selected','true'); $tabBmk.setAttribute('aria-selected','false'); hide($bmkListWrap); show(QS('#cshell-toc-list')); }
@@ -192,7 +214,17 @@
     $tabBmk.addEventListener('click', ()=> selectTab('bmk'));
 
     async function initTOC(){
-      CHAPTERS = await loadJSON('./chapters.json');
+      try{
+        CHAPTERS = await loadJSON('./chapters.json');
+      }catch(e){
+        // fallback to a minimal sample so页面至少能打开
+        CHAPTERS = [
+          {"title":"第一编_绪论：从密码学到加密货币","file":"chapters/01.html","part":"第一编"},
+          {"title":"第一编_比特币白皮书要义","file":"chapters/02.html","part":"第一编"},
+          {"title":"第一编_中本聪的设计取舍","file":"chapters/03.html","part":"第一编"},
+          {"title":"第一编_早期社区与扩散","file":"chapters/04.html","part":"第一编"}
+        ];
+      }
       $chapterList.innerHTML = '';
       for (let i=0;i<CHAPTERS.length;i++){
         const c = CHAPTERS[i];
@@ -240,7 +272,7 @@
       $prev.disabled = (i<=0); $next.disabled = (i>=CHAPTERS.length-1);
       setPageProgress(i);
 
-      // --- compute desired target ratio BEFORE touching localStorage ---
+      // 先得到目标比例（与书签一致的方式），再保存为 last，避免被 0 覆盖
       let targetRatio = 0;
       const prev = getLast();
       if (opts.restoreLast && prev && prev.index === i && typeof prev.scrollRatio === 'number'){
@@ -249,70 +281,23 @@
         const bm = (getBmk().filter(b=>b.index===i).sort((a,b)=>(b.ts||0)-(a.ts||0)))[0];
         if (bm) targetRatio = bm.scrollRatio || 0;
       }
-
-      // persist "last" but KEEP targetRatio so resume card stays correct
       setLast({ index:i, file:ch.file, title:ch.title, scrollRatio: targetRatio });
-      setScrollProgress(targetRatio); // reflect immediately on top bar
+      setScrollProgress(targetRatio);
 
       $frame.src = `./chapters/${encodeURIComponent(ch.file)}`;
       $frame.onload = async ()=>{
         try {
           const doc = $frame.contentDocument;
           const style = doc.createElement('style'); style.textContent = `html,body{margin:0!important;padding:0!important;}`; doc.head.appendChild(style);
-          await (async function segmented(){ // segmented restore
-            // Promise-based robust & segmented restore helpers are defined above
-            async function robustRestore(doc, desiredRatio){
-              return new Promise((resolve) => {
-                try{
-                  const el = doc.scrollingElement || doc.documentElement || doc.body;
-                  let attempts = 50; let lastH = 0;
-                  function tick(){
-                    try{
-                      const H = el.scrollHeight;
-                      const targetPx = Math.max(0, Math.min((el.scrollHeight - el.clientHeight), Math.round((el.scrollHeight - el.clientHeight) * desiredRatio)));
-                      el.scrollTop = targetPx;
-                      const near = Math.abs(el.scrollTop - targetPx) <= 3;
-                      const heightStable = Math.abs(H - lastH) <= 2;
-                      setScrollProgress((el.scrollTop / Math.max(1,(el.scrollHeight - el.clientHeight))));
-                      if (near && heightStable){ resolve(true); return; }
-                      lastH = H;
-                      if (attempts-- > 0){ setTimeout(tick, 50); } else { resolve(false); }
-                    }catch(e){ resolve(false); }
-                  }
-                  try {
-                    const imgs = doc.images || [];
-                    for (const im of imgs){ if (!im.complete){ im.addEventListener('load', ()=> setTimeout(tick, 30), {once:true}); } }
-                    if (doc.fonts && doc.fonts.ready){ doc.fonts.ready.then(()=> setTimeout(tick, 30)); }
-                  } catch(e){}
-                  setTimeout(tick, 30);
-                }catch(e){ resolve(false); }
-              });
-            }
-            function stagedRatios(t){ t = Math.max(0, Math.min(1, t)); const stages = []; if (t < 0.15) return [t]; stages.push(0.2); if (t > 0.35) stages.push(0.5); if (t > 0.70) stages.push(0.8); if (t > 0.90) stages.push(0.95); stages.push(t); return [...new Set(stages)].sort((a,b)=>a-b); }
-            const seq = (function(t){ if (t < 0.15) return [t]; const s=[0.2]; if (t>0.35)s.push(0.5); if (t>0.70)s.push(0.8); if (t>0.90)s.push(0.95); s.push(t); return [...new Set(s)].sort((a,b)=>a-b); })(targetRatio);
-            for (const r of seq){ await robustRestore(doc, r); }
-          })();
+          await segmentedRestore(doc, targetRatio);
 
           // live scroll update
           let tick = 0;
-          doc.addEventListener('scroll', ()=>{
-            const now = Date.now(); if (now - tick < 80) return; tick = now;
-            try{ const r = pxToRatio(doc); setScrollProgress(r); }catch(e){}
-          }, { passive: true });
+          doc.addEventListener('scroll', ()=>{ const now = Date.now(); if (now - tick < 80) return; tick = now; try{ const r = pxToRatio(doc); setScrollProgress(r); }catch(e){} }, { passive: true });
 
           // periodic save
           if (scrollTimer) clearInterval(scrollTimer);
-          scrollTimer = setInterval(()=>{
-            try {
-              const ratio = pxToRatio(doc);
-              const cur = getLast() || {};
-              if (cur.index===i){
-                cur.scrollRatio = ratio;
-                setLast(cur);
-                setScrollProgress(ratio);
-              }
-            } catch(e){}
-          }, 800);
+          scrollTimer = setInterval(()=>{ try { const ratio = pxToRatio(doc); const cur = getLast() || {}; if (cur.index===i){ cur.scrollRatio = ratio; setLast(cur); setScrollProgress(ratio); } } catch(e){} }, 800);
         } catch(e){}
       };
     }
