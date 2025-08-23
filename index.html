@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#0d0d0d"/>
-  <title>《Crypto简史》 · 目录</title>
+  <title>《Crypto简史》 · 手机阅读书壳</title>
   <style>
     /* ===== CryptoShell: styles are fully scoped under #cshell-app to avoid leakage ===== */
     :root { --cshell-accent:#7aa2ff; --cshell-accent2:#9a7aff; --cshell-fg:#eaeaea; --cshell-muted:#9aa3b2; --cshell-bg:#0b0c12; --cshell-card:#12131a; --cshell-border:#1c1e26; }
@@ -15,7 +15,7 @@
       font-family: -apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Hiragino Sans GB","Segoe UI",Roboto,Arial,"Noto Sans CJK SC",sans-serif;
       overflow: hidden; /* shell is 0-border, no outer scroll */
     }
-    /* progress bar (top) */
+    /* progress bar (top) — shows current chapter scroll */
     #cshell-progress { position: fixed; left:0; right:0; top:0; height: 3px; z-index:6; background: rgba(255,255,255,.06); }
     #cshell-progress.hidden { display:none; }
     #cshell-progress-bar { height:100%; width:0%; background: linear-gradient(90deg, var(--cshell-accent), var(--cshell-accent2)); transition: width .15s ease; }
@@ -30,7 +30,6 @@
     .cshell-list { list-style:none; margin:0; padding:0; display:grid; grid-template-columns: 1fr; gap:10px; }
     .cshell-item { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:14px 14px; border:1px solid var(--cshell-border); border-radius:12px; background: var(--cshell-card); }
     .cshell-item a { color:#fff; text-decoration:none; font-weight:600; }
-    /* removed per-row part small; cleaner lines */
 
     /* Resume banner */
     .cshell-resume { margin:10px 0 2px; padding:10px 12px; border:1px dashed rgba(122,162,255,.35); border-radius:10px; color:#d9e2ff; background: rgba(122,162,255,.08); display:flex; justify-content:space-between; align-items:center; gap:8px; }
@@ -66,6 +65,7 @@
     }
     .cshell-btn[disabled] { opacity:.4; }
     .cshell-btn--primary { background: linear-gradient(135deg, var(--cshell-accent), var(--cshell-accent2)); }
+    /* inline page-progress bar inside middle button, without changing size */
     .cshell-btn .cshell-btn-bar {
       position:absolute; left:0; top:0; bottom:0; width:0%;
       background: linear-gradient(135deg, rgba(255,255,255,.25), rgba(255,255,255,.15));
@@ -128,7 +128,7 @@
     <div id="cshell-nav" class="cshell-hidden">
       <div class="cshell-nav-wrap">
         <button id="cshell-prev" class="cshell-btn" aria-label="上一页"><span class="cshell-btn-label">上一页</span></button>
-        <button id="cshell-toc-btn" class="cshell-btn cshell-btn--primary" aria-label="目录">
+        <button id="cshell-toc-btn" class="cshell-btn cshell-btn--primary" aria-label="目录（页数进度）">
           <div class="cshell-btn-bar" id="cshell-btn-progress" aria-hidden="true"></div>
           <span class="cshell-btn-label">目录</span>
         </button>
@@ -210,9 +210,15 @@
       const max = el.scrollHeight - el.clientHeight || 1;
       return Math.max(0, Math.min(1, el.scrollTop / max));
     }
-    function setProgress(r){
+    function setScrollProgress(r){
       if ($progressBar) $progressBar.style.width = Math.round(r*100) + '%';
+    }
+    function setPageProgress(index){
+      if (!CHAPTERS.length) return;
+      const r = Math.max(0, Math.min(1, (index+1)/CHAPTERS.length));
       if ($btnProgress) $btnProgress.style.width = Math.round(r*100) + '%';
+      // also update aria-label for accessibility like "目录（3/4）"
+      $tocBtn.setAttribute('aria-label', `目录（${index+1}/${CHAPTERS.length}）`);
     }
     function updateResumeCard(){
       const last = getLast();
@@ -316,7 +322,7 @@
       if (scrollTimer){ clearInterval(scrollTimer); scrollTimer = null; }
       hide($reader); hide($nav); hide($bookmarkBtn);
       if ($progress) $progress.classList.add('hidden');
-      updateResumeCard(); // <<< ensure resume info reflects latest progress
+      updateResumeCard();
       show($toc);
     }
 
@@ -330,6 +336,8 @@
       // update nav buttons
       $prev.disabled = (i<=0);
       $next.disabled = (i>=CHAPTERS.length-1);
+      // set page progress in middle button
+      setPageProgress(i);
       // load file into iframe
       $frame.src = `./chapters/${encodeURIComponent(ch.file)}`;
       // remember last
@@ -352,21 +360,21 @@
             if (list[0]) targetRatio = list[0].scrollRatio || 0;
           }
           const el = doc.scrollingElement || doc.documentElement || doc.body;
-          setTimeout(()=>{ el.scrollTop = ratioToPx(doc, targetRatio); setProgress(targetRatio); }, 50);
+          setTimeout(()=>{ el.scrollTop = ratioToPx(doc, targetRatio); setScrollProgress(targetRatio); }, 50);
 
-          // real-time progress via scroll listener (throttled)
+          // real-time scroll progress
           let lastTick = 0;
           doc.addEventListener('scroll', ()=>{
             const now = Date.now();
-            if (now - lastTick < 80) return; // throttle
+            if (now - lastTick < 80) return;
             lastTick = now;
             try{
               const r = pxToRatio(doc);
-              setProgress(r);
+              setScrollProgress(r);
             }catch(e){}
           }, { passive: true });
 
-          // start tracking scroll every 800ms for persistence
+          // periodic persistence
           if (scrollTimer) clearInterval(scrollTimer);
           scrollTimer = setInterval(()=>{
             try {
@@ -375,7 +383,7 @@
               if (cur.index===i){
                 cur.scrollRatio = ratio;
                 setLast(cur);
-                setProgress(ratio);
+                setScrollProgress(ratio);
               }
             } catch(e){}
           }, 800);
@@ -419,7 +427,7 @@
     });
 
     // popstate
-    window.addEventListener('popstate', ()=>{
+    window.addEventListener('popstate', async ()=>{
       const hash = location.hash || '';
       if (hash.startsWith('#read')){
         const params = new URLSearchParams(hash.split('?')[1] || '');
