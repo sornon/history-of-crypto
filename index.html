@@ -375,18 +375,6 @@
           history.pushState({read:last2.index}, '', `#read?i=${last2.index}`);
         }
       });
-
-      for (let i=0;i<CHAPTERS.length;i++){
-        const c = CHAPTERS[i];
-        const li = document.createElement('li');
-        li.className = 'cshell-item';
-        li.innerHTML = `<a href="#read?i=${i}" data-i="${i}">${c.title.replace(/^第一编_/,'')}</a>`;
-        $chapterList.appendChild(li);
-      }
-      updateResumeCard();
-      QSA('a[data-i]', $chapterList).forEach(a => {
-        a.addEventListener('click', (e)=>{ e.preventDefault(); const i = parseInt(a.getAttribute('data-i'),10); openChapter(i); history.pushState({read:i}, '', `#read?i=${i}`); });
-      });
       $resumeBtn.addEventListener('click', ()=>{ const last2 = getLast(); if (last2 && CHAPTERS[last2.index]){ openChapter(last2.index, { restoreLast: true }); history.pushState({read:last2.index}, '', `#read?i=${last2.index}`); } });
     }
 
