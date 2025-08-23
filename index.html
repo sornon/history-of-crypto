@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#0d0d0d"/>
-  <title>Crypto简史 · 目录</title>
+  <title>《Crypto简史》 · 手机阅读书壳</title>
   <style>
     :root { --cshell-accent:#7aa2ff; --cshell-accent2:#9a7aff; --cshell-fg:#eaeaea; --cshell-muted:#9aa3b2; --cshell-bg:#0b0c12; --cshell-card:#12131a; --cshell-border:#1c1e26; }
     #cshell-app, #cshell-app * { box-sizing: border-box; }
@@ -137,6 +137,8 @@
     let currentIndex = -1;
     let scrollTimer = null;
 
+    const ENABLE_SEGMENTED_RESTORE = true;
+
     function show(el){ el.classList.remove('cshell-hidden'); }
     function hide(el){ el.classList.add('cshell-hidden'); }
     function toast(msg='已添加到书签'){ $toast.textContent = msg; $toast.classList.add('show'); setTimeout(()=> $toast.classList.remove('show'), 1400); }
@@ -151,6 +153,60 @@
     function setPageProgress(index){ if (!CHAPTERS.length) return; const r = Math.max(0, Math.min(1, (index+1)/CHAPTERS.length)); if ($btnProgress) $btnProgress.style.width = Math.round(r*100) + '%'; $tocBtn.setAttribute('aria-label', `目录（${index+1}/${CHAPTERS.length}）`); }
     function updateResumeCard(){ const last = getLast(); if (last && CHAPTERS[last.index]){ $resumeTitle.textContent = CHAPTERS[last.index].title.replace(/^第一编_/,'') + (typeof last.scrollRatio==='number' ? ` · ${Math.round(last.scrollRatio*100)}%` : ''); show($resumeWrap); } else { hide($resumeWrap); } }
     function snapshotProgress(){ try { const doc = $frame.contentDocument; if (!doc) return; const ratio = pxToRatio(doc); const cur = getLast() || {}; if (typeof ratio === 'number' && cur && cur.index === currentIndex){ cur.scrollRatio = ratio; setLast(cur); } } catch(e){} }
+
+    // Promise-based robust restore
+    function robustRestore(doc, desiredRatio){
+      return new Promise((resolve) => {
+        try{
+          const el = doc.scrollingElement || doc.documentElement || doc.body;
+          let attempts = 50; // up to ~2.5s
+          let lastH = 0;
+          function tick(){
+            try{
+              const H = el.scrollHeight;
+              const targetPx = ratioToPx(doc, desiredRatio);
+              el.scrollTop = targetPx;
+              const near = Math.abs(el.scrollTop - targetPx) <= 3;
+              const heightStable = Math.abs(H - lastH) <= 2;
+              setScrollProgress(pxToRatio(doc));
+              if (near && heightStable){ resolve(true); return; }
+              lastH = H;
+              if (attempts-- > 0){ setTimeout(tick, 50); } else { resolve(false); }
+            }catch(e){ resolve(false); }
+          }
+          try {
+            const imgs = doc.images || [];
+            for (const im of imgs){ if (!im.complete){ im.addEventListener('load', ()=> setTimeout(tick, 30), {once:true}); } }
+            if (doc.fonts && doc.fonts.ready){ doc.fonts.ready.then(()=> setTimeout(tick, 30)); }
+          } catch(e){}
+          setTimeout(tick, 30);
+        }catch(e){ resolve(false); }
+      });
+    }
+
+    // staged ratios for segmented restore
+    function stagedRatios(t){
+      t = Math.max(0, Math.min(1, t));
+      const stages = [];
+      if (t < 0.15) return [t];
+      // Always warm up layout a bit to reduce jumps
+      stages.push(0.2);
+      if (t > 0.35) stages.push(0.5);
+      if (t > 0.70) stages.push(0.8);
+      if (t > 0.90) stages.push(0.95);
+      stages.push(t);
+      // remove duplicates and ensure ascending
+      const uniq = [...new Set(stages)].sort((a,b)=>a-b);
+      return uniq;
+    }
+
+    async function segmentedRestore(doc, t){
+      if (!ENABLE_SEGMENTED_RESTORE) return robustRestore(doc, t);
+      const seq = stagedRatios(t);
+      for (const r of seq){
+        await robustRestore(doc, r);
+      }
+    }
 
     function selectTab(which){
       if (which === 'toc'){ $tabToc.setAttribute('aria-selected','true'); $tabBmk.setAttribute('aria-selected','false'); hide($bmkListWrap); show(QS('#cshell-toc-list')); }
@@ -192,36 +248,13 @@
     }
 
     function toTOC(){
+      // snapshot before leaving
       snapshotProgress();
       if (scrollTimer){ clearInterval(scrollTimer); scrollTimer = null; }
       hide($reader); hide($nav); hide($bookmarkBtn);
       if ($progress) $progress.classList.add('hidden');
       updateResumeCard();
       show($toc);
-    }
-
-    function robustRestore(doc, desiredRatio){
-      const el = doc.scrollingElement || doc.documentElement || doc.body;
-      let attempts = 40, lastH = 0;
-      function tick(){
-        try{
-          const H = el.scrollHeight;
-          const targetPx = ratioToPx(doc, desiredRatio);
-          el.scrollTop = targetPx;
-          const near = Math.abs(el.scrollTop - targetPx) <= 3;
-          const heightStable = Math.abs(H - lastH) <= 2;
-          setScrollProgress(pxToRatio(doc));
-          if (near && heightStable) return;
-          lastH = H;
-          if (attempts-- > 0) setTimeout(tick, 50);
-        }catch(e){}
-      }
-      try {
-        const imgs = doc.images || [];
-        for (const im of imgs){ if (!im.complete){ im.addEventListener('load', ()=> setTimeout(tick, 30), {once:true}); } }
-        if (doc.fonts && doc.fonts.ready){ doc.fonts.ready.then(()=> setTimeout(tick, 30)); }
-      } catch(e){}
-      setTimeout(tick, 30);
     }
 
     function openChapter(i, opts={}){
@@ -233,7 +266,7 @@
       setPageProgress(i);
       $frame.src = `./chapters/${encodeURIComponent(ch.file)}`;
       setLast({ index:i, file:ch.file, title:ch.title, scrollRatio:0 });
-      $frame.onload = ()=>{
+      $frame.onload = async ()=>{
         try {
           const doc = $frame.contentDocument;
           const style = doc.createElement('style'); style.textContent = `html,body{margin:0!important;padding:0!important;}`; doc.head.appendChild(style);
@@ -241,9 +274,13 @@
           let targetRatio = 0;
           if (opts.restoreLast && last && last.index===i && typeof last.scrollRatio==='number'){ targetRatio = last.scrollRatio; }
           else if (opts.restoreFromBookmark){ const list = getBmk().filter(b=>b.index===i).sort((a,b)=>(b.ts||0)-(a.ts||0)); if (list[0]) targetRatio = list[0].scrollRatio || 0; }
-          robustRestore(doc, targetRatio);
+          await segmentedRestore(doc, targetRatio);
+
+          // live scroll update
           let tick = 0;
           doc.addEventListener('scroll', ()=>{ const now = Date.now(); if (now - tick < 80) return; tick = now; try{ const r = pxToRatio(doc); setScrollProgress(r); }catch(e){} }, { passive: true });
+
+          // periodic save
           if (scrollTimer) clearInterval(scrollTimer);
           scrollTimer = setInterval(()=>{ try { const ratio = pxToRatio(doc); const cur = getLast() || {}; if (cur.index===i){ cur.scrollRatio = ratio; setLast(cur); setScrollProgress(ratio); } } catch(e){} }, 800);
         } catch(e){}
