@@ -63,6 +63,16 @@
     /* Make the main containers explicit scroll areas */
     html, body { -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
 
+  
+    /* iOS nested scroll robustness */
+    #cshell-toc {
+      will-change: transform;
+      transform: translateZ(0);
+    }
+    html, body {
+      overscroll-behavior-y: none; /* keep rubber-band from bubbling to the top-level */
+    }
+
   </style>
 </head>
 <body>
@@ -482,6 +492,40 @@
     window.addEventListener('orientationchange', fitViewport);
     document.addEventListener('DOMContentLoaded', fitViewport);
     fitViewport();
+  })();
+
+
+  // --- Overscroll guard: prevent iOS rubber-band from breaking inner scroll ---
+  (function(){
+    function attachOverscrollGuard(el){
+      if (!el) return;
+      let startY = 0;
+      let lastY = 0;
+      let started = false;
+      el.addEventListener('touchstart', function(ev){
+        if (!ev.touches || ev.touches.length !== 1) return;
+        started = true;
+        startY = lastY = ev.touches[0].clientY;
+      }, { passive: true });
+      el.addEventListener('touchmove', function(ev){
+        if (!started || !ev.touches || ev.touches.length !== 1) return;
+        const y = ev.touches[0].clientY;
+        const dy = y - lastY;
+        lastY = y;
+        const atTop = el.scrollTop <= 0;
+        const atBottom = (el.scrollTop + el.clientHeight >= el.scrollHeight - 1);
+        // Only prevent when we're at a boundary AND继续往边界方向拖
+        if ((atTop && dy > 0) || (atBottom && dy < 0)){
+          if (ev.cancelable) ev.preventDefault();
+        }
+      }, { passive: false });
+      el.addEventListener('touchend', function(){ started = false; }, { passive: true });
+      el.addEventListener('touchcancel', function(){ started = false; }, { passive: true });
+    }
+    document.addEventListener('DOMContentLoaded', function(){
+      attachOverscrollGuard(document.getElementById('cshell-toc'));
+      attachOverscrollGuard(document.getElementById('cshell-bmk')); // 书签页也保护一下
+    });
   })();
 
 </body>
