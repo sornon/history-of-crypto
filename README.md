@@ -6,6 +6,9 @@
 ![license](https://img.shields.io/badge/License-CC%20BY--NC--ND%204.0-lightgrey) ![status](https://img.shields.io/badge/status-in%20progress-blue) ![lang](https://img.shields.io/badge/lang-zh--CN%20%7C%20en-green)
 
 ---
+## Welcome
+[在线阅读](https://sornon.github.io/history-of-crypto/cover.html?v10)
+
 
 ## Overview
 《Crypto简史》旨在用**可读的叙事**+**严谨的注释与对照表**，系统梳理从 1970 年代到 2035 年的密码学与加密经济：从观念、技术到制度、市场与文化，回答三件事：**它为何出现、如何演进、将走向何处**。

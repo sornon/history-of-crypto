@@ -218,12 +218,26 @@
         CHAPTERS = await loadJSON('./chapters.json');
       }catch(e){
         // fallback to a minimal sample so页面至少能打开
-        CHAPTERS = [
-          {"title":"第一编_绪论：从密码学到加密货币","file":"chapters/01.html","part":"第一编"},
-          {"title":"第一编_比特币白皮书要义","file":"chapters/02.html","part":"第一编"},
-          {"title":"第一编_中本聪的设计取舍","file":"chapters/03.html","part":"第一编"},
-          {"title":"第一编_早期社区与扩散","file":"chapters/04.html","part":"第一编"}
-        ];
+        CHAPTERS = [{
+          "part": "第一编（1970s–2008）观念与技术的源流",
+          "title": "第一编_第1章_密码学奠基",
+          "file": "第一编_第1章_密码学奠基.html"
+        },
+        {
+          "part": "第一编（1970s–2008）观念与技术的源流",
+          "title": "第一编_第2章_赛博空间的政治",
+          "file": "第一编_第2章_赛博空间的政治.html"
+        },
+        {
+          "part": "第一编（1970s–2008）观念与技术的源流",
+          "title": "第一编_第3章_电子现金先驱",
+          "file": "第一编_第3章_电子现金先驱.html"
+        },
+        {
+          "part": "第一编（1970s–2008）观念与技术的源流",
+          "title": "第一编_第4章_未竟之业",
+          "file": "第一编_第4章_未竟之业.html"
+        }];
       }
       $chapterList.innerHTML = '';
       for (let i=0;i<CHAPTERS.length;i++){

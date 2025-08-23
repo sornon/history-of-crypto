@@ -3,8 +3,6 @@ const CACHE_NAME = 'crypto-mobile-shell-v20250823';
 const PRECACHE_URLS = [
   "./",
   "./index.html",
-  "./styles.css",
-  "./app.js",
   "./manifest.webmanifest",
   "./chapters.json",
   "./chapters/第一编_第1章_密码学奠基.html",
