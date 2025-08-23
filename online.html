@@ -18,6 +18,11 @@
     /* header hidden on read, shows only on toc to keep the frame full-bleed */
     #cshell-header { display:none; }
 
+    /* progress bar */
+    #cshell-progress { position: fixed; left:0; right:0; top:0; height: 3px; z-index:6; background: rgba(255,255,255,.06); }
+    #cshell-progress.hidden { display:none; }
+    #cshell-progress-bar { height:100%; width:0%; background: linear-gradient(90deg, var(--cshell-accent), var(--cshell-accent2)); transition: width .15s ease; }
+
     /* Tabs (toc/bookmarks) */
     #cshell-toc { position:absolute; inset:0; padding: env(safe-area-inset-top) 12px calc(72px + env(safe-area-inset-bottom)) 12px; overflow:auto; }
     .cshell-tabs { display:flex; gap:10px; position:sticky; top: max(8px, env(safe-area-inset-top)); z-index:2; background: linear-gradient(180deg, rgba(11,12,18,.98), rgba(11,12,18,.8)); padding:8px 6px; border-radius:12px; border:1px solid var(--cshell-border); backdrop-filter: blur(6px); }
@@ -83,6 +88,8 @@
 </head>
 <body>
   <div id="cshell-app" aria-live="polite">
+    <div id="cshell-progress" class="hidden" aria-hidden="true"><div id="cshell-progress-bar"></div></div>
+
     <!-- TOC & Bookmarks -->
     <section id="cshell-toc" role="navigation" aria-label="目录">
       <div class="cshell-tabs" role="tablist">
@@ -152,6 +159,8 @@
     const $bmkItems = QS('#cshell-bmk-items');
     const $tabToc = QS('#cshell-tab-toc');
     const $tabBmk = QS('#cshell-tab-bmk');
+    const $progress = QS('#cshell-progress');
+    const $progressBar = QS('#cshell-progress-bar');
 
     const LS = window.localStorage;
     const KEY_LAST = 'cshell:last';
@@ -160,6 +169,7 @@
     let CHAPTERS = [];
     let currentIndex = -1;
     let scrollTimer = null;
+    let lastProgressUpdate = 0;
 
     // utils
     function show(el){ el.classList.remove('cshell-hidden'); }
@@ -191,6 +201,10 @@
       const el = doc.scrollingElement || doc.documentElement || doc.body;
       const max = el.scrollHeight - el.clientHeight || 1;
       return Math.max(0, Math.min(1, el.scrollTop / max));
+    }
+    function setProgress(r){
+      if (!$progress || !$progressBar) return;
+      $progressBar.style.width = Math.round(r*100) + '%';
     }
 
     // toc/bookmark tabs
@@ -273,7 +287,7 @@
           const i = parseInt(btn.getAttribute('data-i'),10);
           openChapter(i, { restoreFromBookmark: true });
           history.pushState({read:i}, '', `#read?i=${i}`);
-          selectTab('toc'); // back to toc view state for consistency
+          selectTab('toc'); // keep toc view state consistent
         });
       });
       QSA('button[data-act="del"]', $bmkItems).forEach(btn => {
@@ -289,9 +303,9 @@
     }
 
     function toTOC(){
-      // stop scroll tracking
       if (scrollTimer){ clearInterval(scrollTimer); scrollTimer = null; }
       hide($reader); hide($nav); hide($bookmarkBtn);
+      if ($progress) $progress.classList.add('hidden');
       show($toc);
     }
 
@@ -301,6 +315,7 @@
       if (!ch) return;
       hide($toc);
       show($reader); show($nav); show($bookmarkBtn);
+      if ($progress) $progress.classList.remove('hidden');
       // update nav buttons
       $prev.disabled = (i<=0);
       $next.disabled = (i>=CHAPTERS.length-1);
@@ -322,14 +337,25 @@
           if (opts.restoreLast && last && last.index===i && typeof last.scrollRatio==='number'){
             targetRatio = last.scrollRatio;
           } else if (opts.restoreFromBookmark){
-            // find the newest bookmark for this chapter
             const list = getBmk().filter(b=>b.index===i).sort((a,b)=>(b.ts||0)-(a.ts||0));
             if (list[0]) targetRatio = list[0].scrollRatio || 0;
           }
           const el = doc.scrollingElement || doc.documentElement || doc.body;
-          // wait a tick for layout
-          setTimeout(()=>{ el.scrollTop = ratioToPx(doc, targetRatio); }, 50);
-          // start tracking scroll every 800ms
+          setTimeout(()=>{ el.scrollTop = ratioToPx(doc, targetRatio); setProgress(targetRatio); }, 50);
+
+          // real-time progress via scroll listener (throttled)
+          let lastTick = 0;
+          doc.addEventListener('scroll', ()=>{
+            const now = Date.now();
+            if (now - lastTick < 80) return; // throttle
+            lastTick = now;
+            try{
+              const r = pxToRatio(doc);
+              setProgress(r);
+            }catch(e){}
+          }, { passive: true });
+
+          // start tracking scroll every 800ms for persistence
           if (scrollTimer) clearInterval(scrollTimer);
           scrollTimer = setInterval(()=>{
             try {
@@ -338,6 +364,7 @@
               if (cur.index===i){
                 cur.scrollRatio = ratio;
                 setLast(cur);
+                setProgress(ratio);
               }
             } catch(e){}
           }, 800);
@@ -359,7 +386,7 @@
       history.pushState({toc:true}, '', '#toc');
     });
 
-    // bookmark button
+    // bookmark button with de-duplication
     $bookmarkBtn.addEventListener('click', ()=>{
       try {
         const list = getBmk();
@@ -369,8 +396,11 @@
           const doc = $frame.contentDocument;
           ratio = pxToRatio(doc);
         } catch(e){ ratio = 0; }
+        // dedupe: same chapter & position within 1%
+        const exists = list.some(b => b.index===currentIndex && Math.abs((b.scrollRatio||0) - ratio) <= 0.01);
+        if (exists){ toast('该位置已在书签中'); return; }
         list.unshift({ index: currentIndex, file: ch.file, title: ch.title, ts: Date.now(), scrollRatio: ratio });
-        setBmk(list.slice(0,200)); // keep cap
+        setBmk(list.slice(0,200)); // cap
         toast('已添加书签');
       } catch(e){
         toast('无法添加书签');
@@ -401,11 +431,6 @@
 
     // init
     initTOC().then(()=> bootRoute());
-
-    // persist last on unload
-    window.addEventListener('beforeunload', ()=>{
-      // last is updated during reading; nothing else needed
-    });
 
   })();
   </script>
