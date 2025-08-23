@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0d0d0d"/>
+  <title>《Crypto简史》 · 手机阅读书壳</title>
+  <style>
+    /* ===== CryptoShell: styles are fully scoped under #cshell-app to avoid leakage ===== */
+    :root { --cshell-accent:#7aa2ff; --cshell-accent2:#9a7aff; --cshell-fg:#eaeaea; --cshell-muted:#9aa3b2; --cshell-bg:#0b0c12; --cshell-card:#12131a; --cshell-border:#1c1e26; }
+    #cshell-app, #cshell-app * { box-sizing: border-box; }
+    html, body { margin:0; padding:0; background:#000; }
+    #cshell-app {
+      position: fixed; inset: 0; background: var(--cshell-bg); color: var(--cshell-fg);
+      font-family: -apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Hiragino Sans GB","Segoe UI",Roboto,Arial,"Noto Sans CJK SC",sans-serif;
+      overflow: hidden; /* shell is 0-border, no outer scroll */
+    }
+    /* header hidden on read, shows only on toc to keep the frame full-bleed */
+    #cshell-header { display:none; }
+
+    /* Tabs (toc/bookmarks) */
+    #cshell-toc { position:absolute; inset:0; padding: env(safe-area-inset-top) 12px calc(72px + env(safe-area-inset-bottom)) 12px; overflow:auto; }
+    .cshell-tabs { display:flex; gap:10px; position:sticky; top: max(8px, env(safe-area-inset-top)); z-index:2; background: linear-gradient(180deg, rgba(11,12,18,.98), rgba(11,12,18,.8)); padding:8px 6px; border-radius:12px; border:1px solid var(--cshell-border); backdrop-filter: blur(6px); }
+    .cshell-tab { flex:1; text-align:center; padding:10px 0; border-radius:10px; color: var(--cshell-muted); border:1px solid var(--cshell-border); background: var(--cshell-card); }
+    .cshell-tab[aria-selected="true"] { color:#fff; background: linear-gradient(135deg, var(--cshell-card), rgba(122,162,255,.12)); border-color: rgba(122,162,255,.3); font-weight:600; }
+    .cshell-section { margin-top:12px; }
+    .cshell-part { color:var(--cshell-muted); font-size:12px; margin:12px 8px 6px; }
+    .cshell-list { list-style:none; margin:0; padding:0; display:grid; grid-template-columns: 1fr; gap:10px; }
+    .cshell-item { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:14px 14px; border:1px solid var(--cshell-border); border-radius:12px; background: var(--cshell-card); }
+    .cshell-item a { color:#fff; text-decoration:none; font-weight:600; }
+    .cshell-item small { color: var(--cshell-muted); }
+
+    /* Resume banner */
+    .cshell-resume { margin:10px 0 2px; padding:10px 12px; border:1px dashed rgba(122,162,255,.35); border-radius:10px; color:#d9e2ff; background: rgba(122,162,255,.08); display:flex; justify-content:space-between; align-items:center; gap:8px; }
+    .cshell-resume button { background: linear-gradient(135deg, var(--cshell-accent), var(--cshell-accent2)); color:#fff; border:none; padding:8px 12px; border-radius:999px; }
+
+    /* Bookmark list */
+    .cshell-bmk { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:12px; border:1px solid var(--cshell-border); border-radius:12px; background: var(--cshell-card); }
+    .cshell-bmk .meta { color:var(--cshell-muted); font-size:12px; }
+    .cshell-bmk .act { display:flex; gap:8px; }
+    .cshell-bmk .act button { border:1px solid var(--cshell-border); background:transparent; color:#fff; padding:6px 10px; border-radius:8px; }
+
+    /* Reader view: iframe full-bleed with NO margins */
+    #cshell-reader { position:absolute; inset:0; }
+    #cshell-frame {
+      position:absolute; inset:0;
+      width: 100vw; height: 100vh; border: none; background: #fff; /* content defines its own styles */
+    }
+
+    /* Floating bottom nav */
+    #cshell-nav {
+      position: fixed; left: 0; right: 0; bottom: 10px;
+      display:flex; justify-content:center; pointer-events:none; z-index: 5;
+    }
+    .cshell-nav-wrap {
+      pointer-events:auto; display:flex; gap:10px; padding:8px; border-radius:16px;
+      background: rgba(9,10,16,.8); border:1px solid var(--cshell-border); backdrop-filter: blur(10px);
+    }
+    .cshell-btn {
+      appearance:none; border:none; border-radius:12px; padding:12px 14px; min-width:88px;
+      background: linear-gradient(135deg, rgba(122,162,255,.16), rgba(154,122,255,.16));
+      color:#fff; font-weight:700;
+    }
+    .cshell-btn[disabled] { opacity:.4; }
+    .cshell-btn--primary { background: linear-gradient(135deg, var(--cshell-accent), var(--cshell-accent2)); }
+    .cshell-hidden { display:none !important; }
+
+    /* Top-right red ribbon bookmark button */
+    #cshell-bookmark {
+      position: fixed; top: max(8px, calc(env(safe-area-inset-top) + 8px)); right: 10px; z-index:6;
+      background: #e11d48; color:#fff; border:none; border-radius:12px;
+      padding:10px 12px; box-shadow: 0 8px 24px rgba(225,29,72,.3);
+    }
+
+    /* Small toast */
+    .cshell-toast {
+      position: fixed; left:50%; transform: translateX(-50%); bottom: calc(64px + env(safe-area-inset-bottom));
+      background: rgba(0,0,0,.85); color:#fff; padding:10px 14px; border-radius:10px; z-index:7; opacity:0; transition:.25s opacity ease;
+    }
+    .cshell-toast.show { opacity:1; }
+
+  </style>
+</head>
+<body>
+  <div id="cshell-app" aria-live="polite">
+    <!-- TOC & Bookmarks -->
+    <section id="cshell-toc" role="navigation" aria-label="目录">
+      <div class="cshell-tabs" role="tablist">
+        <button id="cshell-tab-toc" class="cshell-tab" role="tab" aria-selected="true">目录</button>
+        <button id="cshell-tab-bmk" class="cshell-tab" role="tab" aria-selected="false">书签</button>
+      </div>
+
+      <div id="cshell-resume" class="cshell-resume cshell-hidden">
+        <div>上次读到：<span id="cshell-resume-title"></span></div>
+        <button id="cshell-resume-btn">继续阅读</button>
+      </div>
+
+      <div id="cshell-toc-list" class="cshell-section">
+        <div class="cshell-part">第一编（1970s–2008）观念与技术的源流</div>
+        <ul id="cshell-chapter-list" class="cshell-list"></ul>
+      </div>
+
+      <div id="cshell-bmk-list" class="cshell-section cshell-hidden">
+        <div class="cshell-part">我的书签</div>
+        <div id="cshell-bmk-empty" class="cshell-bmk">暂无书签，在阅读时点右上角红丝带即可添加。</div>
+        <ul id="cshell-bmk-items" class="cshell-list"></ul>
+      </div>
+    </section>
+
+    <!-- Reader -->
+    <section id="cshell-reader" class="cshell-hidden" aria-label="阅读器">
+      <iframe id="cshell-frame" title="章节阅读器" referrerpolicy="no-referrer" loading="eager"></iframe>
+    </section>
+
+    <!-- Floating bottom nav -->
+    <div id="cshell-nav" class="cshell-hidden">
+      <div class="cshell-nav-wrap">
+        <button id="cshell-prev" class="cshell-btn" aria-label="上一页">上一页</button>
+        <button id="cshell-toc-btn" class="cshell-btn cshell-btn--primary" aria-label="目录">目录</button>
+        <button id="cshell-next" class="cshell-btn" aria-label="下一页">下一页</button>
+      </div>
+    </div>
+
+    <!-- Bookmark ribbon -->
+    <button id="cshell-bookmark" class="cshell-hidden" aria-label="添加书签">🔖 书签</button>
+
+    <!-- Toast -->
+    <div id="cshell-toast" class="cshell-toast" role="status" aria-live="polite">已添加到书签</div>
+  </div>
+
+  <script>
+  (function(){
+    'use strict';
+    const QS = (sel, root=document) => root.querySelector(sel);
+    const QSA = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+    const $app = QS('#cshell-app');
+    const $toc = QS('#cshell-toc');
+    const $reader = QS('#cshell-reader');
+    const $frame = QS('#cshell-frame');
+    const $nav = QS('#cshell-nav');
+    const $prev = QS('#cshell-prev');
+    const $next = QS('#cshell-next');
+    const $tocBtn = QS('#cshell-toc-btn');
+    const $bookmarkBtn = QS('#cshell-bookmark');
+    const $toast = QS('#cshell-toast');
+    const $resumeWrap = QS('#cshell-resume');
+    const $resumeTitle = QS('#cshell-resume-title');
+    const $resumeBtn = QS('#cshell-resume-btn');
+    const $chapterList = QS('#cshell-chapter-list');
+    const $bmkListWrap = QS('#cshell-bmk-list');
+    const $bmkEmpty = QS('#cshell-bmk-empty');
+    const $bmkItems = QS('#cshell-bmk-items');
+    const $tabToc = QS('#cshell-tab-toc');
+    const $tabBmk = QS('#cshell-tab-bmk');
+
+    const LS = window.localStorage;
+    const KEY_LAST = 'cshell:last';
+    const KEY_BMK = 'cshell:bookmarks';
+
+    let CHAPTERS = [];
+    let currentIndex = -1;
+    let scrollTimer = null;
+
+    // utils
+    function show(el){ el.classList.remove('cshell-hidden'); }
+    function hide(el){ el.classList.add('cshell-hidden'); }
+    function toast(msg='已添加到书签'){
+      $toast.textContent = msg;
+      $toast.classList.add('show');
+      setTimeout(()=> $toast.classList.remove('show'), 1400);
+    }
+    function loadJSON(url){ return fetch(url).then(r=>r.json()); }
+    function getLast(){
+      try { return JSON.parse(LS.getItem(KEY_LAST) || 'null'); } catch(e){ return null; }
+    }
+    function setLast(obj){
+      try { LS.setItem(KEY_LAST, JSON.stringify(obj)); } catch(e){}
+    }
+    function getBmk(){
+      try { return JSON.parse(LS.getItem(KEY_BMK) || '[]'); } catch(e){ return []; }
+    }
+    function setBmk(list){
+      try { LS.setItem(KEY_BMK, JSON.stringify(list)); } catch(e){}
+    }
+    function ratioToPx(doc, ratio){
+      const el = doc.scrollingElement || doc.documentElement || doc.body;
+      const max = el.scrollHeight - el.clientHeight;
+      return Math.max(0, Math.min(max, Math.round(max * ratio)));
+    }
+    function pxToRatio(doc){
+      const el = doc.scrollingElement || doc.documentElement || doc.body;
+      const max = el.scrollHeight - el.clientHeight || 1;
+      return Math.max(0, Math.min(1, el.scrollTop / max));
+    }
+
+    // toc/bookmark tabs
+    function selectTab(which){
+      if (which === 'toc'){
+        $tabToc.setAttribute('aria-selected', 'true');
+        $tabBmk.setAttribute('aria-selected', 'false');
+        hide($bmkListWrap);
+        show(QS('#cshell-toc-list'));
+      } else {
+        $tabToc.setAttribute('aria-selected', 'false');
+        $tabBmk.setAttribute('aria-selected', 'true');
+        hide(QS('#cshell-toc-list'));
+        renderBookmarks();
+        show($bmkListWrap);
+      }
+    }
+    $tabToc.addEventListener('click', ()=> selectTab('toc'));
+    $tabBmk.addEventListener('click', ()=> selectTab('bmk'));
+
+    // chapters
+    async function initTOC(){
+      CHAPTERS = await loadJSON('./chapters.json');
+      $chapterList.innerHTML = '';
+      for (let i=0;i<CHAPTERS.length;i++){
+        const c = CHAPTERS[i];
+        const li = document.createElement('li');
+        li.className = 'cshell-item';
+        li.innerHTML = `<a href="#read?i=${i}" data-i="${i}">${c.title.replace(/^第一编_/,'')}</a><small>${c.part}</small>`;
+        $chapterList.appendChild(li);
+      }
+      // resume card
+      const last = getLast();
+      if (last && CHAPTERS[last.index]){
+        $resumeTitle.textContent = CHAPTERS[last.index].title.replace(/^第一编_/,'') + (typeof last.scrollRatio==='number' ? ` · ${Math.round(last.scrollRatio*100)}%` : '');
+        show($resumeWrap);
+      } else {
+        hide($resumeWrap);
+      }
+      // link actions
+      QSA('a[data-i]', $chapterList).forEach(a => {
+        a.addEventListener('click', (e)=>{
+          e.preventDefault();
+          const i = parseInt(a.getAttribute('data-i'),10);
+          openChapter(i);
+          history.pushState({read:i}, '', `#read?i=${i}`);
+        });
+      });
+      $resumeBtn.addEventListener('click', ()=>{
+        const last2 = getLast();
+        if (last2 && CHAPTERS[last2.index]){
+          openChapter(last2.index, { restoreLast: true });
+          history.pushState({read:last2.index}, '', `#read?i=${last2.index}`);
+        }
+      });
+    }
+
+    function renderBookmarks(){
+      const list = getBmk();
+      $bmkItems.innerHTML = '';
+      if (!list.length){ show($bmkEmpty); return; } else { hide($bmkEmpty); }
+      list.forEach((bmk, idx) => {
+        const li = document.createElement('li');
+        li.className = 'cshell-bmk';
+        const c = CHAPTERS[bmk.index] || {title:bmk.title || '未知章节', file:bmk.file || ''};
+        li.innerHTML = `
+          <div>
+            <div><strong>${c.title.replace(/^第一编_/,'')}</strong></div>
+            <div class="meta">${new Date(bmk.ts||Date.now()).toLocaleString()} · 进度 ${Math.round((bmk.scrollRatio||0)*100)}%</div>
+          </div>
+          <div class="act">
+            <button data-act="go" data-i="${bmk.index}">打开</button>
+            <button data-act="del" data-k="${idx}">删除</button>
+          </div>
+        `;
+        $bmkItems.appendChild(li);
+      });
+      QSA('button[data-act="go"]', $bmkItems).forEach(btn => {
+        btn.addEventListener('click', ()=> {
+          const i = parseInt(btn.getAttribute('data-i'),10);
+          openChapter(i, { restoreFromBookmark: true });
+          history.pushState({read:i}, '', `#read?i=${i}`);
+          selectTab('toc'); // back to toc view state for consistency
+        });
+      });
+      QSA('button[data-act="del"]', $bmkItems).forEach(btn => {
+        btn.addEventListener('click', ()=> {
+          const k = parseInt(btn.getAttribute('data-k'),10);
+          const list2 = getBmk();
+          list2.splice(k,1);
+          setBmk(list2);
+          renderBookmarks();
+          toast('书签已删除');
+        });
+      });
+    }
+
+    function toTOC(){
+      // stop scroll tracking
+      if (scrollTimer){ clearInterval(scrollTimer); scrollTimer = null; }
+      hide($reader); hide($nav); hide($bookmarkBtn);
+      show($toc);
+    }
+
+    function openChapter(i, opts={}){
+      currentIndex = i;
+      const ch = CHAPTERS[i];
+      if (!ch) return;
+      hide($toc);
+      show($reader); show($nav); show($bookmarkBtn);
+      // update nav buttons
+      $prev.disabled = (i<=0);
+      $next.disabled = (i>=CHAPTERS.length-1);
+      // load file into iframe
+      $frame.src = `./chapters/${encodeURIComponent(ch.file)}`;
+      // remember last
+      setLast({ index:i, file:ch.file, title:ch.title, scrollRatio:0 });
+      // on load, maybe restore scroll
+      $frame.onload = ()=>{
+        try {
+          const doc = $frame.contentDocument;
+          // ensure body/html margins are minimal for full-bleed
+          const style = doc.createElement('style');
+          style.textContent = `html,body{margin:0!important;padding:0!important;}`;
+          doc.head.appendChild(style);
+          // restore scroll if asked
+          const last = getLast();
+          let targetRatio = 0;
+          if (opts.restoreLast && last && last.index===i && typeof last.scrollRatio==='number'){
+            targetRatio = last.scrollRatio;
+          } else if (opts.restoreFromBookmark){
+            // find the newest bookmark for this chapter
+            const list = getBmk().filter(b=>b.index===i).sort((a,b)=>(b.ts||0)-(a.ts||0));
+            if (list[0]) targetRatio = list[0].scrollRatio || 0;
+          }
+          const el = doc.scrollingElement || doc.documentElement || doc.body;
+          // wait a tick for layout
+          setTimeout(()=>{ el.scrollTop = ratioToPx(doc, targetRatio); }, 50);
+          // start tracking scroll every 800ms
+          if (scrollTimer) clearInterval(scrollTimer);
+          scrollTimer = setInterval(()=>{
+            try {
+              const ratio = pxToRatio(doc);
+              const cur = getLast() || {};
+              if (cur.index===i){
+                cur.scrollRatio = ratio;
+                setLast(cur);
+              }
+            } catch(e){}
+          }, 800);
+        } catch(e){
+          // cross origin or other issue: skip scroll tracking gracefully
+        }
+      };
+    }
+
+    // bottom nav events
+    $prev.addEventListener('click', ()=>{
+      if (currentIndex>0){ openChapter(currentIndex-1); history.pushState({read:currentIndex-1}, '', `#read?i=${currentIndex-1}`); }
+    });
+    $next.addEventListener('click', ()=>{
+      if (currentIndex<CHAPTERS.length-1){ openChapter(currentIndex+1); history.pushState({read:currentIndex+1}, '', `#read?i=${currentIndex+1}`); }
+    });
+    $tocBtn.addEventListener('click', ()=>{
+      toTOC();
+      history.pushState({toc:true}, '', '#toc');
+    });
+
+    // bookmark button
+    $bookmarkBtn.addEventListener('click', ()=>{
+      try {
+        const list = getBmk();
+        const ch = CHAPTERS[currentIndex];
+        let ratio = 0;
+        try {
+          const doc = $frame.contentDocument;
+          ratio = pxToRatio(doc);
+        } catch(e){ ratio = 0; }
+        list.unshift({ index: currentIndex, file: ch.file, title: ch.title, ts: Date.now(), scrollRatio: ratio });
+        setBmk(list.slice(0,200)); // keep cap
+        toast('已添加书签');
+      } catch(e){
+        toast('无法添加书签');
+      }
+    });
+
+    // restore route on load
+    window.addEventListener('popstate', ()=>{
+      const hash = location.hash || '';
+      if (hash.startsWith('#read')){
+        const params = new URLSearchParams(hash.split('?')[1] || '');
+        const i = parseInt(params.get('i') || '-1', 10);
+        if (!isNaN(i) && i>=0){ openChapter(i, { restoreLast: true }); }
+      } else {
+        toTOC();
+      }
+    });
+
+    // direct hash handling
+    function bootRoute(){
+      if (location.hash.startsWith('#read')){
+        const params = new URLSearchParams(location.hash.split('?')[1] || '');
+        const i = parseInt(params.get('i') || '-1', 10);
+        if (!isNaN(i) && i>=0){ openChapter(i, { restoreLast: true }); return; }
+      }
+      toTOC();
+    }
+
+    // init
+    initTOC().then(()=> bootRoute());
+
+    // persist last on unload
+    window.addEventListener('beforeunload', ()=>{
+      // last is updated during reading; nothing else needed
+    });
+
+  })();
+  </script>
+</body>
+</html>
