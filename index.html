@@ -145,6 +145,10 @@
     const $progress = QS('#cshell-progress');
     const $progressBar = QS('#cshell-progress-bar');
     const $btnProgress = QS('#cshell-btn-progress');
+    // --- Cache-busting version param from URL, e.g. index.html?v=12345 ---
+    const __CSHELL_V__ = new URLSearchParams(location.search).get('v') || '';
+    const withV = (url) => __CSHELL_V__ ? (url + (url.includes('?') ? '&' : '?') + 'v=' + encodeURIComponent(__CSHELL_V__)) : url;
+
 
     const LS = window.localStorage;
     const KEY_LAST = 'cshell:last';
@@ -430,7 +434,7 @@
       setLast({ index:i, file:ch.file, title:ch.title, scrollRatio: targetRatio });
       setScrollProgress(targetRatio);
 
-      $frame.src = `./chapters/${encodeURIComponent(ch.file)}`;
+      $frame.src = withV(`./chapters/${encodeURIComponent(ch.file)}`);
       $frame.onload = async ()=>{
         try {
           const doc = $frame.contentDocument;
