@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>第二编 · 第8章 · 抗审查与灰色用例</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+  --ink:#202124;--muted:#5f6368;--accent:#0b6efd;--accent-2:#8b5cf6;--bg:#ffffff;--card:#f6f8fa;--warn:#b42318;
+  --shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.1);
+}
+html,body{background:var(--bg);color:var(--ink);margin:0;padding:0;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Noto Sans CJK SC","Source Han Sans SC","Microsoft Yahei",Arial,Helvetica,sans-serif;
+  line-height:1.78;}
+.container{max-width:860px;margin:48px auto 120px;padding:0 20px;}
+h1,h2,h3{line-height:1.28;margin:1.2em 0 .6em;}
+h1{font-size:2rem;letter-spacing:.01em;}
+h2{font-size:1.5rem;border-bottom:2px solid #eee;padding-bottom:.25rem;}
+h3{font-size:1.12rem;color:var(--muted);}
+.subtitle{color:var(--muted);}
+.small{font-size:.95rem;color:var(--muted);}
+ul,ol{padding-left:1.2rem;}
+.sidebar{background:#fbfbff;border:1px solid #e6e8ff;border-left:5px solid var(--accent-2);
+  border-radius:10px;padding:10px 12px 10px 14px;box-shadow:var(--shadow);margin:12px 0;}
+.sidebar .sb-title{font-weight:700;color:#4f46e5;margin-bottom:.2rem;font-size:1.02rem;}
+.sidebar .sb-list,.sidebar .sb-metrics{padding-left:1.0rem;margin:.1rem 0;}
+.data-card{border-left-color:#0ea5e9;}
+.timeline-card{border-left-color:#8b5cf6;}
+.compare-card{border-left-color:#0ea5e9;}
+.controversy{border:1px solid #fde2e1;background:#fff5f5;border-left:5px solid var(--warn);
+  border-radius:10px;padding:10px 12px 10px 14px;box-shadow:var(--shadow);margin:12px 0;}
+.controversy .ct-title{font-weight:800;color:var(--warn);margin-bottom:.2rem;font-size:1.02rem;}
+.recap{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:10px;}
+.card{background:#ffffff;border:1px solid #e5e7eb;border-radius:10px;padding:10px 12px;box-shadow:var(--shadow);}
+.inline-card{border:1px solid #e5e7eb;border-left:4px solid #6366f1;background:#ffffff;border-radius:10px;
+  padding:8px 10px;margin:8px 0 12px 0;box-shadow:var(--shadow);}
+.inline-card .ic-title{font-weight:700;margin-bottom:.2rem;font-size:1.0rem;}
+.inline-card.person{border-left-color:#6366f1;}
+.concept{border:1px dashed #c7d2fe;background:#f8fafc;border-radius:10px;padding:10px 12px;margin:10px 0 14px 0;}
+.concept .cp-title{font-weight:700;color:#4f46e5;margin-bottom:.2rem;}
+.concept .cp-analogy{margin-top:.2rem;color:#5f6368;font-style:italic;}
+table{border-collapse:collapse;width:100%;font-size:.96rem;}
+th,td{border:1px solid #e5e7eb;padding:6px 8px;vertical-align:top;}
+th{background:#f8fafc;text-align:left;}
+footer{margin-top:36px;color:var(--muted);font-size:.9rem;}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>第8章 抗审查与灰色用例 <span class="subtitle">（第二编（2008–2014）比特币的发明与早期扩散）</span></h1>
+  <p class="small">作者：Zino ｜ 2025年著</p>
+</header>
+
+<h2>为什么“能支付”本身会成为价值</h2>
+<p>区块链把转账写进了公开可验证的规则里，但现实世界里，<b>法币通道</b>仍可能因平台政策、银行合作或监管压力而中断。当通道被关停时，人们才体会到“能把价值顺利交付给对方”本身就是稀缺能力。<em>“当通道能被随意关闭，‘能支付’比价格更重要。”</em></p>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · 抗审查</div>
+  <div class="cp-body">不依赖单点许可的价值转移能力：任何人都可在网络上广播交易，只要符合共识规则，最终就会被记录进历史中。</div>
+  <div class="cp-analogy">像收音机而非热线电话：没有一个“总机小姐”能决定你能否发声，电台只按频率规则接收。</div>
+</div>
+
+<h2>压力测试：捐赠与封堵</h2>
+<p>在某些敏感事件中，支付机构选择停止为特定组织或内容提供服务，民间捐赠因此受阻。比特币转账提供了另一条路径：不需要支付公司批准，只要在链上满足规则即可完成。“抗审查”的叙事由此走出技术社区，进入公共视野。</p>
+<div class="inline-card person">
+  <div class="ic-title">人物卡 · 朱利安·阿桑奇（Julian Assange）</div>
+  <div class="ic-body">维基解密创始人；其组织在传统支付体系受限时，探索了使用比特币接收支持的路径，推动了“抗审查支付”的社会讨论。</div>
+</div>
+
+<h2>灰色用例与“假名性”的边界</h2>
+<p>开放网络的另一面是“灰色用例”。早期的暗网市场把比特币当作结算层，原因很简单：全球可达、门槛低、不可逆。需要强调的是：链上的身份并不匿名，而是假名——地址只是不直接对应实名。若地址复用、链上行为有规律，仍可被画像与关联。<em>“把自由寄托在善意上，不如把阻断的成本抬上去。”</em></p>
+<div class="inline-card person">
+  <div class="ic-title">人物卡 · 罗斯·乌布利希特（Ross Ulbricht）</div>
+  <div class="ic-body">“丝绸之路”创建者；其平台的兴衰使“去中心化货币 + 去中心化网络”的治理与执法边界成为公共话题。</div>
+</div>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · 假名性、可替代性与 CoinJoin</div>
+  <div class="cp-body">比特币是“假名”的：没有实名，但链上痕迹公开。为了提升可替代性，社区探索了地址不复用、混合器、CoinJoin 等做法。</div>
+  <div class="cp-analogy">像把多人的硬币倒进一个搅拌器再分发：表面上难分彼此，但搅拌器的规则、参与者的行为与外部信息，仍可能被拼图还原。</div>
+</div>
+
+<h2>技术与制度的拉锯</h2>
+<p>一边是提升隐私与可达性的技术改进（如更好的钱包实践、CoinJoin、Tor 等网络层保护），另一边是围绕交易所和法币通道的合规要求（如 KYC/AML、储备证明、上架规则）。两者并非二选一，而是不断抬高作恶成本、同时降低正常用户摩擦的动态平衡。<em>“讨论‘应用’前，先问它改变了哪一条制度边界。”</em></p>
+
+<h2>对照表 · 支付路径与失败模式</h2>
+<div class="sidebar compare-card compact">
+  <div class="sb-title">对照卡 · 支付路径</div>
+  <table>
+    <thead>
+      <tr><th>路径</th><th>可达性</th><th>合规/审查</th><th>失败模式</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>银行卡/支付平台</td><td>高（普及）</td><td>高（可冻结/拒付）</td><td>通道封禁、账户冻结、拒付与追款</td></tr>
+      <tr><td>银行转账</td><td>中（跨境慢）</td><td>高（可监管拦截）</td><td>延迟高、收款账户受限</td></tr>
+      <tr><td>链上转账（自托管）</td><td>全球可达</td><td>低（网络按规则接收）</td><td>地址画像、汇聚点（交易所）受限</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h2>时间线（选）</h2>
+<div class="sidebar timeline-card compact">
+  <div class="sb-title">公开讨论走向社会的若干节点</div>
+  <ul class="sb-list">
+    <li>2010–2011：支付封堵事件引发对“抗审查支付”的关注</li>
+    <li>2011–2013：暗网市场把“假名性”与可达性推向前台</li>
+    <li>2013–2014：隐私与合规的拉锯；交易所安全与储备透明度成为话题</li>
+  </ul>
+</div>
+
+<h2>争点：隐私、合规与“可替代性”</h2>
+<div class="controversy compact">
+  <div class="ct-title">争点</div>
+  <ol>
+    <li><b>隐私的度</b>：提升隐私是否会纵容犯罪？关键在于把作恶成本抬高，而不是让正常用户寸步难行。</li>
+    <li><b>合规的边</b>：交易所等汇聚点需要透明与审计，但不应把链上转账视作天然可疑。</li>
+    <li><b>可替代性</b>：若币有“洁/染”之分，货币属性受损；改善做法是减少地址复用、提高匿名集等。</li>
+    <li><b>小结</b>：技术与制度的目标不是互相否定，而是减少“免费作恶”的空间。</li>
+  </ol>
+</div>
+
+<h2>章末复盘</h2>
+<div class="recap compact">
+  <div class="card">
+    <strong>要点</strong>
+    <ul class="small">
+      <li>“能支付”在通道受限时成为稀缺能力，这正是“抗审查”的现实语境。</li>
+      <li>灰色用例把假名性与可替代性的边界暴露在公众视野。</li>
+      <li>技术与制度并行博弈：一手抬高作恶成本，一手降低正常用户摩擦。</li>
+    </ul>
+  </div>
+  <div class="card">
+    <strong>下一章预告</strong>
+    <ul class="small">
+      <li>协议改进与治理萌芽：规则如何在争议中被升级？谁来主张、谁来否决？</li>
+    </ul>
+  </div>
+</div>
+
+<footer>
+  <p>本作品采用知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议（CC BY-NC-ND 4.0）授权。</p>
+</footer>
+
+</div>
+</body>
+</html>

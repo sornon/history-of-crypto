@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>第二编 · 第10章 · 扩展性隐忧</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+  --ink:#202124;--muted:#5f6368;--accent:#0b6efd;--accent-2:#8b5cf6;--bg:#ffffff;--card:#f6f8fa;--warn:#b42318;
+  --shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.1);
+}
+html,body{background:var(--bg);color:var(--ink);margin:0;padding:0;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Noto Sans CJK SC","Source Han Sans SC","Microsoft Yahei",Arial,Helvetica,sans-serif;
+  line-height:1.78;}
+.container{max-width:860px;margin:48px auto 120px;padding:0 20px;}
+h1,h2,h3{line-height:1.28;margin:1.2em 0 .6em;}
+h1{font-size:2rem;letter-spacing:.01em;}
+h2{font-size:1.5rem;border-bottom:2px solid #eee;padding-bottom:.25rem;}
+h3{font-size:1.12rem;color:var(--muted);}
+.subtitle{color:var(--muted);}
+.small{font-size:.95rem;color:var(--muted);}
+ul,ol{padding-left:1.2rem;}
+.sidebar{background:#fbfbff;border:1px solid #e6e8ff;border-left:5px solid var(--accent-2);
+  border-radius:10px;padding:10px 12px 10px 14px;box-shadow:var(--shadow);margin:12px 0;}
+.sidebar .sb-title{font-weight:700;color:#4f46e5;margin-bottom:.2rem;font-size:1.02rem;}
+.sidebar .sb-list,.sidebar .sb-metrics{padding-left:1.0rem;margin:.1rem 0;}
+.data-card{border-left-color:#0ea5e9;}
+.timeline-card{border-left-color:#8b5cf6;}
+.compare-card{border-left-color:#0ea5e9;}
+.controversy{border:1px solid #fde2e1;background:#fff5f5;border-left:5px solid var(--warn);
+  border-radius:10px;padding:10px 12px 10px 14px;box-shadow:var(--shadow);margin:12px 0;}
+.controversy .ct-title{font-weight:800;color:var(--warn);margin-bottom:.2rem;font-size:1.02rem;}
+.recap{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:10px;}
+.card{background:#ffffff;border:1px solid #e5e7eb;border-radius:10px;padding:10px 12px;box-shadow:var(--shadow);}
+.inline-card{border:1px solid #e5e7eb;border-left:4px solid #6366f1;background:#ffffff;border-radius:10px;
+  padding:8px 10px;margin:8px 0 12px 0;box-shadow:var(--shadow);}
+.inline-card .ic-title{font-weight:700;margin-bottom:.2rem;font-size:1.0rem;}
+.inline-card.person{border-left-color:#6366f1;}
+.concept{border:1px dashed #c7d2fe;background:#f8fafc;border-radius:10px;padding:10px 12px;margin:10px 0 14px 0;}
+.concept .cp-title{font-weight:700;color:#4f46e5;margin-bottom:.2rem;}
+.concept .cp-analogy{margin-top:.2rem;color:#5f6368;font-style:italic;}
+table{border-collapse:collapse;width:100%;font-size:.96rem;}
+th,td{border:1px solid #e5e7eb;padding:6px 8px;vertical-align:top;}
+th{background:#f8fafc;text-align:left;}
+footer{margin-top:36px;color:var(--muted);font-size:.9rem;}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>第10章 扩展性隐忧 <span class="subtitle">（第二编（2008–2014）比特币的发明与早期扩散）</span></h1>
+  <p class="small">作者：Zino ｜ 2025年著</p>
+</header>
+
+<h2>瓶颈从哪里来：带宽、区块时间与传播</h2>
+<p>比特币的区块时间约 10 分钟，但每个新区块需要在全球节点之间传播与验证。传播越慢，<b>孤块率</b>越高，矿工就越倾向于靠近更快的网络与更好的硬件；如果单个区块过大，带宽与延迟的压力会把普通节点挤出网络。扩展性的第一道约束，不是代码，而是带宽与地理。<em>“当理想与现实冲突，先看物理与地缘约束。”</em></p>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · 孤块与传播</div>
+  <div class="cp-body">当两个矿工几乎同时找到区块时，网络会短暂分叉；最终被抛弃的那一个叫“孤块”。更快的传播与验证可降低孤块率，减少无效工作量。</div>
+  <div class="cp-analogy">像在城市里同时两人发起“游行路线图”：扩散更快的那份更可能被多数人采用，另一路线很快被放弃。</div>
+</div>
+
+<h2>区块大小：吞吐与去中心化的拉扯</h2>
+<p>一个直接的想法是“把区块做大就行”。但块越大，下载与验证越慢，普通节点越难跟上；若只剩少数高配节点能全量验证，权力会在物理层面向少数集中。因此，<b>吞吐量</b>与<b>去中心化</b>之间存在长期拉扯：把吞吐做得太靠前，代价往往是把验证门槛抬高。</p>
+
+<h2>传播优化：先把“消息”送到，再补“细节”</h2>
+<p>面对传播瓶颈，工程上出现了“先头部、后细节”的思路：先尽快告诉全网“哪个区块被找到”（例如先传区块头与必要摘要），再补全交易与数据，缩短竞争窗口。这类优化降低了大节点对地理与带宽的优势，让更多参与者有机会保持同步。</p>
+<div class="inline-card person">
+  <div class="ic-title">人物卡 · 马特·科拉洛（Matt Corallo）</div>
+  <div class="ic-body">早期开发者；致力于节点中继与网络传播优化的工程工作，推动“先通知再补全”等思路减少传播延迟。</div>
+</div>
+
+<h2>费用市场的雏形：当区块不再“总是空的”</h2>
+<p>随着使用增长，交易不再总能立刻进下一个区块，<b>手续费</b>成为排序信号：愿意支付更高费用的交易会被更早打包。补贴长期递减，费用逐步承担安全预算的角色；这对用户是摩擦，对系统却是必要的选择机制。<em>“没有代价的队列，只会把代价转移给别人。”</em></p>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · UTXO 集与轻节点</div>
+  <div class="cp-body">UTXO 集是“当前所有可花费输出”的集合。它的增长会增加内存与磁盘压力；轻节点（SPV）只下载区块头与必要证明，牺牲部分自验证能力换取轻量运行。</div>
+  <div class="cp-analogy">像一本总账的“活页”：每加一页都要更多夹子（资源）固定；若只看目录（SPV），携带轻了，但细节需要向别人求证。</div>
+</div>
+
+<h2>分层与外移：把高频流量挪到链外</h2>
+<p>除直接增大区块外，另一条方向是“把高频交互外移，再以链上结算”。早期就有“支付通道/侧链”的设想逐渐浮出水面：把频繁的小额变更聚在链外，定期或在纠纷时回到主链结算。思路的共同点是：<b>主链保持简洁与稳健，复杂性交给外层</b>。</p>
+<div class="inline-card person">
+  <div class="ic-title">人物卡 · 亚当·贝克（Adam Back）</div>
+  <div class="ic-body">密码学与比特币早期推动者；提出哈希现金并倡议分层与侧链等方向，为后续扩展性方案提供了思路土壤。</div>
+</div>
+
+<h2>争点：谁为“更快、更大”买单？</h2>
+<div class="controversy compact">
+  <div class="ct-title">争点</div>
+  <ol>
+    <li><b>增大区块</b>：短期提升吞吐，但提高带宽与硬件门槛，可能挤出普通节点。</li>
+    <li><b>分层扩展</b>：降低主链压力，但把复杂性与风险转移到外层，需要新的激励与安全假设。</li>
+    <li><b>费用与公平</b>：费用市场会不会排挤小额？关键在于钱包的费率估算、批量支付与更好的用户体验。</li>
+    <li><b>小结</b>：扩展不是“免费午餐”，若代价主要由少数人承担，权力也会随之集中。</li>
+  </ol>
+</div>
+
+<h2>对照表 · 两条扩展路径（精要）</h2>
+<div class="sidebar compare-card compact">
+  <div class="sb-title">对照卡 · 扩大区块 / 分层扩展</div>
+  <table>
+    <thead>
+      <tr><th>维度</th><th>扩大区块</th><th>分层扩展（通道/侧链）</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>吞吐</td><td>短期上升</td><td>把高频转移出主链</td></tr>
+      <tr><td>去中心化</td><td>可能下降（门槛上升）</td><td>主链验证门槛更稳定</td></tr>
+      <tr><td>实现复杂度</td><td>主链较简单</td><td>外层更复杂、需新假设</td></tr>
+      <tr><td>安全模型</td><td>仍以 PoW 为锚</td><td>依赖跨层证明/桥接假设</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h2>时间线（选）</h2>
+<div class="sidebar timeline-card compact">
+  <div class="sb-title">扩展性议题走向前台的若干节点</div>
+  <ul class="sb-list">
+    <li>2011–2012：传播与孤块问题受到更多关注，工程优化逐步推进</li>
+    <li>2013–2014：区块大小、费用与去中心化的张力成为社区讨论热点</li>
+    <li>2014：分层与侧链设想被更系统地提出，扩展路线开始分歧</li>
+  </ul>
+</div>
+
+<h2>章末复盘</h2>
+<div class="recap compact">
+  <div class="card">
+    <strong>要点</strong>
+    <ul class="small">
+      <li>扩展的首要约束来自带宽与传播延迟，而非口号。</li>
+      <li>“更大”提升吞吐但拉高门槛；“分层”保主链稳健但引入新复杂性。</li>
+      <li>费用市场雏形出现，安全预算与用户体验都被重排。</li>
+    </ul>
+  </div>
+  <div class="card">
+    <strong>一句话</strong>
+    <p class="small"><em>“扩展若不计成本，成本会以集中化的方式回来收账。”</em></p>
+  </div>
+</div>
+
+<footer>
+  <p>本作品采用知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议（CC BY-NC-ND 4.0）授权。</p>
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>第二编 · 第7章 · 价格发现与交易所</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+  --ink:#202124;--muted:#5f6368;--accent:#0b6efd;--accent-2:#8b5cf6;--bg:#ffffff;--card:#f6f8fa;--warn:#b42318;
+  --shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.1);
+}
+html,body{background:var(--bg);color:var(--ink);margin:0;padding:0;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Noto Sans CJK SC","Source Han Sans SC","Microsoft Yahei",Arial,Helvetica,sans-serif;
+  line-height:1.78;}
+.container{max-width:860px;margin:48px auto 120px;padding:0 20px;}
+h1,h2,h3{line-height:1.28;margin:1.2em 0 .6em;}
+h1{font-size:2rem;letter-spacing:.01em;}
+h2{font-size:1.5rem;border-bottom:2px solid #eee;padding-bottom:.25rem;}
+h3{font-size:1.12rem;color:var(--muted);}
+.subtitle{color:var(--muted);}
+.small{font-size:.95rem;color:var(--muted);}
+ul,ol{padding-left:1.2rem;}
+.sidebar{background:#fbfbff;border:1px solid #e6e8ff;border-left:5px solid var(--accent-2);
+  border-radius:10px;padding:10px 12px 10px 14px;box-shadow:var(--shadow);margin:12px 0;}
+.sidebar .sb-title{font-weight:700;color:#4f46e5;margin-bottom:.2rem;font-size:1.02rem;}
+.sidebar .sb-list,.sidebar .sb-metrics{padding-left:1.0rem;margin:.1rem 0;}
+.data-card{border-left-color:#0ea5e9;}
+.timeline-card{border-left-color:#8b5cf6;}
+.compare-card{border-left-color:#0ea5e9;}
+.controversy{border:1px solid #fde2e1;background:#fff5f5;border-left:5px solid var(--warn);
+  border-radius:10px;padding:10px 12px 10px 14px;box-shadow:var(--shadow);margin:12px 0;}
+.controversy .ct-title{font-weight:800;color:var(--warn);margin-bottom:.2rem;font-size:1.02rem;}
+.recap{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:10px;}
+.card{background:#ffffff;border:1px solid #e5e7eb;border-radius:10px;padding:10px 12px;box-shadow:var(--shadow);}
+.inline-card{border:1px solid #e5e7eb;border-left:4px solid #6366f1;background:#ffffff;border-radius:10px;
+  padding:8px 10px;margin:8px 0 12px 0;box-shadow:var(--shadow);}
+.inline-card .ic-title{font-weight:700;margin-bottom:.2rem;font-size:1.0rem;}
+.inline-card.person{border-left-color:#6366f1;}
+.concept{border:1px dashed #c7d2fe;background:#f8fafc;border-radius:10px;padding:10px 12px;margin:10px 0 14px 0;}
+.concept .cp-title{font-weight:700;color:#4f46e5;margin-bottom:.2rem;}
+.concept .cp-analogy{margin-top:.2rem;color:#5f6368;font-style:italic;}
+table{border-collapse:collapse;width:100%;font-size:.96rem;}
+th,td{border:1px solid #e5e7eb;padding:6px 8px;vertical-align:top;}
+th{background:#f8fafc;text-align:left;}
+footer{margin-top:36px;color:var(--muted);font-size:.9rem;}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>第7章 价格发现与交易所 <span class="subtitle">（第二编（2008–2014）比特币的发明与早期扩散）</span></h1>
+  <p class="small">作者：Zino ｜ 2025年著</p>
+</header>
+
+<h2>为什么价格需要“场所”</h2>
+<p>点对点现金已经能在链上结算，但“价格”并不会自己出现。价格需要一个让不同预期相遇、用真实成交说话的场所——最早是一对一的私下撮合，随后走向公开的订单簿交易所。这里，订单排队、撮合成交、用费率与保证金管理风险，逐渐形成“可被持续引用的价格”。<em>“价格不是共识的原因，它是共识的结果。”</em></p>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · 订单簿与做市</div>
+  <div class="cp-body">订单簿是买卖委托的排队表；买一卖一之间的价差叫“点差”。做市商通过挂单在买卖两侧提供流动性，赚取点差并承担库存风险。</div>
+  <div class="cp-analogy">像一个不断更新的“队列屏”：越多人排队越密，成交越顺畅；没人排的时候，就会“滑点大、排队久”。</div>
+</div>
+
+<h2>托管与密钥：把失败模式从分布式变成单点</h2>
+<p>交易所最初同时承担三件事：撮合、清算、托管。对用户而言，把币放在交易所里看似方便，但也把密钥风险集中到少数运营者身上；而运营者要兼顾热钱包的便利与冷存储的安全，难度不小。早期多起安全事件提示了同一个教训：<strong>自托管是资产安全的“最后一跳”</strong>。</p>
+
+<h2>案例与人物</h2>
+<p>早年的交易所更像“从论坛里长出来的工具”。例如，杰德·麦卡勒布（Jed McCaleb）参与创建并早期运营了 Mt. Gox，后来将其转手给马克·卡佩莱斯（Mark Karpelès）；此后交易量暴涨、管理复杂度陡增，安全与合规的短板也逐步暴露。无论具体事件如何定性，教训是明确的：当托管与交易绑在一起，失误就会被放大成系统性风险。</p>
+<div class="inline-card person">
+  <div class="ic-title">人物卡 · 杰德·麦卡勒布（Jed McCaleb）</div>
+  <div class="ic-body">早期开发者与企业家；曾创建并早期运营 Mt. Gox，后转向其他加密项目。</div>
+</div>
+<div class="inline-card person">
+  <div class="ic-title">人物卡 · 马克·卡佩莱斯（Mark Karpelès）</div>
+  <div class="ic-body">Mt. Gox 后期的主要经营者；其时期的运营波动与安全/合规问题影响了行业对托管风险的认知。</div>
+</div>
+
+<h2>法币通道与监管：价格的“第二层成本”</h2>
+<p>价格不仅取决于链上资产，还取决于法币通道的通畅度：充值/提现的摩擦、支付合作方的合规要求、各地监管对交易所的态度，都会在价差与溢价上体现。于是同一资产在不同国家、不同平台上，可能出现持续的价差，只有当通道足够畅通、搬砖成本足够低，价差才会被套利者抹平。</p>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · 套利与价差</div>
+  <div class="cp-body">当两个市场对同一资产给出不同价格时，套利者会在高价市场卖出、低价市场买入，通过搬运或对冲来赚取差额，顺带把两个价格拉近。</div>
+  <div class="cp-analogy">像两个水池连着一根管子：管子越粗（通道越顺），水位（价格）就越快趋同；管子狭窄或有阀门，水位就会长期错位。</div>
+</div>
+
+<h2>对照表 · 托管方式与失败模式</h2>
+<div class="sidebar compare-card compact">
+  <div class="sb-title">对照卡 · 托管/交易方式</div>
+  <table>
+    <thead>
+      <tr><th>方式</th><th>便利性</th><th>风险暴露</th><th>失败模式</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>中心化交易所托管</td><td>高：一站式入金与撮合</td><td>高：单点托管、运营与合规</td><td>热钱包被攻破、挤兑、合规/银行通道冻结</td></tr>
+      <tr><td>自托管 + 场外/撮合</td><td>中：流程分散</td><td>中：链上安全自行负责</td><td>密钥遗失、对手方风险</td></tr>
+      <tr><td>早期去中心化撮合（探索期）</td><td>低：体验不成熟</td><td>低：资产仍在自托管</td><td>链上流动性不足、成交效率低</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h2>时间线（选）</h2>
+<div class="sidebar timeline-card compact">
+  <div class="sb-title">交易所与价格发现的若干节点</div>
+  <ul class="sb-list">
+    <li>2010 前后：公开撮合平台出现，价格开始被持续引用</li>
+    <li>2011–2013：交易量迅速增长，跨市场价差与“搬砖”兴起</li>
+    <li>2014：托管与运营风险集中暴露，行业对“自托管/合规/安全”的认识跃迁</li>
+  </ul>
+</div>
+
+<h2>争点：价格操纵、虚假量与透明度</h2>
+<div class="controversy compact">
+  <div class="ct-title">争点</div>
+  <ol>
+    <li><b>价格操纵</b>：薄量市场容易被单一大单推着走；深度与做市质量决定操纵的难度与成本。</li>
+    <li><b>虚假成交量</b>：刷量会让点差与深度失真，误导定价与风险评估。</li>
+    <li><b>透明度</b>：从上币规则到储备审计，透明度越高，外部信任成本越低。</li>
+    <li><b>小结</b>：交易所的制度设计，直接塑造价格的可引用性与可持续性。</li>
+  </ol>
+</div>
+
+<h2>章末复盘</h2>
+<div class="recap compact">
+  <div class="card">
+    <strong>要点</strong>
+    <ul class="small">
+      <li>价格发现需要“场所”：订单簿把分散预期折叠为一条可引用的价格序列。</li>
+      <li>把托管与撮合绑在一起，容易把分布式风险变成单点风险。</li>
+      <li>法币通道与监管摩擦，构成价格的“第二层成本”。</li>
+      <li>套利把价差抹平，前提是通道畅通且成本可控。</li>
+    </ul>
+  </div>
+  <div class="card">
+    <strong>一句话</strong>
+    <p class="small"><em>“当价格能被可信地引用，市场才开始形成真正的共识。”</em></p>
+  </div>
+</div>
+
+<footer>
+  <p>本作品采用知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议（CC BY-NC-ND 4.0）授权。</p>
+</footer>
+
+</div>
+</body>
+</html>

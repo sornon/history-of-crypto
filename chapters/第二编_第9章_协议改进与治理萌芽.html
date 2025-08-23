@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>第二编 · 第9章 · 协议改进与治理萌芽</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+  --ink:#202124;--muted:#5f6368;--accent:#0b6efd;--accent-2:#8b5cf6;--bg:#ffffff;--card:#f6f8fa;--warn:#b42318;
+  --shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.1);
+}
+html,body{background:var(--bg);color:var(--ink);margin:0;padding:0;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Noto Sans CJK SC","Source Han Sans SC","Microsoft Yahei",Arial,Helvetica,sans-serif;
+  line-height:1.78;}
+.container{max-width:860px;margin:48px auto 120px;padding:0 20px;}
+h1,h2,h3{line-height:1.28;margin:1.2em 0 .6em;}
+h1{font-size:2rem;letter-spacing:.01em;}
+h2{font-size:1.5rem;border-bottom:2px solid #eee;padding-bottom:.25rem;}
+h3{font-size:1.12rem;color:var(--muted);}
+.subtitle{color:var(--muted);}
+.small{font-size:.95rem;color:var(--muted);}
+ul,ol{padding-left:1.2rem;}
+.sidebar{background:#fbfbff;border:1px solid #e6e8ff;border-left:5px solid var(--accent-2);
+  border-radius:10px;padding:10px 12px 10px 14px;box-shadow:var(--shadow);margin:12px 0;}
+.sidebar .sb-title{font-weight:700;color:#4f46e5;margin-bottom:.2rem;font-size:1.02rem;}
+.sidebar .sb-list,.sidebar .sb-metrics{padding-left:1.0rem;margin:.1rem 0;}
+.data-card{border-left-color:#0ea5e9;}
+.timeline-card{border-left-color:#8b5cf6;}
+.compare-card{border-left-color:#0ea5e9;}
+.controversy{border:1px solid #fde2e1;background:#fff5f5;border-left:5px solid var(--warn);
+  border-radius:10px;padding:10px 12px 10px 14px;box-shadow:var(--shadow);margin:12px 0;}
+.controversy .ct-title{font-weight:800;color:var(--warn);margin-bottom:.2rem;font-size:1.02rem;}
+.recap{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:10px;}
+.card{background:#ffffff;border:1px solid #e5e7eb;border-radius:10px;padding:10px 12px;box-shadow:var(--shadow);}
+.inline-card{border:1px solid #e5e7eb;border-left:4px solid #6366f1;background:#ffffff;border-radius:10px;
+  padding:8px 10px;margin:8px 0 12px 0;box-shadow:var(--shadow);}
+.inline-card .ic-title{font-weight:700;margin-bottom:.2rem;font-size:1.0rem;}
+.inline-card.person{border-left-color:#6366f1;}
+.concept{border:1px dashed #c7d2fe;background:#f8fafc;border-radius:10px;padding:10px 12px;margin:10px 0 14px 0;}
+.concept .cp-title{font-weight:700;color:#4f46e5;margin-bottom:.2rem;}
+.concept .cp-analogy{margin-top:.2rem;color:#5f6368;font-style:italic;}
+table{border-collapse:collapse;width:100%;font-size:.96rem;}
+th,td{border:1px solid #e5e7eb;padding:6px 8px;vertical-align:top;}
+th{background:#f8fafc;text-align:left;}
+footer{margin-top:36px;color:var(--muted);font-size:.9rem;}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>第9章 协议改进与治理萌芽 <span class="subtitle">（第二编（2008–2014）比特币的发明与早期扩散）</span></h1>
+  <p class="small">作者：Zino ｜ 2025年著</p>
+</header>
+
+<h2>从“作者权威”到“流程权威”</h2>
+<p>最初，比特币的方向由<strong>中本聪（Satoshi Nakamoto）</strong>在邮件列表与源码里直接推动；2010 年后，他逐步淡出，把更多维护权交给<strong>加文·安德烈森（Gavin Andresen）</strong>等开发者。社区因此开始思考：<b>当“创始人”不再是锚，规则如何继续改进？</b>答案是把权威关进流程：公开的改进提案、可审计的讨论记录、分离“共识规则变更”和“实现细节”。<em>“个人会离开，流程要留下。”</em></p>
+<div class="inline-card person">
+  <div class="ic-title">人物卡 · 加文·安德烈森（Gavin Andresen）</div>
+  <div class="ic-body">早期核心维护者；在中本聪淡出后接手部分协调与发布工作，推动开发流程走向公开与标准化。</div>
+</div>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · BIP（比特币改进提案）</div>
+  <div class="cp-body">以编号文档记录提案、动机、技术细节与兼容性。它不是“投票系统”，而是公共档案与协调机制。</div>
+  <div class="cp-analogy">像开源世界的“立法案卷”：任何人都可提交，过程公开留痕，是否成为“法律”取决于节点与生态的实际采用。</div>
+</div>
+
+<h2>软分叉与硬分叉：如何“在前向兼容里升级”</h2>
+<p><b>硬分叉</b>放宽或改变旧规则，旧节点会把新链视为无效；<b>软分叉</b>收紧规则，旧节点仍把新块当作有效（只是不理解新特性）。出于稳健，社区倾向用软分叉交付新能力，如 2012 年的 P2SH（BIP16）把复杂脚本的可用性显著提升，而旧节点仍能验证区块。<em>“最好的升级，是让旧节点也能说：我仍然懂你。”</em></p>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · 标准交易 vs 共识规则</div>
+  <div class="cp-body">客户端会把某些交易类型标记为“标准”（便于中继），但只要满足共识规则，非标准交易也可被挖进区块。二者不要混淆：标准策略可以改，<b>共识规则</b>必须谨慎。</div>
+  <div class="cp-analogy">像邮局的“优先信封”和“普通投递”：优先信封更快被处理，但只要邮资正确、地址清晰，普通信也能投达。</div>
+</div>
+
+<h2>密钥与钱包：从“单钥”到“更少犯错”</h2>
+<p>2012–2014 年间，围绕钱包可用性与恢复性的改进不断出现：分层确定性（HD）钱包（BIP32）、助记词（BIP39）、多签与 P2SH 的结合让“丢钥=丢币”的风险显著下降，也让机构可以设计更可靠的托管方案。</p>
+
+<h2>代码、评审与“谨慎的速度”</h2>
+<p>彼时的开发协作从邮件列表转向问题追踪与代码评审。一次改动要经过动机解释、规范化文档、测试与逐步启用，过程也更强调最小化破坏面：与其追求“大版本的显绩”，不如用小步迭代累计安全与一致性。<em>“在货币系统里，‘没出事’就是最高的效率。”</em></p>
+<div class="inline-card person">
+  <div class="ic-title">人物卡 · 彼得·维勒（Pieter Wuille）</div>
+  <div class="ic-body">核心开发者；在脚本、签名与后续多项改进方向上有重要贡献，代表着以工程稳健为核心的开发文化。</div>
+</div>
+
+<h2>对照表 · 改进类型与激活方式（早期）</h2>
+<div class="sidebar compare-card compact">
+  <div class="sb-title">对照卡 · 升级与激活（2008–2014，选）</div>
+  <table>
+    <thead>
+      <tr><th>类型</th><th>示例</th><th>激活/部署</th><th>对旧节点</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>软分叉</td><td>P2SH（BIP16）</td><td>矿工信号 + 宽限期</td><td>仍视为有效，但不理解新规则细节</td></tr>
+      <tr><td>共识中立改进</td><td>HD 钱包（BIP32）、助记词（BIP39）</td><td>客户端/生态逐步采用</td><td>无影响</td></tr>
+      <tr><td>实现层优化</td><td>中继策略、费用估算</td><td>版本更新</td><td>建议升级以保持体验</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h2>时间线（选）</h2>
+<div class="sidebar timeline-card compact">
+  <div class="sb-title">开发与治理的若干节点</div>
+  <ul class="sb-list">
+    <li>2010：中本聪逐步淡出；更多维护者承担发布与协调</li>
+    <li>2011：BIP 流程成形，提案与讨论进入编号与留痕</li>
+    <li>2012：P2SH（BIP16）激活，脚本可用性提升</li>
+    <li>2012–2014：BIP32/39 等改进提升钱包可用性与恢复性</li>
+  </ul>
+</div>
+
+<h2>争点：谁来决定？如何决定？</h2>
+<div class="controversy compact">
+  <div class="ct-title">争点</div>
+  <ol>
+    <li><b>开发者权力</b>：拥有提交权限的人是否“过于重要”？缓解方式是公开评审、可替代实现与节点的独立选择。</li>
+    <li><b>矿工信号</b>：矿工信号是否等于“决策权”？信号是协调工具，不是法律授权；最终仍取决于全节点的规则接受度。</li>
+    <li><b>用户角色</b>：普通用户通过运行节点与选择客户端表达偏好；市场也会对分叉后的两条链做出评估。</li>
+    <li><b>小结</b>：治理不是把权力交给某一方，而是把任一方的“免费作恶空间”降到最低。</li>
+  </ol>
+</div>
+
+<h2>章末复盘</h2>
+<div class="recap compact">
+  <div class="card">
+    <strong>要点</strong>
+    <ul class="small">
+      <li>从“个人推动”转向“流程推动”，BIP 把改进写进公开档案与协作节奏。</li>
+      <li>倾向软分叉交付能力，以最小破坏面升级共识。</li>
+      <li>钱包与密钥管理的改进，降低单点失误的代价。</li>
+      <li>“谨慎的速度”成为文化：小步稳定比大步冒险更重要。</li>
+    </ul>
+  </div>
+  <div class="card">
+    <strong>一句话</strong>
+    <p class="small"><em>“共识不是投票通过，而是少数人也愿意继续验证的状态。”</em></p>
+  </div>
+</div>
+
+<footer>
+  <p>本作品采用知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议（CC BY-NC-ND 4.0）授权。</p>
+</footer>
+
+</div>
+</body>
+</html>

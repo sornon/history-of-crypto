@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>第二编 · 第5章 · 白皮书与创世</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+  --ink:#202124;--muted:#5f6368;--accent:#0b6efd;--accent-2:#8b5cf6;--bg:#ffffff;--card:#f6f8fa;--warn:#b42318;
+  --shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.1);
+}
+html,body{background:var(--bg);color:var(--ink);margin:0;padding:0;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Noto Sans CJK SC","Source Han Sans SC","Microsoft Yahei",Arial,Helvetica,sans-serif;
+  line-height:1.78;}
+.container{max-width:860px;margin:48px auto 120px;padding:0 20px;}
+h1,h2,h3{line-height:1.28;margin:1.2em 0 .6em;}
+h1{font-size:2rem;letter-spacing:.01em;}
+h2{font-size:1.5rem;border-bottom:2px solid #eee;padding-bottom:.25rem;}
+h3{font-size:1.12rem;color:var(--muted);}
+.subtitle{color:var(--muted);}
+.small{font-size:.95rem;color:var(--muted);}
+ul,ol{padding-left:1.2rem;}
+.sidebar{background:#fbfbff;border:1px solid #e6e8ff;border-left:5px solid var(--accent-2);
+  border-radius:10px;padding:10px 12px 10px 14px;box-shadow:var(--shadow);margin:12px 0;}
+.sidebar .sb-title{font-weight:700;color:#4f46e5;margin-bottom:.2rem;font-size:1.02rem;}
+.sidebar .sb-list,.sidebar .sb-metrics{padding-left:1.0rem;margin:.1rem 0;}
+.data-card{border-left-color:#0ea5e9;}
+.timeline-card{border-left-color:#8b5cf6;}
+.compare-card{border-left-color:#0ea5e9;}
+.controversy{border:1px solid #fde2e1;background:#fff5f5;border-left:5px solid var(--warn);
+  border-radius:10px;padding:10px 12px 10px 14px;box-shadow:var(--shadow);margin:12px 0;}
+.controversy .ct-title{font-weight:800;color:var(--warn);margin-bottom:.2rem;font-size:1.02rem;}
+.recap{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:10px;}
+.card{background:#ffffff;border:1px solid #e5e7eb;border-radius:10px;padding:10px 12px;box-shadow:var(--shadow);}
+.inline-card{border:1px solid #e5e7eb;border-left:4px solid #6366f1;background:#ffffff;border-radius:10px;
+  padding:8px 10px;margin:8px 0 12px 0;box-shadow:var(--shadow);}
+.inline-card .ic-title{font-weight:700;margin-bottom:.2rem;font-size:1.0rem;}
+.inline-card.person{border-left-color:#6366f1;}
+.concept{border:1px dashed #c7d2fe;background:#f8fafc;border-radius:10px;padding:10px 12px;margin:10px 0 14px 0;}
+.concept .cp-title{font-weight:700;color:#4f46e5;margin-bottom:.2rem;}
+.concept .cp-analogy{margin-top:.2rem;color:#5f6368;font-style:italic;}
+table{border-collapse:collapse;width:100%;font-size:.96rem;}
+th,td{border:1px solid #e5e7eb;padding:6px 8px;vertical-align:top;}
+th{background:#f8fafc;text-align:left;}
+footer{margin-top:36px;color:var(--muted);font-size:.9rem;}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>第5章 白皮书与创世 <span class="subtitle">（第二编（2008–2014）比特币的发明与早期扩散）</span></h1>
+  <p class="small">作者：Zino ｜ 2025年著</p>
+</header>
+
+<h2>2008·白皮书：把“电子现金”落在工程上</h2>
+<p>2008 年 10 月 31 日，署名 <strong>中本聪（Satoshi Nakamoto）</strong> 的白皮书《Bitcoin: A Peer-to-Peer Electronic Cash System》投递到密码学邮件列表，提出：<em>在无需中心的开放网络里</em>，用 <b>工作量证明</b>、<b>最长链规则</b> 与 <b>难度调整</b> 组成一条“任何人都能验证的时间戳链”，以此达成对转账历史的一致记录。核心不在“相信谁”，而在“如何验证”。 <em>“相信谁取决于谁的可验证性更高。”</em></p>
+<div class="inline-card person">
+  <div class="ic-title">人物卡 · 中本聪（Satoshi Nakamoto）</div>
+  <div class="ic-body">比特币的白皮书作者与早期实现者；以匿名/化名的方式推动了去中心化电子现金的落地。</div>
+</div>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · 点对点电子现金</div>
+  <div class="cp-body">不依赖银行或支付公司，用户直接在开放网络里转移所有权，每笔变更都进公共账本。</div>
+  <div class="cp-analogy">像“全城共享的账簿”：任何人都可记一笔，但大家只承认那条“投入最多工作量”的版本。</div>
+</div>
+
+<h2>2009·创世：从一条消息开始的链</h2>
+<p>2009 年 1 月 3 日，<b>创世区块</b> 被挖出，其中的 coinbase 留下了那句广为人知的报纸标题：<em>“Chancellor on brink of second bailout for banks”</em>。这句标题一方面给出了可核验的时间印记，另一方面点明了动机：如何摆脱“中心信用—再担保—再救助”的循环。</p>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · 区块、链与难度</div>
+  <div class="cp-body">若干笔交易打包成区块；区块需解出符合目标的哈希（PoW）；把新区块接在前一区块之后，形成“最长（工作量最大）”的一条链。难度会周期性调整，以维持约 10 分钟的区块时间。</div>
+  <div class="cp-analogy">像在木板上钉钉子：每钉一次都要花气力（算力），最坚固的那条钉子最多、最费力的板子，被默认当作“主板”。</div>
+</div>
+
+<h2>设计抉择：为何是这组“关键螺丝”</h2>
+<ul>
+  <li><b>发行与激励</b>：首个有效区块给予 <b>区块补贴</b>（起始 50 BTC），并随时间 <b>减半</b>，总量上限约 2100 万；<em>把记账者的动力写进协议</em>。</li>
+  <li><b>最长链规则</b>：当出现分叉，默认承认累计工作量最大的那条历史；<em>把冲突的裁决交给可验证的成本</em>。</li>
+  <li><b>难度目标</b>：按周期校准区块时间，使攻击者成本随全网算力而上升；<em>全网自动调压</em>。</li>
+  <li><b>UTXO 模型</b>：以“未花费的输出”为最小单位，避免账户共享状态的竞态；<em>并行度更高、验证更轻</em>。</li>
+</ul>
+<p>通过难度与最长链把作恶变贵，系统才有可持续的秩序。</p>
+<p><em>“只要能免费作假、作恶，就一定会。”</em></p>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · UTXO</div>
+  <div class="cp-body">把每次收款当作一张“可拆分的收据”；花费时用旧收据换新收据，旧的作废。</div>
+  <div class="cp-analogy">一沓现金券：找零是“销毁旧券、生成新券”，而非在一个“余额数字”上加减。</div>
+</div>
+
+<h2>客户端与首批见证者</h2>
+<p>2009 年 1 月 9 日，早期客户端发布；同年 1 月 12 日，<strong>哈尔·芬尼（Hal Finney）</strong> 收到来自中本聪的 10 BTC 转账，链上可考的第一笔点对点交易就此记下。</p>
+<div class="inline-card person">
+  <div class="ic-title">人物卡 · 哈尔·芬尼（Hal Finney）</div>
+  <div class="ic-body">密码学与 PGP 贡献者；最早运行比特币软件并参与讨论、测试与改进。</div>
+</div>
+
+<h2>对照表 · 账户制 vs UTXO（精要）</h2>
+<div class="sidebar compare-card compact">
+  <div class="sb-title">对照卡 · 账户制 / UTXO</div>
+  <table>
+    <thead>
+      <tr><th>维度</th><th>账户制</th><th>UTXO</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>并行性</td><td>较低：共享余额，易冲突</td><td>较高：独立输出并行验证</td></tr>
+      <tr><td>隐私</td><td>地址复用易画像</td><td>天然拆分、可降低关联</td></tr>
+      <tr><td>脚本表达</td><td>以账户权限为主</td><td>以“花费条件”编程</td></tr>
+      <tr><td>轻节点</td><td>较重</td><td>Merkle 证明友好</td></tr>
+    </tbody>
+  </table>
+</div>
+
+
+<h2>关键时间线（2008–2010，选）</h2>
+<div class="sidebar timeline-card compact">
+  <div class="sb-title">时间线</div>
+  <ul class="sb-list">
+    <li>2008-10-31：白皮书发布（邮件列表）</li>
+    <li>2009-01-03：创世区块</li>
+    <li>2009-01-09：早期客户端发布</li>
+    <li>2009-01-12：首笔链上转账（10 BTC）</li>
+    <li>2010-05-22：比特币披萨日（10,000 BTC 购买两份披萨）</li>
+  </ul>
+</div>
+
+<div class="controversy compact">
+  <div class="ct-title">争点 · “匿名作者”与“无预挖”</div>
+  <ol>
+    <li><b>命题</b>：匿名作者是否降低信任？</li>
+    <li><b>观察</b>：比特币把权威交给可验证的开源代码与链上历史，而非个人信用。</li>
+    <li><b>事实</b>：创世区块奖励不可花费；早期发行靠公开挖矿，<b>无预挖</b>。</li>
+    <li><b>小结</b>：信任被外化到“<em>可验证规则 + 可审计历史</em>”。</li>
+  </ol>
+</div>
+
+<h2>章末复盘</h2>
+<div class="recap compact">
+  <div class="card">
+    <strong>要点</strong>
+    <ul class="small">
+      <li>白皮书把“反女巫的成本”与“时间顺序”合为一体：PoW + 最长链 + 难度调整。</li>
+      <li>激励与共识闭环：出块奖励驱动记账，最长链解决分歧。</li>
+      <li>UTXO 为扩展与隐私留出空间；“电子现金”的最小颗粒是“输出”。</li>
+    </ul>
+  </div>
+  <div class="card">
+    <strong>下一章预告</strong>
+    <ul class="small">
+      <li>难度与挖矿：算力竞赛如何改变网络结构与地理分布？</li>
+      <li>客户端与生态：从邮件列表到论坛，谁在维护秩序？</li>
+    </ul>
+  </div>
+</div>
+
+<footer>
+  <p>本作品采用知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议（CC BY-NC-ND 4.0）授权。</p>
+</footer>
+
+</div>
+</body>
+</html>

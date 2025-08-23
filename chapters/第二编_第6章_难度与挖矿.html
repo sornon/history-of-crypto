@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>第二编 · 第6章 · 难度与挖矿</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+  --ink:#202124;--muted:#5f6368;--accent:#0b6efd;--accent-2:#8b5cf6;--bg:#ffffff;--card:#f6f8fa;--warn:#b42318;
+  --shadow:0 1px 2px rgba(16,24,40,.06),0 1px 3px rgba(16,24,40,.1);
+}
+html,body{background:var(--bg);color:var(--ink);margin:0;padding:0;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Noto Sans CJK SC","Source Han Sans SC","Microsoft Yahei",Arial,Helvetica,sans-serif;
+  line-height:1.78;}
+.container{max-width:860px;margin:48px auto 120px;padding:0 20px;}
+h1,h2,h3{line-height:1.28;margin:1.2em 0 .6em;}
+h1{font-size:2rem;letter-spacing:.01em;}
+h2{font-size:1.5rem;border-bottom:2px solid #eee;padding-bottom:.25rem;}
+h3{font-size:1.12rem;color:var(--muted);}
+.subtitle{color:var(--muted);}
+.small{font-size:.95rem;color:var(--muted);}
+ul,ol{padding-left:1.2rem;}
+.sidebar{background:#fbfbff;border:1px solid #e6e8ff;border-left:5px solid var(--accent-2);
+  border-radius:10px;padding:10px 12px 10px 14px;box-shadow:var(--shadow);margin:12px 0;}
+.sidebar .sb-title{font-weight:700;color:#4f46e5;margin-bottom:.2rem;font-size:1.02rem;}
+.sidebar .sb-list,.sidebar .sb-metrics{padding-left:1.0rem;margin:.1rem 0;}
+.data-card{border-left-color:#0ea5e9;}
+.timeline-card{border-left-color:#8b5cf6;}
+.compare-card{border-left-color:#0ea5e9;}
+.controversy{border:1px solid #fde2e1;background:#fff5f5;border-left:5px solid var(--warn);
+  border-radius:10px;padding:10px 12px 10px 14px;box-shadow:var(--shadow);margin:12px 0;}
+.controversy .ct-title{font-weight:800;color:var(--warn);margin-bottom:.2rem;font-size:1.02rem;}
+.recap{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:10px;}
+.card{background:#ffffff;border:1px solid #e5e7eb;border-radius:10px;padding:10px 12px;box-shadow:var(--shadow);}
+.inline-card{border:1px solid #e5e7eb;border-left:4px solid #6366f1;background:#ffffff;border-radius:10px;
+  padding:8px 10px;margin:8px 0 12px 0;box-shadow:var(--shadow);}
+.inline-card .ic-title{font-weight:700;margin-bottom:.2rem;font-size:1.0rem;}
+.inline-card.person{border-left-color:#6366f1;}
+.concept{border:1px dashed #c7d2fe;background:#f8fafc;border-radius:10px;padding:10px 12px;margin:10px 0 14px 0;}
+.concept .cp-title{font-weight:700;color:#4f46e5;margin-bottom:.2rem;}
+.concept .cp-analogy{margin-top:.2rem;color:#5f6368;font-style:italic;}
+table{border-collapse:collapse;width:100%;font-size:.96rem;}
+th,td{border:1px solid #e5e7eb;padding:6px 8px;vertical-align:top;}
+th{background:#f8fafc;text-align:left;}
+footer{margin-top:36px;color:var(--muted);font-size:.9rem;}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>第6章 难度与挖矿 <span class="subtitle">（第二编（2008–2014）比特币的发明与早期扩散）</span></h1>
+  <p class="small">作者：Zino ｜ 2025年著</p>
+</header>
+
+<h2>为什么设定“约 10 分钟出块 + 难度调整”</h2>
+<p>比特币把全网的区块时间设定为平均约 10 分钟。现实中算力会变化、运气也有起伏，所以协议每隔一个周期（2016 个区块）会自动调节“难度目标”，让长期平均仍接近 10 分钟。这样一来，攻击者很难凭短期算力激增长期保持领先，也能避免算力骤降时网络明显变慢。<em>“当速度可预期，作假的机会就会变小。”</em></p>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · 难度目标</div>
+  <div class="cp-body">把“找到满足条件哈希”的门槛随全网算力自动上调或下调，使长期区块时间保持稳定。</div>
+  <div class="cp-analogy">像自动变速的跑步机：你跑得越快，阻力越大；你慢下来，阻力就回调，队伍整体仍能大致匀速前进。</div>
+</div>
+
+<h2>从 CPU 到 ASIC：能效决定谁能留下</h2>
+<p>早期大家用 CPU 挖矿，很快发现 GPU 在“并行尝试哈希”上更擅长；随后是 FPGA，再到为单一算法定制的 ASIC。每一次代际跃迁，都会把“每度电能产出的哈希数”抬高好几个数量级，旧设备很快就被边缘化。能效不是点缀，它直接决定矿工能否覆盖电费、还能否留住利润。<em>“成本不是敌人，它是规则的护城河。”</em></p>
+
+<div class="concept">
+  <div class="cp-title">概念快译 · 难度与能效的赛跑</div>
+  <div class="cp-body">难度提升让“每个哈希的收益”持续下降；只有能效更高的硬件，才能在电费和难度双重压力下生存。</div>
+  <div class="cp-analogy">像逆水行舟：水流（难度）在加速，只有更轻更快的船（更高能效）才能不被冲回去。</div>
+</div>
+
+<h2>矿池：用统计分摊运气</h2>
+<p>单个矿工即便长期能盈利，也会遇到很长时间都挖不到块的情况。矿池通过“份额计分、按贡献分配”，把这种波动摊平，提高现金流的可预测性；但同时也引入集中度和治理问题。关键是：矿池的集中会不会威胁去中心化？答案取决于矿工能否低成本迁池、计分与结算是否公开透明，以及各节点是否仍能独立验证区块。</p>
+<div class="inline-card person">
+  <div class="ic-title">人物卡 · 拉斯洛·汉耶茨（Laszlo Hanyecz）</div>
+  <div class="ic-body">早期贡献者；编写了早期 GPU/OpenCL 挖矿代码并活跃于论坛社群，也因“披萨日”一役被广泛熟知。</div>
+</div>
+
+<h2>地理与能源：算力为何迁徙</h2>
+<p>矿业会追逐“低价而稳定的电力 + 可接入的合规环境”。于是你会看到算力从家庭、网吧转向数据中心；从一地迁往另一地，随着季节性水电、气候、政策与监管成本变化而移动。表面上是机器在搬家，实质上是“能源价格 + 制度成本”的地图在重绘。<em>“算力迁徙，追随的是更便宜的能量与更稳定的制度。”</em></p>
+
+<h2>争点：能耗、集中与安全如何平衡</h2>
+<div class="controversy compact">
+  <div class="ct-title">争点</div>
+  <ol>
+    <li><b>能耗之辩</b>：PoW 是否“浪费”？—若能耗带来<strong>可验证的抗审查与历史不可篡改</strong>，那么能耗是一种“用来买安全”的成本。</li>
+    <li><b>集中之忧</b>：矿池/矿机厂商/电价与政策导致的集中，会不会反噬去中心化？关键在于<strong>迁移摩擦</strong>与<strong>验证独立性</strong>。</li>
+    <li><b>成本与攻击</b>：51% 攻击成本如何随难度与能效变化而变化？难度调整把短期算力冲击的优势不断抹平。</li>
+    <li><b>小结</b>：把安全交给可验证的物理成本，往往比交给口头承诺更可靠。</li>
+  </ol>
+</div>
+
+<h2>边栏</h2>
+<div class="sidebar timeline-card compact">
+  <div class="sb-title">时间线（硬件与组织）</div>
+  <ul class="sb-list">
+    <li>2009：CPU 挖矿为主，个人在家即可参与</li>
+    <li>2010：GPU 挖矿兴起，代际优势显现；早期矿池出现</li>
+    <li>2011–2012：FPGA 过渡期</li>
+    <li>2013 起：ASIC 世代主导，专业化矿场出现</li>
+  </ul>
+</div>
+
+<div class="sidebar data-card compact">
+  <div class="sb-title">要点速写（难度与挖矿经济）</div>
+  <ul class="sb-list">
+    <li>难度每 2016 区块重算，使长期区块时间锚定 ~10 分钟</li>
+    <li>收益 = 区块补贴 + 手续费；难度上升→单哈希产出下降</li>
+    <li>能效（哈希/瓦）决定边际成本；电价与散热是关键约束</li>
+    <li>矿池降低方差，但提高组织与治理的复杂度</li>
+  </ul>
+</div>
+
+<h2>章末复盘</h2>
+<div class="recap compact">
+  <div class="card">
+    <strong>要点</strong>
+    <ul class="small">
+      <li>难度调整让系统把稳定性建立在可验证的物理成本上，而不是口头承诺。</li>
+      <li>硬件代际与能效升级，决定谁能在难度上升中活下来。</li>
+      <li>矿池用统计方法平滑波动，同时也带来治理与集中度的挑战。</li>
+      <li>算力迁徙映射“能源价格 + 制度成本”的全球版图。</li>
+    </ul>
+  </div>
+  <div class="card">
+    <strong>下一章预告</strong>
+    <ul class="small">
+      <li>价格发现与交易所：当链下市场与链上结算相遇，信息、流动性与托管风险如何重排？</li>
+    </ul>
+  </div>
+</div>
+
+<footer>
+  <p>本作品采用知识共享署名-非商业性使用-禁止演绎 4.0 国际许可协议（CC BY-NC-ND 4.0）授权。</p>
+</footer>
+
+</div>
+</body>
+</html>
