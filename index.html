@@ -142,7 +142,6 @@
     function show(el){ el.classList.remove('cshell-hidden'); }
     function hide(el){ el.classList.add('cshell-hidden'); }
     function toast(msg='已添加到书签'){ $toast.textContent = msg; $toast.classList.add('show'); setTimeout(()=> $toast.classList.remove('show'), 1400); }
-    function loadJSON(url){ return fetch(url).then(r=>{ if(!r.ok) throw new Error('fetch failed'); return r.json(); }); }
     function getLast(){ try { return JSON.parse(LS.getItem(KEY_LAST) || 'null'); } catch(e){ return null; } }
     function setLast(obj){ try { LS.setItem(KEY_LAST, JSON.stringify(obj)); } catch(e){} }
     function getBmk(){ try { return JSON.parse(LS.getItem(KEY_BMK) || '[]'); } catch(e){ return []; } }
@@ -214,31 +213,85 @@
     $tabBmk.addEventListener('click', ()=> selectTab('bmk'));
 
     async function initTOC(){
-      try{
-        CHAPTERS = await loadJSON('./chapters.json');
-      }catch(e){
-        // fallback to a minimal sample so页面至少能打开
-        CHAPTERS = [{
-          "part": "第一编（1970s–2008）观念与技术的源流",
-          "title": "第一编_第1章_密码学奠基",
-          "file": "第一编_第1章_密码学奠基.html"
-        },
-        {
-          "part": "第一编（1970s–2008）观念与技术的源流",
-          "title": "第一编_第2章_赛博空间的政治",
-          "file": "第一编_第2章_赛博空间的政治.html"
-        },
-        {
-          "part": "第一编（1970s–2008）观念与技术的源流",
-          "title": "第一编_第3章_电子现金先驱",
-          "file": "第一编_第3章_电子现金先驱.html"
-        },
-        {
-          "part": "第一编（1970s–2008）观念与技术的源流",
-          "title": "第一编_第4章_未竟之业",
-          "file": "第一编_第4章_未竟之业.html"
-        }];
-      }
+        CHAPTERS = [
+    {
+      "number": 1,
+      "part": "第一编",
+      "years": "1970s–2008",
+      "title": "密码学奠基",
+      "file": "第一编_第1章_密码学奠基.html"
+    },
+    {
+      "number": 2,
+      "part": "第一编",
+      "years": "1970s–2008",
+      "title": "赛博空间的政治",
+      "file": "第一编_第2章_赛博空间的政治.html"
+    },
+    {
+      "number": 3,
+      "part": "第一编",
+      "years": "1970s–2008",
+      "title": "电子现金先驱",
+      "file": "第一编_第3章_电子现金先驱.html"
+    },
+    {
+      "number": 4,
+      "part": "第一编",
+      "years": "1970s–2008",
+      "title": "未竟之业",
+      "file": "第一编_第4章_未竟之业.html"
+    },
+    {
+      "number": 5,
+      "part": "第二编",
+      "years": "2008–2014",
+      "title": "白皮书与创世",
+      "file": "第二编_第5章_白皮书与创世.html"
+    },
+    {
+      "number": 6,
+      "part": "第二编",
+      "years": "2008–2014",
+      "title": "难度与挖矿",
+      "file": "第二编_第6章_难度与挖矿.html"
+    },
+    {
+      "number": 7,
+      "part": "第二编",
+      "years": "2008–2014",
+      "title": "价格发现与交易所",
+      "file": "第二编_第7章_价格发现与交易所.html"
+    },
+    {
+      "number": 8,
+      "part": "第二编",
+      "years": "2008–2014",
+      "title": "抗审查与灰色用例",
+      "file": "第二编_第8章_抗审查与灰色用例.html"
+    },
+    {
+      "number": 9,
+      "part": "第二编",
+      "years": "2008–2014",
+      "title": "协议改进与治理萌芽",
+      "file": "第二编_第9章_协议改进与治理萌芽.html"
+    },
+    {
+      "number": 10,
+      "part": "第二编",
+      "years": "2008–2014",
+      "title": "扩展性隐忧",
+      "file": "第二编_第10章_扩展性隐忧.html"
+    },
+    {
+      "number": 11,
+      "part": "第二编",
+      "years": "2008–2014",
+      "title": "小结",
+      "file": "第二编_第11章_小结.html"
+    }
+        ];
       $chapterList.innerHTML = '';
       for (let i=0;i<CHAPTERS.length;i++){
         const c = CHAPTERS[i];
