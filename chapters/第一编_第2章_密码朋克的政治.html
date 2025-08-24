@@ -113,6 +113,67 @@ th{background:#f8fafc;text-align:left;}
 
 
 <p>而在更早的 1988 年，<strong>Timothy C. May</strong> 已经写下了激进的 <strong>《加密无政府主义者宣言》(The Crypto Anarchist Manifesto)</strong>（原文地址：https://activism.net/cypherpunk/crypto-anarchy.html）。他开篇就断言：<strong>“计算机技术正在为个人带来极大的自由，同时也带来极大的改变。密码学将使政府无法征税和管制个人自愿的经济交易。”</strong> 在文中，他甚至预言，借助强加密和匿名网络，<strong>“匿名市场和匿名货币将会出现，它们将削弱甚至摧毁传统国家对信息和经济的垄断。”</strong> 这种论调让人既兴奋又不安：兴奋的是，个人似乎第一次能用纯粹的数学公式与国家权力对抗；不安的是，如果这一切成真，毒品、洗钱、恐怖主义等也可能借此壮大。正因如此，这份宣言在密码朋克邮件列表中引发了最激烈的讨论——一部分人视其为未来的自由蓝图，另一部分人则担心它打开了潘多拉魔盒。</p>
+<div id="cryptoManifesto-container" style="margin-top:12px;">
+  <a href="javascript:void(0);" id="toggleCryptoManifesto" style="color:#0b6efd;text-decoration:none;font-weight:600;">点击展开《加密无政府主义者宣言》</a>
+  <div id="cryptoManifestoContent" style="display:none; margin-top:10px; border:1px solid #e5e7eb; background:#f9fafb; border-radius:8px; padding:12px; line-height:1.6; white-space:pre-wrap;">
+《加密无政府主义者宣言》
+作者：蒂莫西·梅（Timothy C. May）
+发布时间：1992年11月22日
+
+一个幽灵正在笼罩现代世界——加密无政府主义（crypto anarchy）的幽灵。
+
+计算机技术即将赋予个体与群体完全匿名交流互动的能力。两人可交换信息、处理商务、协商电子合同，而无需知晓对方的真实姓名（True Name）或法定身份。网络交互行为将通过加密数据包的复杂重路由（extensive re-routing）与防篡改盒（tamper-proof boxes）变得无法追踪——这些设备以密码学协议实现近乎完美的防干预保障。声誉（Reputations）将成为核心要素，其重要性远超今日的信用评级。这些发展将彻底改变：
+- 政府监管的本质
+- 征税及控制经济活动的能力
+- 信息保密的能力
+- 甚至重塑信任与声誉的根基。
+
+这场技术革命（必将同时是社会与经济革命）的理论基础在过去十年已然存在。其方法基于：
+- 公钥加密（public-key encryption）
+- 零知识交互证明系统（zero-knowledge interactive proof systems）
+- 用于交互、认证与验证的各类软件协议（software protocols）。
+
+迄今焦点集中于欧美学术会议（美国国家安全局严密监控的场合）。但直到最近，计算机网络与个人电脑才达到足够速度，使构想具备实操可能。未来十年，速度的持续提升将使这些想法经济可行且势不可挡。以下技术将成为关键赋能者：
+高速网络、ISDN（综合业务数字网）、防篡改盒、智能卡、卫星、Ku波段发射器、多MIPS个人计算机、研发中的加密芯片。
+
+国家必将试图延缓或阻止该技术传播，理由包括：
+- 国家安全担忧
+- 毒贩与逃税者的技术滥用
+- 社会解体恐惧。
+
+其中许多忧虑合理：加密无政府主义将导致国家机密自由交易，非法与赃物市场滋生，甚至催生暗杀与勒索的匿名计算机化市场。犯罪集团与境外势力将成为加密网络（CryptoNet）的活跃用户——但这无法阻挡加密无政府主义的蔓延。
+
+正如印刷术削弱中世纪行会与社会权力结构，密码学方法也将根本性改变企业性质与政府对经济交易的干预。结合新兴信息市场，加密无政府主义将为所有图文素材创造流动市场。
+  
+正如铁丝网（barbed wire）这项看似微末的发明，使广袤牧场农场的围栏成为可能，永远改变了西部边疆的土地与产权概念——数学冷僻分支中的微小发现，也将成为剪断知识产权铁蒺藜的钢丝钳（wire clippers）。
+
+起来吧，你们失去的唯有铁丝网！
+
+签名档：
+蒂莫西·C·梅（Timothy C. May）
+邮箱：tcmay@netcom.com
+电话：408-688-5409
+地址：W.A.S.T.E.：Aptos, CA（注：取自品钦小说《拍卖第49批》的无政府符号）
+高阶幂：2^756839（注：荒诞数学梗，讽刺官僚体系）
+PGP公钥：通过安排获取
+  </div>
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", function(){
+    var toggle = document.getElementById("toggleCryptoManifesto");
+    var content = document.getElementById("cryptoManifestoContent");
+    toggle.addEventListener("click", function(){
+      if(content.style.display === "none"){
+        content.style.display = "block";
+        toggle.textContent = "点击收起《加密无政府主义者宣言》";
+      } else {
+        content.style.display = "none";
+        toggle.textContent = "点击展开《加密无政府主义者宣言》";
+      }
+    });
+  });
+</script>
+
 
 <p>在邮件列表里，思想冲突不断激荡。有人坚持认为强加密的普及将不可避免地削弱国家权力，另一批成员则强调社会秩序和公共安全的重要性；隐私与安全之间的张力、自由与滥用之间的灰色地带，成为密码朋克们持续数年的论战主题。但无论如何，他们都认同一点：与其争辩不休，不如直接写下能运行的代码。于是，匿名 remailer、加密聊天、数字签名、早期电子货币实验都在这一氛围下诞生。为了抵抗美国政府将强加密视为军火的出口管制，<strong>Adam Back（亚当·贝克）</strong> 更是把 RSA 算法的核心代码缩减成几行 Perl 程序，并印在 T 恤和邮件签名中，以挑衅的姿态回应管制。</p>
 
