@@ -71,12 +71,13 @@ ul,ol{padding-left:1.2rem;}
   <div class="cp-analogy">在嘈杂广场里，两人各自摇一瓶颜料（私钥不公开），把颜料滴入同一调色盘（公开参数）搅拌，得到同色但旁人无法逆推回原色——这就是 Diffie–Hellman 密钥交换。</div>
 </div>
 
-<h2>三大难题：密钥、签名、时间</h2>
+<h2>三大核心：保密性、身份可验性、历史完整性</h2>
 <ol>
   <li><strong>密钥协商</strong>：Diffie–Hellman 让公开信道上的“私语”成为可能。</li>
-  <li><strong>签名与验证</strong>：消息需要“是谁发的、途中未改”的证据；<strong>RSA</strong> 给出通用的数字签名机制。</li>
-  <li><strong>完整性与顺序</strong>：哈希函数、<strong>Merkle 树</strong>与<strong>数字时间戳</strong>确保“没改过”“先后次序”可验证。</li>
+  <li><strong>签名与验证</strong>：通信需要证明“是谁发的”以及“途中未被篡改”；<strong>RSA</strong> 首次给出通用的公钥加密与数字签名框架，为后续结合哈希的签名体系奠定基础。</li>
+  <li><strong>完整性与顺序</strong>：<strong>哈希函数</strong>确保数据未被篡改，Merkle 树扩展到批量验证，而<strong>数字时间戳</strong>让这些记录的先后次序可被数学证明。</li>
 </ol>
+<p>这样就能够完美实现信息传递中防窃听、防篡改、身份真伪可验证、信息历史完整、时间准确无误。</p>
 
 <h2>数字签名：把身份写进代码</h2>
 <p><strong>Ron Rivest、Adi Shamir、Leonard Adleman</strong> 在 MIT 提出 RSA：发送者用私钥对消息“指纹”（哈希）签名，任何人用公钥即可验真与验改。随后 <strong>DSA（NIST，1991）</strong>与证书体系把签名推向工业界与浏览器世界。</p>
