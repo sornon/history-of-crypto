@@ -446,8 +446,22 @@ li.innerHTML = `<div class=\"cshell-item__inner\"><span class=\"cshell-chapno\">
       };
     }
 
-    $prev.addEventListener('click', ()=>{ if (currentIndex>0){ snapshotProgress(); openChapter(currentIndex-1); history.pushState({read:currentIndex-1}, '', `#read?i=${currentIndex-1}`); } });
-    $next.addEventListener('click', ()=>{ if (currentIndex<CHAPTERS.length-1){ snapshotProgress(); openChapter(currentIndex+1); history.pushState({read:currentIndex+1}, '', `#read?i=${currentIndex+1}`); } });
+    $prev.addEventListener('click', ()=>{
+      if (currentIndex > 0) {
+        const target = currentIndex - 1;
+        snapshotProgress();
+        openChapter(target);
+        history.pushState({read: target}, '', `#read?i=${target}`);
+      }
+    });
+    $next.addEventListener('click', ()=>{
+      if (currentIndex < CHAPTERS.length - 1) {
+        const target = currentIndex + 1;
+        snapshotProgress();
+        openChapter(target);
+        history.pushState({read: target}, '', `#read?i=${target}`);
+      }
+    });
     $tocBtn.addEventListener('click', ()=>{ toTOC(); history.pushState({toc:true}, '', '#toc'); });
 
     
