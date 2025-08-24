@@ -61,7 +61,7 @@ ul,ol{padding-left:1.2rem;}
 <h2>1976：公钥的诞生</h2>
 <p>直到1976年，美国斯坦福大学的两位密码学家<strong>Whitfield Diffie</strong>（惠特菲尔德·迪菲）和<strong>Martin Hellman</strong>（马丁·赫尔曼）提出了解决方案。他们在论文《New Directions in Cryptography》中介绍了一种全新的数学方法：即使通信过程完全公开、任何人都能监听，通信双方也可以各自计算出完全相同的密钥。换句话说，他们把“如何在公开网络上协商密钥”这一长期以来被认为无解的问题，转化为了可以通过数学手段解决的过程。在这个过程中，旁观者虽然能截获双方交换的所有信息，却仍然无法从这些公开信息中推算出密钥。这一突破性的发现揭开了公钥密码学时代的帷幕。自此，每个人拥有一对密钥：一个可以公开的公钥和一个保密的私钥，通信时只需要公布公钥，不再需要在通信前秘密共享同一个密钥。以此为基础，后来又出现了RSA等公钥算法、数字签名技术以及各种现代网络安全协议。如今网络购物、网上银行和加密通信等安全应用所采用的技术，无不建立在这一理论创新之上。</p>
 <div class="inline-card person">
-  <div class="ic-title">人物卡 · Diffie &amp; Hellman</div>
+  <div class="ic-title">人物贴士 · Diffie &amp; Hellman</div>
   <div class="ic-body">公开密钥密码学先驱；提出“公开通道协商共同秘密”的方法，奠定现代网络安全基础。</div>
 </div>
 
@@ -81,7 +81,7 @@ ul,ol{padding-left:1.2rem;}
 <h2>数字签名：把身份写进代码</h2>
 <p><strong>Ron Rivest、Adi Shamir、Leonard Adleman</strong> 在 MIT 提出 RSA：发送者用私钥对消息“指纹”（哈希）签名，任何人用公钥即可验真与验改。随后 <strong>DSA（NIST，1991）</strong>与证书体系把签名推向工业界与浏览器世界。</p>
 <div class="inline-card person">
-  <div class="ic-title">人物卡 · RSA 团队</div>
+  <div class="ic-title">人物贴士 · RSA 团队</div>
   <div class="ic-body">Rivest、Shamir、Adleman：提出 RSA 算法；把“不可伪造签名”带到通用计算设备。</div>
 </div>
 
@@ -96,7 +96,7 @@ ul,ol{padding-left:1.2rem;}
 <p>计算机科学家<strong>Ralph Merkle</strong>（拉尔夫·默克尔）在20世纪80年代提出了Merkle树（又称哈希树） ￼。从结构上看，Merkle树是一种二叉哈希树：每个叶子节点保存原始数据块的哈希值，非叶子节点存储其孩子节点哈希值的组合（通常将左右孩子哈希拼接后再哈希） ￼。Merkle树也被称作加密哈希树，因为树的根节点哈希（Merkle根）能够反映整个数据集的完整性 ￼。每一层向上传递哈希值的设计意味着，只要底层数据有任何变动，它就会一路传递到父节点并最终影响树的根哈希 ￼ ￼。这就带来了高效验证的优势：要检查某条记录是否在数据集中，只需要检查该记录对应叶子节点到根节点的那条哈希路径即可，无需遍历整棵树——这种验证过程类似于查看快递的签收记录链，只需顺着链路逐级对照就能确认路径的正确性 ￼。如果根哈希不同，我们也能沿同样的路径在O(log N)时间内快速定位到具体被篡改的记录 ￼。正因为这些特点，Merkle树被广泛用于区块链、Git等分布式系统中 ￼ ￼。例如，比特币区块链的每个区块都用Merkle树来组织其中的所有交易，这使得网络中的轻节点仅需下载区块头的根哈希并通过少量哈希计算就能验证其中任何一笔交易，而无需获取整个区块数据 ￼ ￼。同样地，Git版本控制系统使用基于哈希的有向无环图（本质上是Merkle树）来管理文件快照和提交历史，每次提交的根哈希都代表当时整个项目的状态，从而保证了历史版本不可篡改 ￼ ￼。在分布式存储场景中，人们也利用Merkle树来快速比较两个副本：只需对比它们的根哈希值是否一致，不一致时再逐层对照，这样就可以仅传输不同的数据块，从而显著提高同步效率和节省网络带宽 ￼ ￼。正是这些优势，使Merkle树成为许多去中心化系统进行可信数据校验的基石。</p>
 
 <div class="inline-card person">
-  <div class="ic-title">人物卡 · Ralph Merkle</div>
+  <div class="ic-title">人物贴士 · Ralph Merkle</div>
   <div class="ic-body">哈希树提出者；让批量校验与轻节点验证成为可能，是后续区块链结构的关键基石。</div>
 </div>
 
@@ -109,7 +109,7 @@ ul,ol{padding-left:1.2rem;}
 <h2>数字时间戳：为历史盖章</h2>
 <p>1991 年，<strong>Stuart Haber</strong> 与 <strong>W. Scott Stornetta</strong> 把每份文档的哈希同前一份链接，形成不可篡改的“时间链”，并定期将哈希登报公证，确证“某内容在某时刻已存在”。</p>
 <div class="inline-card person">
-  <div class="ic-title">人物卡 · Haber &amp; Stornetta</div>
+  <div class="ic-title">人物贴士 · Haber &amp; Stornetta</div>
   <div class="ic-body">数字时间戳的提出者；把“不可逆顺序”变成可审计事实，为链式账本提供时间骨架。</div>
 </div>
 
@@ -127,12 +127,12 @@ ul,ol{padding-left:1.2rem;}
 </ul>
 
 <div class="sidebar data-card compact">
-  <div class="sb-title">对照卡 · 原语 → 比特币模块映射</div>
+  <div class="sb-title">技术贴士 · Crypto关键技术</div>
   <ul class="sb-metrics">
-    <li><b>数字签名</b> → 所有权证明（交易解锁脚本）</li>
-    <li><b>哈希函数</b> → 区块指纹/工作量难度计量</li>
-    <li><b>Merkle 树</b> → 交易批量摘要与轻节点验证</li>
-    <li><b>时间戳链</b> → 不可逆顺序与全网一致性基础</li>
+    <li><b>数字签名</b> → 所有权证明（谁能花这笔钱，要用私钥“解锁”交易脚本）</li>
+    <li><b>哈希函数</b> → 区块指纹 / 难度刻度（每个区块的唯一“指纹”，同时决定工作量证明难度）</li>
+    <li><b>Merkle 树</b> → 交易打包摘要 / 轻节点验证（能快速验证某笔交易在不在区块里）</li>
+    <li><b>时间戳链</b> → 不可逆顺序 / 全网共识基础（把区块一个个连成历史，保证大家都看到同样的顺序）</li>
   </ul>
   <div class="sb-note small">注：激励与共识闭环在后续章节展开。</div>
 </div>
