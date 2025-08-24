@@ -56,7 +56,7 @@ footer{margin-top:36px;color:var(--muted);font-size:.9rem;}
 <h2>2008·白皮书：一种大于过去一切信用形式的电子现金</h2>
 <p>2008 年 10 月 31 日，<strong>中本聪（Satoshi Nakamoto）</strong>以化名在密码学邮件列表发布了白皮书<strong>《Bitcoin: A Peer-to-Peer Electronic Cash System》</strong>，宣告一种无需银行或清算机构参与、可在开放网络中直接点对点转账的电子现金方案；同帖附上论文链接，后来成为比特币的出发点。白皮书的要义，是<strong>把“谁来背书”的问题改写为“如何被所有人独立验证”的问题</strong>：网络中的节点把交易打包进区块，通过工作量证明让每个区块都带有可核验的算力成本，并在偶发分叉时遵循“最长链”（更准确地说是累计工作量最大）的规则来收敛到同一条账本历史，从而在缺乏中心裁判的环境里形成一致记录。为了让出块节奏保持稳定，系统大约每 2,016 个区块依据时间戳回顾实际出块速度，自动调整难度，使全网平均出块接近 10 分钟，这既抚平了算力波动，也为交易确认提供了可预期的节拍。整条由区块首尾相接构成的“时间戳链”，让任何人都能下载数据、核对签名与哈希、重放历史，独立验证自己收到的币是否来自一条被全网承认的最长链，验证就此代替了信任，这也是比特币设计的精神所在。换句话说，核心不在<strong>“相信谁”</strong>，而在<strong>“如何验证”</strong>——<em>“相信谁取决于谁的可验证性更高。”</em></p>
 <div class="inline-card person">
-  <div class="ic-title">人物卡 · 中本聪（Satoshi Nakamoto）</div>
+  <div class="ic-title">人物贴士 · 中本聪（Satoshi Nakamoto）</div>
   <div class="ic-body">比特币的白皮书作者与早期实现者；以匿名/化名的方式推动了去中心化电子现金的落地。</div>
 </div>
 
@@ -82,11 +82,11 @@ footer{margin-top:36px;color:var(--muted);font-size:.9rem;}
 <h2>客户端与首批见证者</h2>
 <p>2009 年 1 月 9 日，比特币 v0.1 发布到密码学邮件列表，区块链网络第一次对外开放，让愿意尝试的人都能下载客户端、生成密钥并接入点对点网络；两天后，哈尔·芬尼在推特写下“Running bitcoin”，那不是一句口号，而是他真正在自家电脑上跑起了节点、参与了出块与转账的现场记录；再过一天，1 月 12 日，他收到了中本聪转来的 10 BTC，这笔交易被写进了区块 170，成为链上可考的第一笔点对点转账，宣告“这套东西真的能跑起来”。从来不是偶然：芬尼早在 2004 年就做过“可复用工作量证明”（RPOW）这个原型，尝试用可验证的计算成本来支撑数字现金的稀缺；更早些，他在 PGP 团队做过核心开发，长期活跃于密码学与隐私工具的实践圈层，因此当白皮书引发讨论时，他不仅第一时间下载并参与测试，还在邮件列表里和中本聪就传播与确认的细节展开过推演。命运层面，这位长期的长跑爱好者在 2009 年被确诊为渐冻症，身躯逐渐被禁锢，但他仍坚持写代码、在 2013 年回顾自己与比特币的四年缘起，直至 2014 年去世后按照早年的预嘱进行低温保存；这一连串细节，让“第一笔 10 BTC”不再只是历史 trivia，而是密码朋克理想、计算机科学与人类文明的新起点——它把“人人可验证”的愿景从论文和邮件里搬到了现实世界。<figure class="newspaper-figure"><img src="../images/595240F6-3E1A-41BD-9E23-3A3B0C8552F3.JPEG" loading="lazy" referrerpolicy="no-referrer" style="max-width:100%;height:auto;display:block;margin:0 auto;" /></figure></p>
 <div class="inline-card person">
-  <div class="ic-title">人物卡 · 哈尔·芬尼（Hal Finney）</div>
+  <div class="ic-title">人物贴士 · 哈尔·芬尼（Hal Finney）</div>
   <div class="ic-body">密码学与 PGP 贡献者；最早运行比特币软件并参与讨论、测试与改进。</div>
 </div>
 
-<h2>对照表 · 账户制 vs UTXO（精要）</h2>
+<h2>对照表 · 账户制 vs UTXO</h2>
 <div class="sidebar compare-card compact">
   <div class="sb-title">对照卡 · 账户制 / UTXO</div>
   <table>
@@ -103,7 +103,7 @@ footer{margin-top:36px;color:var(--muted);font-size:.9rem;}
 </div>
 
 
-<h2>关键时间线（2008–2010，选）</h2>
+<h2>关键时间线（2008–2010）</h2>
 <div class="sidebar timeline-card compact">
   <div class="sb-title">时间线</div>
   <ul class="sb-list">
@@ -121,7 +121,7 @@ footer{margin-top:36px;color:var(--muted);font-size:.9rem;}
     <li><b>命题</b>：匿名作者是否降低信任？</li>
     <li><b>观察</b>：比特币把权威交给可验证的开源代码与链上历史，而非个人信用。</li>
     <li><b>事实</b>：创世区块奖励不可花费；早期发行靠公开挖矿，<b>无预挖</b>。</li>
-    <li><b>小结</b>：信任被外化到“<em>可验证规则 + 可审计历史</em>”。</li>
+    <li><b>结论</b>：信任被外化到“<em>可验证规则 + 可审计历史</em>”。</li>
   </ol>
 </div>
 

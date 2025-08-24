@@ -57,7 +57,7 @@ th{background:#f8fafc;text-align:left;}
 <p>在尚无“电子支付”概念的 1980 年代初期，学界对于网上匿名交易仍停留在理论探索阶段，但正是在这样的背景里，<strong>David Chaum（大卫·乔姆）</strong>脱颖而出，成为这一领域的先驱——他在 1983 年的一篇论文中正式提出“盲签名”（blind signature）与“难以追踪的电子现金”（untraceable electronic cash）的概念，这项技术让用户可在不暴露实际内容的情况下，让银行为数字代币签名，从而实现既能验证交易，又无法追究支付人与支付内容之间关联的匿名性基础。这项理念并非纯粹学术设想：Chaum 早在 1982 年完成博士论文时，就已详细规划出一个类似于后来区块链的机制，通过分布式共识、区块链结构和时间戳等方式记录信任链条，只是差了工作量证明这一块。受此灵感驱动，Chaum 于 1989 年在阿姆斯特丹创立 DigiCash 公司，1990 年正式推出 eCash（电子现金）系统：用户通过专门软件请求银行对“盲化”代币签名，获得签名后去“除盲”（unblind）后，就可将代币交给商家支付；商家收到后再向银行兑换，银行经校验后完成清算，由此实现既匿名又防止“双重支付”（double spending），但整个系统仍依赖中心化银行进行铸币与清算。这一设计亟图兼顾匿名性与安全性——Chaum 所说：只有当有人企图重复使用相同 eCash 时，系统才暴露身份，干坏事的人才被追责。</p>
 <p>尽管 DigiCash 当初获得了约 1,000 万美元融资、Nicholas Negroponte 曾担任董事会主席，市场接受度仍远低于预期——原因包括当时互联网尚未普及，用户缺乏对这类技术的理解，而银行方面更对隐私保护不感兴趣，因为他们倾向掌握客户交易数据。尽管商业失败，这一创新仍被视为加密货币与匿名支付领域的重要奠基石，对后来如比特币、Monero、Zcash 等系统中隐私设计与去中心化理念产生深远启示。</p>
 <div class="inline-card person">
-  <div class="ic-title">人物卡 · David Chaum</div>
+  <div class="ic-title">人物贴士 · David Chaum</div>
   <div class="ic-body">密码学家；盲签名与匿名电子现金先驱，DigiCash 创始人。</div>
 </div>
 
@@ -72,7 +72,7 @@ th{background:#f8fafc;text-align:left;}
 <h2>1996–2007：电子黄金与中心化的脆弱性</h2>
 <p>1996 年，<strong>Douglas Jackson</strong> 推出 <strong>e-gold</strong>：以实物黄金作为储备的记账系统，转账快捷、跨境摩擦小，也吸引了灰色用途。随着规模扩大，合规与监管压力骤增；2007 年，e-gold 因反洗钱、牌照等问题被起诉并达成和解，业务式微。事件显示：只要存在可识别的运营实体，<strong>监管钳制与单点故障</strong>难以避免。</p>
 <div class="inline-card person">
-  <div class="ic-title">人物卡 · Douglas Jackson</div>
+  <div class="ic-title">人物贴士 · Douglas Jackson</div>
   <div class="ic-body">e-gold 联合创办人；以黄金储备背书的早期电子现金实践者。</div>
 </div>
 
@@ -85,7 +85,7 @@ th{background:#f8fafc;text-align:left;}
 <h2>1997–2004：工作量证明从反垃圾到安全原语</h2>
 <p><strong>Adam Back</strong> 提出的 <strong>Hashcash</strong>（1997）最初用于<strong>反垃圾邮件</strong>：发送者需解一道困难但可快速验证的哈希难题，滥发邮件的成本陡增。这套“用计算制造稀缺”的思路被视为<strong>发行与防滥用</strong>的基础原语。</p>
 <div class="inline-card person">
-  <div class="ic-title">人物卡 · Adam Back</div>
+  <div class="ic-title">人物贴士 · Adam Back</div>
   <div class="ic-body">密码学家；Hashcash 提出者，工作量证明思想的重要奠基人。</div>
 </div>
 
@@ -98,11 +98,11 @@ th{background:#f8fafc;text-align:left;}
 <h2>1998–2005：去中心化草图——b-money 与 bit gold</h2>
 <p>1998 年，<strong>Wei Dai</strong> 在邮件列表提出 <strong>b-money</strong>：任何人可用工作量证明生成货币，并在分布式数据库上记账；节点通过协议更新余额与合约。2005 年，<strong>Nick Szabo</strong> 描述 <strong>bit gold</strong>：把 PoW 输出按序链接并时间戳，形成可追溯的“工作链”，再以复制容错机制维持账本一致。</p>
 <div class="inline-card person">
-  <div class="ic-title">人物卡 · Wei Dai</div>
+  <div class="ic-title">人物贴士 · Wei Dai</div>
   <div class="ic-body">计算机科学家；b-money 作者，提出 PoW 发行与分布式记账的早期蓝图。</div>
 </div>
 <div class="inline-card person">
-  <div class="ic-title">人物卡 · Nick Szabo</div>
+  <div class="ic-title">人物贴士 · Nick Szabo</div>
   <div class="ic-body">法律与计算交叉研究者；bit gold 提出者，“智能合约”概念早期倡导者。</div>
 </div>
 
@@ -117,7 +117,7 @@ th{background:#f8fafc;text-align:left;}
 <h2>2004：RPOW 与“可复用的工作”</h2>
 <p><strong>Hal Finney</strong> 设计 <strong>RPOW</strong>（Reusable Proofs of Work）：用可信硬件把一次性 PoW 兑换为可转移的“代币”，避免重复计算的浪费。但系统仍需信任运行该硬件的服务器，无法彻底摆脱中心点约束。</p>
 <div class="inline-card person">
-  <div class="ic-title">人物卡 · Hal Finney</div>
+  <div class="ic-title">人物贴士 · Hal Finney</div>
   <div class="ic-body">密码学与 PGP 早期贡献者；RPOW 设计者，后来也是比特币最早的参与者之一。</div>
 </div>
 
@@ -181,7 +181,7 @@ th{background:#f8fafc;text-align:left;}
     <li><b>命题</b>：匿名性与反洗钱/KYC 难以共存。</li>
     <li><b>证据</b>：e-gold 的监管冲突，DigiCash 的商业合作瓶颈。</li>
     <li><b>反证</b>：可验证凭证、零知识与可审计结构为“可分层的隐私”提供接口。</li>
-    <li><b>小结</b>：问题不是“要不要隐私”，而是“在何处、以何种粒度提供隐私与可审计”。</li>
+    <li><b>结论</b>：问题不是“要不要隐私”，而是“在何处、以何种粒度提供隐私与可审计”。</li>
   </ol>
 </div>
 
