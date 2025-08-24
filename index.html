@@ -148,6 +148,15 @@
     const $progress = QS('#cshell-progress');
     const $progressBar = QS('#cshell-progress-bar');
     const $btnProgress = QS('#cshell-btn-progress');
+    // Keep the original index title to restore when returning to TOC
+    const ORIG_TITLE = document.title;
+    function setDocTitleForChapter(i, doc){
+      try{
+        const t = (doc && doc.title && doc.title.trim()) ? doc.title.trim() : (CHAPTERS[i] ? CHAPTERS[i].title : '');
+        if (t) document.title = t;
+      }catch(e){ /* noop */ }
+    }
+
     // --- Cache-busting version param from URL, e.g. index.html?v=12345 ---
     const __CSHELL_V__ = new URLSearchParams(location.search).get('v') || '';
     const withV = (url) => __CSHELL_V__ ? (url + (url.includes('?') ? '&' : '?') + 'v=' + encodeURIComponent(__CSHELL_V__)) : url;
@@ -406,6 +415,7 @@ li.innerHTML = `<div class=\"cshell-item__inner\"><span class=\"cshell-chapno\">
       if ($progress) $progress.classList.add('hidden');
       updateResumeCard();
       show($toc);
+      document.title = ORIG_TITLE;
     }
 
     function openChapter(i, opts={}){
@@ -434,6 +444,8 @@ li.innerHTML = `<div class=\"cshell-item__inner\"><span class=\"cshell-chapno\">
           const doc = $frame.contentDocument;
           const style = doc.createElement('style'); style.textContent = `html,body{margin:0!important;padding:0!important;}`; doc.head.appendChild(style);
           await segmentedRestore(doc, targetRatio);
+          // Ensure title after potential dynamic updates
+          try { if (doc && doc.title) setDocTitleForChapter(i, doc); } catch(e){}
 
           // live scroll update
           let tick = 0;
