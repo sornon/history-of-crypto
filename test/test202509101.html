@@ -2,28 +2,21 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<!-- 禁止缩放（iPad） -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="format-detection" content="telephone=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="La Casa 菜单">
 <meta name="theme-color" content="#111">
-<title>La Casa 专属隐藏款 · 电子菜单（长者友好·PWA）</title>
-
-<!-- Apple Touch Icon（建议 1024x1024 PNG）。
-     你可以先点击页面右上角按钮“下载图标PNG”，会生成 apple-touch-icon.png 文件；
-     然后把它与本 HTML 放在同一目录，iPad 添加到主屏幕即可使用该图标。 -->
+<title>La Casa 专属隐藏款 · 电子菜单（长者友好·PWA v2）</title>
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
-  /* 保持原有样式的基础上，略去冗长的注释；仅补充与缩放相关设置 */
   html,body{height:100%}
   body{margin:0;background:#0f0f12;color:#f1f1f3;
        font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
-       -webkit-text-size-adjust:100%; /* 禁止 iOS 自动放大文字 */
+       -webkit-text-size-adjust:100%;
        font-size:20px;line-height:1.6;letter-spacing:.2px}
   *{box-sizing:border-box}
-  /* 头部工具条：新增“下载图标PNG”按钮 */
   header{position:sticky;top:0;z-index:100;background:linear-gradient(180deg, rgba(15,15,18,.98), rgba(15,15,18,.88) 70%, rgba(15,15,18,0));backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.12)}
   .wrap{max-width:1200px;margin:0 auto;padding:12px 16px}
   h1{font-size:30px;margin:4px 0 8px}
@@ -49,7 +42,6 @@
   .btn.secondary{background:#23232b;border:1px solid rgba(255,255,255,.12)}
   .nav{position:absolute;inset:0;display:flex;justify-content:space-between;align-items:center;pointer-events:none}
   .arrow{pointer-events:auto;border:none;width:56px;height:56px;border-radius:50%;background:rgba(0,0,0,.42);color:#fff;font-size:28px;display:grid;place-items:center;margin:0 8px;border:1px solid rgba(255,255,255,.24)}
-  /* 购物车简化：保留上版功能点 */
   .cart-fab{position:fixed;right:22px;bottom:24px;z-index:65;border-radius:999px;padding:20px 26px;font-size:22px;background:#a88146;color:#fff;border:none;box-shadow:0 10px 20px rgba(0,0,0,.35)}
   .drawer{position:fixed;right:0;top:0;height:100%;width:min(560px,94vw);z-index:70;transform:translateX(100%);transition:.35s ease;background:#14141a;border-left:1px solid rgba(255,255,255,.12);display:flex;flex-direction:column}
   .drawer.open{transform:translateX(0)}
@@ -73,10 +65,10 @@
     <div class="toolbar">
       <div>
         <h1>La Casa 专属隐藏款 · Hidden Treasures</h1>
-        <p class="sub">一级分类 Tab + 轮播；底部半透明涂层显示产品信息。已禁用页面缩放，iPad 可添加至主屏。</p>
+        <p class="sub">已禁用缩放；支持 iPad 添加到主屏。点右侧按钮可生成主屏图标（1024×1024）。</p>
       </div>
       <div>
-        <button id="dlIcon" class="btn">下载图标PNG</button>
+        <button id="dlIcon" class="btn">下载图标PNG（LICOR）</button>
       </div>
     </div>
   </div>
@@ -108,224 +100,170 @@
   <div class="footer">
     <div class="summary"><span class="t">合计</span><strong id="cartTotal">¥0</strong></div>
     <div class="checkout">
-      <button class="btn secondary" id="clearCart">清空</button>
+      <button class="btn" id="clearCart">清空</button>
       <button class="btn" id="placeOrder">生成订单</button>
     </div>
   </div>
 </aside>
 
 <script>
-// ------- 禁止双指缩放备用（部分旧版 iOS） -------
-document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
+// 禁止双指缩放（旧设备）
+document.addEventListener('gesturestart', e=>e.preventDefault());
 
-// ------- 数据 -------
-const CATS = [
-  {id:'coffee', name:'精品咖啡 Coffee'},
-  {id:'rum', name:'古巴朗姆 Rum for Cigar'},
-  {id:'white', name:'白葡萄酒 White Wine'},
-  {id:'red', name:'红葡萄酒 Red Wine'},
-  {id:'rose', name:'桃红葡萄酒 Rosé'},
-  {id:'rare', name:'小众烈酒 Rare Spirits'},
-  {id:'sig', name:'La Casa 特调 Signature Cocktails'},
-  {id:'easter', name:'La Casa 小彩蛋'},
-  {id:'snack', name:'茄客小食'}
+// 数据（与前版一致，省略注释）
+const CATS=[
+  {id:'coffee',name:'精品咖啡 Coffee'},{id:'rum',name:'古巴朗姆 Rum for Cigar'},
+  {id:'white',name:'白葡萄酒 White Wine'},{id:'red',name:'红葡萄酒 Red Wine'},
+  {id:'rose',name:'桃红葡萄酒 Rosé'},{id:'rare',name:'小众烈酒 Rare Spirits'},
+  {id:'sig',name:'La Casa 特调 Signature Cocktails'},{id:'easter',name:'La Casa 小彩蛋'},
+  {id:'snack',name:'茄客小食'}
+];
+const MENU=[
+  {id:'ice-1',cat:'coffee',title:'极品冰滴｜淡雅芳香系（百搭雪茄）',desc:'0℃冰水滴滤 1 天，发酵 3–7 天，口感清冽冰爽。',price:11900,unit:'/杯'},
+  {id:'ice-2',cat:'coffee',title:'极品冰滴｜果香红茶系（提升风味）',desc:'果香跳跃、红茶感明显，激发雪茄香气。',price:11900,unit:'/杯'},
+  {id:'ice-3',cat:'coffee',title:'极品冰滴｜浆果活泼系（适配强度）',desc:'更有劲道的风味线，适配高强度雪茄。',price:11900,unit:'/杯'},
+  {id:'hot-1',cat:'coffee',title:'精品手冲｜万花',desc:'参赛级参数调校，层次丰富。',price:7900,unit:'/杯'},
+  {id:'hot-2',cat:'coffee',title:'精品手冲｜耶加莱德',desc:'花果香突出，酸甜平衡。',price:7900,unit:'/杯'},
+  {id:'hot-3',cat:'coffee',title:'精品手冲｜桃莓优格',desc:'桃与莓果气息，酸乳感顺滑。',price:7900,unit:'/杯'},
+  {id:'santiago-20-g',cat:'rum',title:'圣地亚哥 20 年（绝版）',desc:'加勒比热辣与陈年复杂度的平衡。',price:43900,unit:'/杯'},
+  {id:'treasure',cat:'rum',title:'金银岛宝藏（国礼）',desc:'收藏级古巴朗姆，气派之选。',price:1799900,unit:'/瓶'},
+  {id:'cubaney-10',cat:'rum',title:'古巴邑 10 年',desc:'顺喉易饮，入门之选。',price:6900,unit:'/杯'},
+  {id:'cubaney-20',cat:'rum',title:'古巴邑 20 年',desc:'陈年香气浓郁，回味悠长。',price:23800,unit:'/杯'},
+  {id:'ww-1',cat:'white',title:'新西兰十字星 马尔堡 长相思 干白 2021',desc:'单宁近零，激发味蕾，适合灰茄前/中。',price:6900,unit:'/杯'},
+  {id:'ww-2',cat:'white',title:'法拉利酒庄 小夏布利 村庄 干白 2023',desc:'矿物感清晰，酸度爽脆。',price:6900,unit:'/杯'},
+  {id:'ww-3',cat:'white',title:'法国 杜索 传统佳酿 香槟 NV',desc:'气泡细腻，活力十足。',price:6900,unit:'/杯'},
+  {id:'rw-1',cat:'red',title:'摩尔多瓦 梅洛 干红 2012',desc:'适合灰茄后饮用。',price:6900,unit:'/杯'},
+  {id:'rw-2',cat:'red',title:'意大利 法芭雅 蒙特布查诺 红 2022',desc:'成熟红果与香料气息。',price:6900,unit:'/杯'},
+  {id:'rw-3',cat:'red',title:'意大利 曼都利亚 利嘉 红 2021',desc:'饱满酒体，余味绵长。',price:6900,unit:'/杯'},
+  {id:'rw-4',cat:'red',title:'意大利 格兰吉雅 经典 阿玛罗尼 红 2022',desc:'力度与甜美并存。',price:6900,unit:'/杯'},
+  {id:'rose-1',cat:'rose',title:'意大利 特莎蒂洛 桃红起泡 NV',desc:'全程兼容雪茄，轻松畅饮。',price:6900,unit:'/杯'},
+  {id:'rose-2',cat:'rose',title:'意大利 时尚控 桃红起泡 NV',desc:'派对气质，愉悦开胃。',price:6900,unit:'/杯'},
+  {id:'rare-1',cat:'rare',title:'拉达米尔 白兰地',desc:'适合灰茄中/后。',price:6900,unit:'/杯'},
+  {id:'rare-2',cat:'rare',title:'梅斯赫蒂 五年 白兰地',desc:'顺滑果干风味。',price:6900,unit:'/杯'},
+  {id:'rare-3',cat:'rare',title:'麦伦多 单一微醺麦芽',desc:'麦芽香气，轻盈微醺。',price:11800,unit:'/杯'},
+  {id:'mojito',cat:'sig',title:'比那尔德里奥的莫吉托',desc:'Pinar del Río Mojito · 与雪茄全程兼容。',price:9800,unit:'/杯'},
+  {id:'cubalibre',cat:'sig',title:'自由古巴之烟草时光',desc:'Cigar Time of Cuba Libre · 经典新演绎。',price:9800,unit:'/杯'},
+  {id:'castle',cat:'sig',title:'夜之古堡',desc:'Castle in the Night · 夜色与余味。',price:9800,unit:'/杯'},
+  {id:'bucket-1',cat:'easter',title:'好彩头冰桶｜好运杯',desc:'含可饮白桦树汁，可冰镇任意酒水，会发光。',price:5900,unit:'/桶'},
+  {id:'bucket-2',cat:'easter',title:'好彩头冰桶｜招财杯',desc:'同款彩光冰桶。',price:5900,unit:'/桶'},
+  {id:'bucket-3',cat:'easter',title:'好彩头冰桶｜吉祥杯',desc:'同款彩光冰桶。',price:5900,unit:'/桶'},
+  {id:'bucket-4',cat:'easter',title:'好彩头冰桶｜平安杯',desc:'同款彩光冰桶。',price:5900,unit:'/桶'},
+  {id:'snack-1',cat:'snack',title:'坚果拼盘',desc:'小胡桃、松子、杏仁、腰果等随机拼盘。',price:8800,unit:'/盘'},
+  {id:'snack-2',cat:'snack',title:'伊比利亚火腿',desc:'咸香与脂香，雪茄绝配。',price:19800,unit:'/盘'},
+  {id:'snack-3',cat:'snack',title:'黑松露饼干',desc:'幽微松露香气，酥脆可口。',price:4900,unit:'/盘'}
 ];
 
-const MENU = [
-  {id:'ice-1', cat:'coffee', title:'极品冰滴｜淡雅芳香系（百搭雪茄）', desc:'0℃冰水滴滤 1 天，发酵 3–7 天，口感清冽冰爽。', price:11900, unit:'/杯'},
-  {id:'ice-2', cat:'coffee', title:'极品冰滴｜果香红茶系（提升风味）', desc:'果香跳跃、红茶感明显，激发雪茄香气。', price:11900, unit:'/杯'},
-  {id:'ice-3', cat:'coffee', title:'极品冰滴｜浆果活泼系（适配强度）', desc:'更有劲道的风味线，适配高强度雪茄。', price:11900, unit:'/杯'},
-  {id:'hot-1', cat:'coffee', title:'精品手冲｜万花', desc:'参赛级参数调校，层次丰富。', price:7900, unit:'/杯'},
-  {id:'hot-2', cat:'coffee', title:'精品手冲｜耶加莱德', desc:'花果香突出，酸甜平衡。', price:7900, unit:'/杯'},
-  {id:'hot-3', cat:'coffee', title:'精品手冲｜桃莓优格', desc:'桃与莓果气息，酸乳感顺滑。', price:7900, unit:'/杯'},
-
-  {id:'santiago-20-g', cat:'rum', title:'圣地亚哥 20 年（绝版）', desc:'加勒比热辣与陈年复杂度的平衡。', price:43900, unit:'/杯'},
-  {id:'treasure', cat:'rum', title:'金银岛宝藏（国礼）', desc:'收藏级古巴朗姆，气派之选。', price:1799900, unit:'/瓶'},
-  {id:'cubaney-10', cat:'rum', title:'古巴邑 10 年', desc:'顺喉易饮，入门之选。', price:6900, unit:'/杯'},
-  {id:'cubaney-20', cat:'rum', title:'古巴邑 20 年', desc:'陈年香气浓郁，回味悠长。', price:23800, unit:'/杯'},
-
-  {id:'ww-1', cat:'white', title:'新西兰十字星 马尔堡 长相思 干白 2021', desc:'单宁近零，激发味蕾，适合灰茄前/中。', price:6900, unit:'/杯'},
-  {id:'ww-2', cat:'white', title:'法拉利酒庄 小夏布利 村庄 干白 2023', desc:'矿物感清晰，酸度爽脆。', price:6900, unit:'/杯'},
-  {id:'ww-3', cat:'white', title:'法国 杜索 传统佳酿 香槟 NV', desc:'气泡细腻，活力十足。', price:6900, unit:'/杯'},
-
-  {id:'rw-1', cat:'red', title:'摩尔多瓦 梅洛 干红 2012', desc:'适合灰茄后饮用。', price:6900, unit:'/杯'},
-  {id:'rw-2', cat:'red', title:'意大利 法芭雅 蒙特布查诺 红 2022', desc:'成熟红果与香料气息。', price:6900, unit:'/杯'},
-  {id:'rw-3', cat:'red', title:'意大利 曼都利亚 利嘉 红 2021', desc:'饱满酒体，余味绵长。', price:6900, unit:'/杯'},
-  {id:'rw-4', cat:'red', title:'意大利 格兰吉雅 经典 阿玛罗尼 红 2022', desc:'力度与甜美并存。', price:6900, unit:'/杯'},
-
-  {id:'rose-1', cat:'rose', title:'意大利 特莎蒂洛 蓝布鲁斯科 桃红起泡 NV', desc:'全程兼容雪茄，轻松畅饮。', price:6900, unit:'/杯'},
-  {id:'rose-2', cat:'rose', title:'意大利 时尚控 桃红起泡 NV', desc:'派对气质，愉悦开胃。', price:6900, unit:'/杯'},
-
-  {id:'rare-1', cat:'rare', title:'拉达米尔 白兰地', desc:'适合灰茄中/后。', price:6900, unit:'/杯'},
-  {id:'rare-2', cat:'rare', title:'梅斯赫蒂 五年 白兰地', desc:'顺滑果干风味。', price:6900, unit:'/杯'},
-  {id:'rare-3', cat:'rare', title:'麦伦多 单一微醺麦芽', desc:'麦芽香气，轻盈微醺。', price:11800, unit:'/杯'},
-
-  {id:'mojito', cat:'sig', title:'比那尔德里奥的莫吉托', desc:'Pinar del Río Mojito · 与雪茄全程兼容。', price:9800, unit:'/杯'},
-  {id:'cubalibre', cat:'sig', title:'自由古巴之烟草时光', desc:'Cigar Time of Cuba Libre · 经典新演绎。', price:9800, unit:'/杯'},
-  {id:'castle', cat:'sig', title:'夜之古堡', desc:'Castle in the Night · 夜色与余味。', price:9800, unit:'/杯'},
-
-  {id:'bucket-1', cat:'easter', title:'好彩头冰桶｜好运杯', desc:'含可饮白桦树汁，可冰镇任意酒水，会发光。', price:5900, unit:'/桶'},
-  {id:'bucket-2', cat:'easter', title:'好彩头冰桶｜招财杯', desc:'同款彩光冰桶。', price:5900, unit:'/桶'},
-  {id:'bucket-3', cat:'easter', title:'好彩头冰桶｜吉祥杯', desc:'同款彩光冰桶。', price:5900, unit:'/桶'},
-  {id:'bucket-4', cat:'easter', title:'好彩头冰桶｜平安杯', desc:'同款彩光冰桶。', price:5900, unit:'/桶'},
-
-  {id:'snack-1', cat:'snack', title:'坚果拼盘', desc:'小胡桃、松子、杏仁、腰果等随机拼盘。', price:8800, unit:'/盘'},
-  {id:'snack-2', cat:'snack', title:'伊比利亚火腿', desc:'咸香与脂香，雪茄绝配。', price:19800, unit:'/盘'},
-  {id:'snack-3', cat:'snack', title:'黑松露饼干', desc:'幽微松露香气，酥脆可口。', price:4900, unit:'/盘'}
-];
-
-// 工具函数
-const fmtY = n => '¥' + (n/100).toLocaleString('zh-CN',{minimumFractionDigits:0});
-function el(tag, attrs={}, ...children){
-  const node = document.createElement(tag);
-  for(const [k,v] of Object.entries(attrs||{})){
-    if(k==='class') node.className=v;
-    else if(k.startsWith('on') && typeof v==='function') node.addEventListener(k.slice(2), v);
-    else if(k==='html') node.innerHTML=v;
-    else node.setAttribute(k,v);
+const tabs=document.getElementById('tabs');
+let activeCat=CATS[0].id;
+function el(tag,attrs={},...children){
+  const n=document.createElement(tag);
+  for(const [k,v] of Object.entries(attrs)){
+    if(k==='class') n.className=v;
+    else if(k.startsWith('on')) n.addEventListener(k.slice(2),v);
+    else if(k==='html') n.innerHTML=v;
+    else n.setAttribute(k,v);
   }
-  for(const c of children.flat()){
-    if(c==null) continue;
-    node.appendChild(typeof c==='string' ? document.createTextNode(c) : c);
-  }
-  return node;
+  for(const c of children.flat()) if(c!=null) n.appendChild(typeof c==='string'?document.createTextNode(c):c);
+  return n;
 }
-
-// Tabs + Carousel
-const tabs = document.getElementById('tabs');
-let activeCat = CATS[0].id;
 CATS.forEach(cat=>{
-  const b = el('button',{class:'tab', 'aria-selected': cat.id===activeCat?'true':'false', onclick:()=>{
-    activeCat = cat.id;
-    [...tabs.children].forEach(x=>x.setAttribute('aria-selected','false'));
-    b.setAttribute('aria-selected','true');
-    drawCarousel(true);
-  }}, cat.name);
-  tabs.appendChild(b);
+  const b=el('button',{class:'tab','aria-selected':cat.id===activeCat?'true':'false',onclick:()=>{
+    activeCat=cat.id;[...tabs.children].forEach(x=>x.setAttribute('aria-selected','false'));b.setAttribute('aria-selected','true');drawCarousel(true);
+  }},cat.name);tabs.appendChild(b);
 });
-
-const track = document.getElementById('track');
+const track=document.getElementById('track');
 function slideCard(m){
-  const slide = el('div',{class:'slide'});
-  slide.appendChild(el('div',{class:'imgph'}, '图片占位'));
-  const ov = el('div',{class:'overlay'});
-  ov.appendChild(el('div',{class:'name'}, m.title));
-  ov.appendChild(el('div',{class:'desc'}, m.desc||''));
-  const row = el('div',{class:'row'},
-    el('div',{class:'price'}, fmtY(m.price)+m.unit),
+  const s=el('div',{class:'slide'});
+  s.appendChild(el('div',{class:'imgph'},'图片占位'));
+  const ov=el('div',{class:'overlay'});
+  ov.appendChild(el('div',{class:'name'},m.title));
+  ov.appendChild(el('div',{class:'desc'},m.desc||''));
+  const row=el('div',{class:'row'},
+    el('div',{class:'price'},('¥'+(m.price/100)).replace(/\.00$/,'' )+m.unit),
     el('div',{class:'actions'},
-      el('button',{class:'btn small secondary', onclick:()=>alert('图片为占位，后续可替换为真实出品图。')}, '详情'),
-      el('button',{class:'btn small', onclick:()=>addToCart(m)}, '加入购物车')
+      el('button',{class:'btn small secondary',onclick:()=>alert('图片为占位，后续可替换为真实出品图。')},'详情'),
+      el('button',{class:'btn small',onclick:()=>addToCart(m)},'加入购物车')
     )
   );
-  ov.appendChild(row);
-  slide.appendChild(ov);
-  return slide;
+  ov.appendChild(row); s.appendChild(ov); return s;
 }
 function drawCarousel(reset=false){
-  track.innerHTML='';
-  const list = MENU.filter(m=> m.cat===activeCat);
-  list.forEach(m=> track.appendChild(slideCard(m)));
-  if(reset){ track.scrollTo({left:0, top:0, behavior:'auto'}); }
+  track.innerHTML=''; MENU.filter(m=>m.cat===activeCat).forEach(m=>track.appendChild(slideCard(m)));
+  if(reset) track.scrollTo({left:0,top:0,behavior:'auto'});
 }
 drawCarousel(true);
 
-// Arrows
-document.getElementById('prev').addEventListener('click', ()=> track.scrollBy({left:-Math.round(track.clientWidth*0.9), behavior:'smooth'}));
-document.getElementById('next').addEventListener('click', ()=> track.scrollBy({left: Math.round(track.clientWidth*0.9), behavior:'smooth'}));
+// 箭头
+document.getElementById('prev').addEventListener('click',()=>track.scrollBy({left:-Math.round(track.clientWidth*0.9),behavior:'smooth'}));
+document.getElementById('next').addEventListener('click',()=>track.scrollBy({left: Math.round(track.clientWidth*0.9),behavior:'smooth'}));
 
-// Cart
-let CART = JSON.parse(localStorage.getItem('LC_CART_TAB')||'[]');
-const drawer = document.getElementById('drawer');
-const cartBtn = document.getElementById('cartBtn');
-const cartItems = document.getElementById('cartItems');
-const cartTotal = document.getElementById('cartTotal');
+// 购物车（简化）
+let CART=JSON.parse(localStorage.getItem('LC_CART_TAB')||'[]');
+const drawer=document.getElementById('drawer'), cartBtn=document.getElementById('cartBtn'), cartItems=document.getElementById('cartItems'), cartTotal=document.getElementById('cartTotal');
 function persist(){ localStorage.setItem('LC_CART_TAB', JSON.stringify(CART)); }
 function cartCount(){ return CART.reduce((a,b)=>a+b.qty,0); }
 function cartSum(){ return CART.reduce((a,b)=>a+b.qty*b.price,0); }
-function syncBtn(){ cartBtn.textContent = '购物车 · ' + cartCount(); }
-function addToCart(m){
-  const ex = CART.find(x=>x.id===m.id);
-  if(ex){ ex.qty+=1; } else { CART.push({id:m.id,title:m.title,price:m.price,unit:m.unit,qty:1}); }
-  persist(); renderCart(); openDrawer();
-}
-function removeLine(id){ CART = CART.filter(x=>x.id!==id); persist(); renderCart(); }
-function changeQty(id, d){ const ex = CART.find(x=>x.id===id); if(!ex) return; ex.qty+=d; if(ex.qty<=0) removeLine(id); persist(); renderCart(); }
+function syncBtn(){ cartBtn.textContent='购物车 · '+cartCount(); }
+function addToCart(m){ const ex=CART.find(x=>x.id===m.id); if(ex) ex.qty++; else CART.push({id:m.id,title:m.title,price:m.price,unit:m.unit,qty:1}); persist(); renderCart(); openDrawer(); }
+function removeLine(id){ CART=CART.filter(x=>x.id!==id); persist(); renderCart(); }
+function changeQty(id,d){ const ex=CART.find(x=>x.id===id); if(!ex) return; ex.qty+=d; if(ex.qty<=0) removeLine(id); persist(); renderCart(); }
 function renderCart(){
-  cartItems.innerHTML = '';
-  if(CART.length===0){ cartItems.appendChild(el('div',{class:'muted',style:'padding:24px;text-align:center'},'购物车是空的。')); }
-  CART.forEach(line=>{
+  cartItems.innerHTML='';
+  if(!CART.length){ cartItems.appendChild(el('div',{class:'muted',style:'padding:24px;text-align:center'},'购物车是空的。')); }
+  CART.forEach(l=>{
     cartItems.appendChild(el('div',{class:'item'},
-      el('div',{class:'thumb'}, '图片'),
+      el('div',{class:'thumb'},'图片'),
       el('div',{},
-        el('div',{class:'item-title'}, line.title),
-        el('div',{class:'muted'}, line.unit),
+        el('div',{class:'item-title'},l.title),
+        el('div',{class:'muted'},l.unit),
         el('div',{class:'qty'},
-          el('button',{onclick:()=>changeQty(line.id,-1)}, '−'),
-          el('span',{}, String(line.qty)),
-          el('button',{onclick:()=>changeQty(line.id,1)}, '+'),
-          el('button',{class:'btn small secondary', style:'margin-left:8px', onclick:()=>removeLine(line.id)}, '移除')
+          el('button',{onclick:()=>changeQty(l.id,-1)},'−'),
+          el('span',{},String(l.qty)),
+          el('button',{onclick:()=>changeQty(l.id, 1)},'+'),
+          el('button',{class:'btn small',style:'margin-left:8px',onclick:()=>removeLine(l.id)},'移除')
         )
       ),
-      el('div',{class:'line-total'}, fmtY(line.qty*line.price))
+      el('div',{class:'line-total'},'¥'+(l.qty*l.price/100))
     ));
   });
-  cartTotal.textContent = fmtY(cartSum());
+  cartTotal.textContent='¥'+(cartSum()/100);
   syncBtn();
 }
 renderCart();
 function openDrawer(){ drawer.classList.add('open'); drawer.setAttribute('aria-hidden','false'); }
 function closeDrawer(){ drawer.classList.remove('open'); drawer.setAttribute('aria-hidden','true'); }
 document.getElementById('closeDrawer').addEventListener('click', closeDrawer);
-cartBtn.addEventListener('click', ()=> drawer.classList.contains('open') ? closeDrawer() : openDrawer());
+cartBtn.addEventListener('click', ()=> drawer.classList.contains('open')?closeDrawer():openDrawer());
 document.getElementById('clearCart').addEventListener('click', ()=>{ CART=[]; persist(); renderCart(); });
-document.getElementById('placeOrder').addEventListener('click', ()=>{
-  if(!CART.length){ alert('您的购物车是空的'); return; }
-  alert('订单已生成（本地示例）。请将合计金额出示给店员：'+fmtY(cartSum()));
-  CART=[]; persist(); renderCart(); closeDrawer();
-});
+document.getElementById('placeOrder').addEventListener('click', ()=>{ if(!CART.length){ alert('您的购物车是空的'); return;} alert('订单已生成（本地示例）。合计：¥'+(cartSum()/100)); CART=[]; persist(); renderCart(); closeDrawer(); });
 
-// ---- 生成 PNG 图标（1024x1024），中心“茄”，外圈 LA CASA DEL LICRO ----
+// 生成图标（LA CASA DEL LICOR，中心“茄”完全居中）
 document.getElementById('dlIcon').addEventListener('click', ()=>{
-  const size = 1024, r = size/2;
-  const canvas = Object.assign(document.createElement('canvas'), {width:size, height:size});
-  const ctx = canvas.getContext('2d');
-  // 背景
-  ctx.fillStyle = '#0f0f12';
-  ctx.fillRect(0,0,size,size);
-  // 内圆
-  ctx.beginPath(); ctx.arc(r,r, r*0.9, 0, Math.PI*2); ctx.fillStyle='#1b1b23'; ctx.fill();
-  // 外圈字母
-  const ringText = 'LA CASA DEL LICRO';
-  ctx.save();
-  ctx.translate(r,r);
-  ctx.rotate(-Math.PI/2); // 从顶部开始
-  const radius = r*0.75;
-  ctx.fillStyle = '#e3be77';
-  ctx.font = 'bold 72px -apple-system, PingFang SC, "Noto Sans CJK SC", "Microsoft YaHei", Arial';
+  const size=1024, r=size/2;
+  const canvas=Object.assign(document.createElement('canvas'),{width:size,height:size});
+  const ctx=canvas.getContext('2d');
+  // 背景与内圆
+  ctx.fillStyle='#0f0f12'; ctx.fillRect(0,0,size,size);
+  ctx.beginPath(); ctx.arc(r,r,r*0.9,0,Math.PI*2); ctx.fillStyle='#1b1b23'; ctx.fill();
+  // 环绕字母
+  const ringText='LA CASA DEL LICOR';
+  ctx.save(); ctx.translate(r,r); ctx.rotate(-Math.PI/2);
+  const radius=r*0.75; ctx.fillStyle='#e3be77'; ctx.font='bold 72px -apple-system, PingFang SC, "Noto Sans CJK SC", "Microsoft YaHei", Arial';
   for(let i=0;i<ringText.length;i++){
-    const ch = ringText[i];
-    const angle = (i / ringText.length) * Math.PI*2;
-    ctx.save();
-    ctx.rotate(angle);
-    ctx.translate(0, -radius);
-    ctx.rotate(Math.PI/2);
-    ctx.fillText(ch, -ctx.measureText(ch).width/2, 0);
+    const ch=ringText[i]; const angle=(i/ringText.length)*Math.PI*2;
+    ctx.save(); ctx.rotate(angle); ctx.translate(0,-radius); ctx.rotate(Math.PI/2);
+    const w=ctx.measureText(ch).width; ctx.fillText(ch,-w/2,0);
     ctx.restore();
   }
   ctx.restore();
-  // 中心“茄”
-  ctx.fillStyle = '#e3be77';
-  ctx.font = '900 420px PingFang SC, "-apple-system", "Noto Sans CJK SC", "Microsoft YaHei", Arial';
+  // 中心“茄” —— 完全居中：textAlign=center + textBaseline=middle（取消之前的 +10 偏移）
+  ctx.fillStyle='#e3be77';
   ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.fillText('茄', r, r+10);
-  // 导出
-  const a = document.createElement('a');
-  a.href = canvas.toDataURL('image/png');
-  a.download = 'apple-touch-icon.png';
-  a.click();
-  // 同时提示：把该 PNG 放到与 HTML 同一目录即可作为主屏图标
-  alert('已下载 apple-touch-icon.png，请将其与本 HTML 放在同一目录后再“添加到主屏幕”。');
+  ctx.font='900 420px PingFang SC, "-apple-system", "Noto Sans CJK SC", "Microsoft YaHei", Arial';
+  ctx.fillText('茄', r, r);
+  // 下载
+  const a=document.createElement('a'); a.href=canvas.toDataURL('image/png'); a.download='apple-touch-icon.png'; a.click();
+  alert('已下载新版图标（LA CASA DEL LICOR，中心“茄”居中）。将 PNG 与本 HTML 放同一目录后添加到主屏即可。');
 });
 </script>
 </body>
