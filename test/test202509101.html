@@ -27,7 +27,8 @@
   h1{font-size:var(--fs-h1);margin:2px 0 6px}
   .sub{color:var(--muted);font-size:var(--fs-sub);margin:0 0 10px}
   .toolbar{display:flex;gap:8px;align-items:center;justify-content:space-between}
-  .btn{background:#23232b;color:#fff;border:1px solid var(--border);border-radius:12px;padding:10px 14px;font-weight:800;font-size:var(--fs-btn);min-height:44px}
+  .btn{background:#23232b;color:#fff;border:1px solid var(--border);border-radius:12px;padding:10px 14px;font-weight:800;font-size:var(--fs-btn);min-height:44px;transition:.2s}
+  .btn[disabled]{opacity:.45}
   .btn.primary{background:var(--accent-2);border-color:transparent}
   .btn.small{font-size:18px;padding:10px 12px}
   .tabs{display:flex;gap:12px;overflow:auto;padding:14px 16px;background:var(--panel);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
@@ -47,12 +48,15 @@
   .overlay .price{color:var(--accent);font-weight:900;font-size:var(--fs-price);white-space:nowrap}
   .overlay .actions{display:flex;gap:10px}
   .nav{position:absolute;inset:0;display:flex;justify-content:space-between;align-items:center;pointer-events:none}
-  .arrow{pointer-events:auto;border:none;width:56px;height:56px;border-radius:50%;background:rgba(0,0,0,.42);color:#fff;font-size:28px;display:grid;place-items:center;margin:0 8px;border:1px solid rgba(255,255,255,.24)}
-  /* Cart Drawer */
-  .cart-fab{position:fixed;right:22px;bottom:24px;z-index:65;border-radius:999px;padding:20px 26px;font-size:22px;background:var(--accent-2);color:#fff;border:none;box-shadow:0 10px 20px rgba(0,0,0,.35)}
-  .drawer{position:fixed;right:0;top:0;height:100%;width:min(560px,94vw);z-index:70;transform:translateX(100%);transition:.35s ease;background:var(--panel);border-left:1px solid var(--border);display:flex;flex-direction:column}
+  .arrow{pointer-events:auto;border:none;width:56px;height:56px;border-radius:50%;background:rgba(0,0,0,.42);color:#fff;font-size:28px;display:grid;place-items:center;margin:0 8px;border:1px solid rgba(255,255,255,.24);transition:.2s}
+  .arrow[disabled]{opacity:.35}
+  /* Cart Drawer + Backdrop */
+  .cart-fab{position:fixed;right:22px;bottom:24px;z-index:10002;border-radius:999px;padding:20px 26px;font-size:22px;background:var(--accent-2);color:#fff;border:none;box-shadow:0 10px 20px rgba(0,0,0,.35)}
+  .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(1px);opacity:0;pointer-events:none;transition:.25s;z-index:10000}
+  .backdrop.show{opacity:1;pointer-events:auto}
+  .drawer{position:fixed;right:0;top:0;height:100%;width:min(560px,94vw);z-index:10001;transform:translateX(100%);transition:.35s ease;background:var(--panel);border-left:1px solid var(--border);display:flex;flex-direction:column;box-shadow:-20px 0 40px rgba(0,0,0,.45)}
   .drawer.open{transform:translateX(0)}
-  .drawer header{background:#111117;border-bottom:1px solid var(--border)}
+  .drawer header{background:#111117;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1}
   .drawer .items{flex:1;overflow:auto;padding:16px}
   .item{display:grid;grid-template-columns:80px 1fr auto;gap:14px;padding:14px 10px;border-bottom:1px dashed rgba(255,255,255,.1)}
   .thumb{width:80px;height:80px;border-radius:12px;background:#222;display:flex;align-items:center;justify-content:center;font-size:14px;color:#777}
@@ -64,8 +68,11 @@
   .drawer .footer{padding:16px;border-top:1px solid var(--border);background:#111117}
   .summary{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:22px}
   .checkout{display:flex;gap:10px;flex-wrap:wrap}
+  /* highlight new line */
+  @keyframes flash{0%{background:rgba(227,190,119,.25)}100%{background:transparent}}
+  .flash{animation:flash 1.2s ease-out 1}
   /* Orders Page */
-  .page{position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;z-index:80}
+  .page{position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;z-index:900}
   .page.show{display:flex}
   .page header{background:#111117;border-bottom:1px solid var(--border)}
   .order-list{flex:1;overflow:auto;padding:16px 20px}
@@ -98,6 +105,8 @@
   </section>
 </main>
 
+<div class="backdrop" id="backdrop"></div>
+
 <!-- Cart -->
 <button class="cart-fab" id="cartBtn" aria-label="查看购物车">购物车 · 0</button>
 <aside class="drawer" id="drawer" aria-label="购物车" aria-hidden="true">
@@ -115,6 +124,7 @@
       <button class="btn primary" id="placeOrder">生成订单并查看</button>
       <button class="btn" id="viewOrders">查看订单</button>
     </div>
+    <div class="sub" style="margin-top:8px">下单后会进入“订单列表”，供服务员照单手工下单。</div>
   </div>
 </aside>
 
@@ -132,10 +142,9 @@
 </section>
 
 <script>
-// 禁止双指缩放（旧设备）
 document.addEventListener('gesturestart', e=>e.preventDefault());
 
-// 分类与菜单
+// 数据
 const CATS=[
   {id:'coffee',name:'精品咖啡 Coffee'},{id:'rum',name:'古巴朗姆 Rum for Cigar'},
   {id:'white',name:'白葡萄酒 White Wine'},{id:'red',name:'红葡萄酒 Red Wine'},
@@ -178,7 +187,6 @@ const MENU=[
   {id:'snack-3',cat:'snack',title:'黑松露饼干',desc:'幽微松露香气，酥脆可口。',price:4900,unit:'/盘'}
 ];
 
-// 工具
 const fmtY = n => '¥' + (n/100).toLocaleString('zh-CN',{minimumFractionDigits:0});
 function el(tag, attrs={}, ...children){
   const node = document.createElement(tag);
@@ -209,6 +217,8 @@ CATS.forEach(cat=>{
 });
 
 const track = document.getElementById('track');
+const prevBtn=document.getElementById('prev'); const nextBtn=document.getElementById('next');
+
 function slideCard(m){
   const slide = el('div',{class:'slide'});
   slide.appendChild(el('div',{class:'imgph'}, '图片占位'));
@@ -226,21 +236,44 @@ function slideCard(m){
   slide.appendChild(ov);
   return slide;
 }
+
 function drawCarousel(reset=false){
   track.innerHTML='';
   MENU.filter(m=>m.cat===activeCat).forEach(m=> track.appendChild(slideCard(m)));
   if(reset){ track.scrollTo({left:0, top:0, behavior:'auto'}); }
+  updateArrows();
 }
 drawCarousel(true);
 
-// Arrows
-document.getElementById('prev').addEventListener('click', ()=> track.scrollBy({left:-Math.round(track.clientWidth*0.9), behavior:'smooth'}));
-document.getElementById('next').addEventListener('click', ()=> track.scrollBy({left: Math.round(track.clientWidth*0.9), behavior:'smooth'}));
+function updateArrows(){
+  const atStart = track.scrollLeft <= 1;
+  const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 1;
+  prevBtn.disabled = atStart; nextBtn.disabled = atEnd;
+}
+
+track.addEventListener('scroll', updateArrows);
+window.addEventListener('resize', updateArrows);
+
+prevBtn.addEventListener('click', ()=>{
+  if(prevBtn.disabled) return;
+  const step = Math.round(track.clientWidth*0.9);
+  const target = Math.max(0, track.scrollLeft - step);
+  track.scrollTo({left: target, behavior:'smooth'});
+});
+
+nextBtn.addEventListener('click', ()=>{
+  if(nextBtn.disabled) return;
+  const step = Math.round(track.clientWidth*0.9);
+  const maxLeft = track.scrollWidth - track.clientWidth;
+  const target = Math.min(maxLeft, track.scrollLeft + step);
+  track.scrollTo({left: target, behavior:'smooth'});
+});
 
 // Cart + Orders
 let CART = JSON.parse(localStorage.getItem('LC_CART_TAB')||'[]');
 let ORDERS = JSON.parse(localStorage.getItem('LC_ORDERS')||'[]');
 const drawer = document.getElementById('drawer');
+const backdrop = document.getElementById('backdrop');
 const cartBtn = document.getElementById('cartBtn');
 const cartItems = document.getElementById('cartItems');
 const cartTotal = document.getElementById('cartTotal');
@@ -257,6 +290,8 @@ function addToCart(m){
   const ex = CART.find(x=>x.id===m.id);
   if(ex){ ex.qty += 1; } else { CART.push({id:m.id, title:m.title, price:m.price, unit:m.unit, qty:1}); }
   persistCart(); renderCart(); openDrawer();
+  cartItems.scrollTop = cartItems.scrollHeight;
+  const last = cartItems.lastElementChild; if(last){ last.classList.add('flash'); setTimeout(()=>last.classList.remove('flash'), 1200); }
 }
 function removeLine(id){ CART = CART.filter(x=>x.id!==id); persistCart(); renderCart(); }
 function changeQty(id, delta){
@@ -287,14 +322,15 @@ function renderCart(){
   syncBtn();
 }
 renderCart();
-function openDrawer(){ drawer.classList.add('open'); drawer.setAttribute('aria-hidden','false'); }
-function closeDrawer(){ drawer.classList.remove('open'); drawer.setAttribute('aria-hidden','true'); }
+function openDrawer(){ drawer.classList.add('open'); drawer.setAttribute('aria-hidden','false'); backdrop.classList.add('show'); }
+function closeDrawer(){ drawer.classList.remove('open'); drawer.setAttribute('aria-hidden','true'); backdrop.classList.remove('show'); }
 document.getElementById('closeDrawer').addEventListener('click', closeDrawer);
+backdrop.addEventListener('click', closeDrawer);
 cartBtn.addEventListener('click', ()=> drawer.classList.contains('open') ? closeDrawer() : openDrawer());
 document.addEventListener('keydown', e=>{ if(e.key==='Escape' && drawer.classList.contains('open')) closeDrawer(); });
 document.getElementById('clearCart').addEventListener('click', ()=>{ CART=[]; persistCart(); renderCart(); });
 
-// 订单页（清晰列表，可返回首页）
+// 订单页
 function showOrders(){ renderOrders(); ordersPage.classList.add('show'); window.scrollTo(0,0); }
 function hideOrders(){ ordersPage.classList.remove('show'); }
 document.getElementById('backToMenu').addEventListener('click', hideOrders);
@@ -333,14 +369,14 @@ document.getElementById('placeOrder').addEventListener('click', ()=>{
   showOrders();
 });
 
-// 绘制环形文字（按字符宽度分配角度，避免重叠）
+// 绘制环形文字（按字符宽度分配角度）
 function drawRingText(ctx, text, radius, startAngle, spacingPx){
   ctx.save(); ctx.rotate(startAngle);
   const chars=[...text];
   for(let i=0;i<chars.length;i++){
     const ch=chars[i];
-    const w=ctx.measureText(ch).width + spacingPx; // px 弧长
-    const ang = w / radius; // 角度 = 弧长 / 半径
+    const w=ctx.measureText(ch).width + spacingPx;
+    const ang = w / radius;
     ctx.rotate(ang/2);
     ctx.save(); ctx.translate(0,-radius); ctx.rotate(Math.PI/2);
     ctx.fillText(ch, -ctx.measureText(ch).width/2, 0);
