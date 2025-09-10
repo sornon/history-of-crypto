@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="La Casa 菜单">
 <meta name="theme-color" content="#111">
-<title>La Casa 电子菜单（长者友好·PWA·一体化 v4）</title>
+<title>La Casa 电子菜单（长者友好·PWA·一体化 v5）</title>
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
   :root{
@@ -27,7 +27,8 @@
   h1{font-size:var(--fs-h1);margin:2px 0 6px}
   .sub{color:var(--muted);font-size:var(--fs-sub);margin:0 0 10px}
   .toolbar{display:flex;gap:8px;align-items:center;justify-content:space-between}
-  .btn{background:#23232b;color:#fff;border:1px solid var(--border);border-radius:12px;padding:10px 14px;font-weight:800;font-size:var(--fs-btn);min-height:44px}
+  .btn{background:#23232b;color:#fff;border:1px solid var(--border);border-radius:12px;padding:10px 14px;font-weight:800;font-size:var(--fs-btn);min-height:44px;transition:.2s}
+  .btn[disabled]{opacity:.45}
   .btn.primary{background:var(--accent-2);border-color:transparent}
   .btn.small{font-size:18px;padding:10px 12px}
   .tabs{display:flex;gap:12px;overflow:auto;padding:14px 16px;background:var(--panel);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
@@ -47,7 +48,8 @@
   .overlay .price{color:var(--accent);font-weight:900;font-size:var(--fs-price);white-space:nowrap}
   .overlay .actions{display:flex;gap:10px}
   .nav{position:absolute;inset:0;display:flex;justify-content:space-between;align-items:center;pointer-events:none}
-  .arrow{pointer-events:auto;border:none;width:56px;height:56px;border-radius:50%;background:rgba(0,0,0,.42);color:#fff;font-size:28px;display:grid;place-items:center;margin:0 8px;border:1px solid rgba(255,255,255,.24)}
+  .arrow{pointer-events:auto;border:none;width:56px;height:56px;border-radius:50%;background:rgba(0,0,0,.42);color:#fff;font-size:28px;display:grid;place-items:center;margin:0 8px;border:1px solid rgba(255,255,255,.24);transition:.2s}
+  .arrow[disabled]{opacity:.35}
   /* Cart Drawer */
   .cart-fab{position:fixed;right:22px;bottom:24px;z-index:65;border-radius:999px;padding:20px 26px;font-size:22px;background:var(--accent-2);color:#fff;border:none;box-shadow:0 10px 20px rgba(0,0,0,.35)}
   .drawer{position:fixed;right:0;top:0;height:100%;width:min(560px,94vw);z-index:70;transform:translateX(100%);transition:.35s ease;background:var(--panel);border-left:1px solid var(--border);display:flex;flex-direction:column}
@@ -64,6 +66,9 @@
   .drawer .footer{padding:16px;border-top:1px solid var(--border);background:#111117}
   .summary{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:22px}
   .checkout{display:flex;gap:10px;flex-wrap:wrap}
+  /* highlight new line */
+  @keyframes flash{0%{background:rgba(227,190,119,.25)}100%{background:transparent}}
+  .flash{animation:flash 1.2s ease-out 1}
   /* Orders Page */
   .page{position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;z-index:80}
   .page.show{display:flex}
@@ -81,7 +86,7 @@
     <div class="toolbar">
       <div>
         <h1>La Casa 专属隐藏款 · Hidden Treasures</h1>
-        <p class="sub">大字号 · 分类Tab + 轮播 · 半透明涂层 · 禁止缩放 · 同页下单与订单列表 · 一键生成主屏图标。</p>
+        <p class="sub">大字号 · 分类Tab + 轮播 · 半透明涂层 · 禁止缩放 · 本地购物车和订单 · 一键生成主屏图标。</p>
       </div>
       <div>
         <button id="dlIcon" class="btn primary">下载图标PNG（LICOR）</button>
@@ -138,6 +143,7 @@
 <script>
 document.addEventListener('gesturestart', e=>e.preventDefault());
 
+// 数据
 const CATS=[
   {id:'coffee',name:'精品咖啡 Coffee'},{id:'rum',name:'古巴朗姆 Rum for Cigar'},
   {id:'white',name:'白葡萄酒 White Wine'},{id:'red',name:'红葡萄酒 Red Wine'},
@@ -196,6 +202,7 @@ function el(tag, attrs={}, ...children){
   return node;
 }
 
+// Tabs + Carousel
 const tabs = document.getElementById('tabs');
 let activeCat = CATS[0].id;
 CATS.forEach(cat=>{
@@ -209,6 +216,8 @@ CATS.forEach(cat=>{
 });
 
 const track = document.getElementById('track');
+const prevBtn=document.getElementById('prev'); const nextBtn=document.getElementById('next');
+
 function slideCard(m){
   const slide = el('div',{class:'slide'});
   slide.appendChild(el('div',{class:'imgph'}, '图片占位'));
@@ -226,16 +235,40 @@ function slideCard(m){
   slide.appendChild(ov);
   return slide;
 }
+
 function drawCarousel(reset=false){
   track.innerHTML='';
   MENU.filter(m=>m.cat===activeCat).forEach(m=> track.appendChild(slideCard(m)));
   if(reset){ track.scrollTo({left:0, top:0, behavior:'auto'}); }
+  updateArrows();
 }
 drawCarousel(true);
 
-document.getElementById('prev').addEventListener('click', ()=> track.scrollBy({left:-Math.round(track.clientWidth*0.9), behavior:'smooth'}));
-document.getElementById('next').addEventListener('click', ()=> track.scrollBy({left: Math.round(track.clientWidth*0.9), behavior:'smooth'}));
+function updateArrows(){
+  const atStart = track.scrollLeft <= 1;
+  const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 1;
+  prevBtn.disabled = atStart; nextBtn.disabled = atEnd;
+}
 
+track.addEventListener('scroll', updateArrows);
+window.addEventListener('resize', updateArrows);
+
+prevBtn.addEventListener('click', ()=>{
+  if(prevBtn.disabled) return;
+  const step = Math.round(track.clientWidth*0.9);
+  const target = Math.max(0, track.scrollLeft - step);
+  track.scrollTo({left: target, behavior:'smooth'});
+});
+
+nextBtn.addEventListener('click', ()=>{
+  if(nextBtn.disabled) return;
+  const step = Math.round(track.clientWidth*0.9);
+  const maxLeft = track.scrollWidth - track.clientWidth;
+  const target = Math.min(maxLeft, track.scrollLeft + step);
+  track.scrollTo({left: target, behavior:'smooth'});
+});
+
+// Cart + Orders
 let CART = JSON.parse(localStorage.getItem('LC_CART_TAB')||'[]');
 let ORDERS = JSON.parse(localStorage.getItem('LC_ORDERS')||'[]');
 const drawer = document.getElementById('drawer');
@@ -255,6 +288,9 @@ function addToCart(m){
   const ex = CART.find(x=>x.id===m.id);
   if(ex){ ex.qty += 1; } else { CART.push({id:m.id, title:m.title, price:m.price, unit:m.unit, qty:1}); }
   persistCart(); renderCart(); openDrawer();
+  // 高亮最新一行并滚动到底
+  cartItems.scrollTop = cartItems.scrollHeight;
+  const last = cartItems.lastElementChild; if(last){ last.classList.add('flash'); setTimeout(()=>last.classList.remove('flash'), 1200); }
 }
 function removeLine(id){ CART = CART.filter(x=>x.id!==id); persistCart(); renderCart(); }
 function changeQty(id, delta){
@@ -274,7 +310,7 @@ function renderCart(){
         el('div',{class:'qty'},
           el('button',{onclick:()=>changeQty(line.id,-1)},'−'),
           el('span',{}, String(line.qty)),
-          el('button',{onclick:()=>changeQty(line.id,1)},'+'),
+          el('button',{onclick:=>changeQty(line.id,1)},'+'),
           el('button',{class:'btn small', style:'margin-left:8px', onclick:()=>removeLine(line.id)},'移除')
         )
       ),
@@ -292,6 +328,7 @@ cartBtn.addEventListener('click', ()=> drawer.classList.contains('open') ? close
 document.addEventListener('keydown', e=>{ if(e.key==='Escape' && drawer.classList.contains('open')) closeDrawer(); });
 document.getElementById('clearCart').addEventListener('click', ()=>{ CART=[]; persistCart(); renderCart(); });
 
+// 订单页
 function showOrders(){ renderOrders(); ordersPage.classList.add('show'); window.scrollTo(0,0); }
 function hideOrders(){ ordersPage.classList.remove('show'); }
 document.getElementById('backToMenu').addEventListener('click', hideOrders);
@@ -330,32 +367,52 @@ document.getElementById('placeOrder').addEventListener('click', ()=>{
   showOrders();
 });
 
+// 绘制环形文字（按字符宽度分配角度，避免重叠）
+function drawRingText(ctx, text, radius, startAngle, spacingPx){
+  ctx.save(); ctx.rotate(startAngle);
+  const chars=[...text];
+  for(let i=0;i<chars.length;i++){
+    const ch=chars[i];
+    const w=ctx.measureText(ch).width + spacingPx; // px 弧长
+    const ang = w / radius; // 角度 = 弧长 / 半径
+    ctx.rotate(ang/2);
+    ctx.save(); ctx.translate(0,-radius); ctx.rotate(Math.PI/2);
+    ctx.fillText(ch, -ctx.measureText(ch).width/2, 0);
+    ctx.restore();
+    ctx.rotate(ang/2);
+  }
+  ctx.restore();
+}
+
 document.getElementById('dlIcon').addEventListener('click', ()=>{
   const size=1024, r=size/2;
   const canvas=Object.assign(document.createElement('canvas'),{width:size,height:size});
   const ctx=canvas.getContext('2d');
   ctx.fillStyle='#0f0f12'; ctx.fillRect(0,0,size,size);
   ctx.beginPath(); ctx.arc(r,r,r*0.9,0,Math.PI*2); ctx.fillStyle='#1b1b23'; ctx.fill();
-  const base='LA CASA DEL LICOR';
-  const ringText=('      '+base+'      ' + '   •   ' + '      '+base+'      ');
-  ctx.save(); ctx.translate(r,r); ctx.rotate(-Math.PI/2);
-  const radius=r*0.75; ctx.fillStyle='#e3be77';
+  ctx.translate(r,r);
+  ctx.fillStyle='#e3be77';
   ctx.font='bold 72px -apple-system, PingFang SC, "Noto Sans CJK SC", "Microsoft YaHei", Arial';
-  const chars=[...ringText];
-  const step=(Math.PI*2)/chars.length;
-  for(let i=0;i<chars.length;i++){
-    const ch=chars[i];
-    const angle=i*step;
-    ctx.save(); ctx.rotate(angle); ctx.translate(0,-radius); ctx.rotate(Math.PI/2);
-    const w=ctx.measureText(ch).width; ctx.fillText(ch,-w/2,0);
-    ctx.restore();
-  }
-  ctx.restore();
+  // 两段文字 + 明显空白（gapAngle）
+  const base='LA CASA DEL LICOR';
+  const gapAngle = Math.PI/6; // 30° 空白
+  const radius=r*0.75;
+  // 第一段（顶部偏左开始）
+  drawRingText(ctx, base, radius, -Math.PI/2 - Math.PI/12, 8);
+  // 留空白
+  ctx.rotate(gapAngle);
+  // 分隔点
+  ctx.save(); ctx.rotate(-Math.PI/2); ctx.beginPath(); ctx.arc(0,-radius,4,0,Math.PI*2); ctx.fill(); ctx.restore();
+  // 第二段
+  ctx.rotate(gapAngle);
+  drawRingText(ctx, base, radius, 0, 8);
+  // 中心“茄”
+  ctx.setTransform(1,0,0,1,0,0);
   ctx.fillStyle='#e3be77'; ctx.textAlign='center'; ctx.textBaseline='middle';
   ctx.font='900 420px PingFang SC, "-apple-system", "Noto Sans CJK SC", "Microsoft YaHei", Arial';
   ctx.fillText('茄', r, r);
   const a=document.createElement('a'); a.href=canvas.toDataURL('image/png'); a.download='apple-touch-icon.png'; a.click();
-  alert('已下载图标：LA CASA DEL LICOR（首尾留大间隔），中心“茄”居中。将 PNG 与本 HTML 放同一目录后添加到主屏。');
+  alert('已下载图标：环绕字母按宽度分配角度，留有 30° 空白间隔，中心“茄”居中。');
 });
 </script>
 </body>
