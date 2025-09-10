@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>La Casa 专属隐藏款 · 电子菜单</title>
+<title>La Casa 专属隐藏款 · 电子菜单（长者友好版 · 修复）</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#111">
 <style>
@@ -18,15 +18,15 @@
     --border:rgba(255,255,255,.12);
 
     /* Typography scale */
-    --fs-base:20px;         /* base text */
-    --fs-tab:20px;          /* tab text */
-    --fs-h1:30px;           /* header title */
-    --fs-sub:18px;          /* subtitle */
-    --fs-name:22px;         /* overlay name */
-    --fs-desc:18px;         /* overlay desc */
-    --fs-price:22px;        /* price */
-    --fs-btn:20px;          /* buttons */
-    --fs-small:16px;        /* small text */
+    --fs-base:20px;
+    --fs-tab:20px;
+    --fs-h1:30px;
+    --fs-sub:18px;
+    --fs-name:22px;
+    --fs-desc:18px;
+    --fs-price:22px;
+    --fs-btn:20px;
+    --fs-small:16px;
   }
 
   *{box-sizing:border-box}
@@ -62,7 +62,7 @@
     white-space:nowrap; padding:14px 20px; border-radius:999px;
     background:#1b1b23; color:#fff; border:1px solid var(--border);
     font-weight:700; letter-spacing:.2px; font-size:var(--fs-tab);
-    line-height:1; min-height:48px; /* touch target */
+    line-height:1; min-height:48px;
   }
   .tab[aria-selected="true"]{background:var(--accent-2); color:#fff; border-color:transparent}
 
@@ -75,11 +75,7 @@
   .track{
     display:flex; gap:16px; padding:16px;
     overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth;
-    scrollbar-width:none;
   }
-  .track::-webkit-scrollbar{height:10px}
-  .track::-webkit-scrollbar-thumb{background:#2a2a33; border-radius:10px}
-
   .slide{ 
     position:relative; flex: 0 0 92%; max-width:92%;
     height:68vw; max-height:640px;
@@ -150,23 +146,35 @@
   .drawer .footer{padding:16px; border-top:1px solid var(--border); background:#111117}
   .summary{display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; font-size:22px}
   .summary .t{color:var(--muted)}
-  .checkout{display:flex; gap:10px}
+  .checkout{display:flex; gap:10px; flex-wrap:wrap}
   .notice{font-size:16px; color:var(--muted); margin-top:10px}
 
-  /* Accessibility helpers */
-  .sr-only{position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden}
+  /* Orders Page */
+  .page{
+    position:fixed; inset:0; background:var(--bg);
+    display:none; flex-direction:column; z-index:80;
+  }
+  .page.show{display:flex}
+  .page header{background:#111117;border-bottom:1px solid var(--border); position:relative; top:0}
+  .order-list{flex:1; overflow:auto; padding:16px 20px}
+  .order-card{
+    background:#17171d; border:1px solid var(--border); border-radius:14px; padding:14px 14px; margin-bottom:12px;
+  }
+  .order-card h3{margin:0 0 8px; font-size:20px}
+  .order-items{color:#dcdde4; font-size:18px; line-height:1.5; white-space:pre-wrap}
+  .order-meta{display:flex; justify-content:space-between; align-items:center; margin-top:10px; color:var(--muted); font-size:16px}
 </style>
 </head>
 <body>
 <header>
   <div class="wrap">
     <h1>La Casa 专属隐藏款 · Hidden Treasures</h1>
-    <div class="sub">酒隐之茄专为雪茄客打造的雪茄配饮，经过了反复的测评，能够带来非凡的品茄体验。不同类型的酒，在灰茄前、茄中、茄后兼容性不同。</div>
+    <div class="sub">一级分类作为 Tab 切换；每个 Tab 内为可左右滑动的轮播。底部半透明涂层显示产品名称、简介与价格。</div>
   </div>
   <nav class="tabs" id="tabs" aria-label="分类切换"></nav>
 </header>
 
-<main>
+<main id="menuMain">
   <section class="carousel" id="carousel" aria-label="商品轮播">
     <div class="track" id="track"></div>
     <div class="nav" aria-hidden="true">
@@ -182,7 +190,10 @@
   <header>
     <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;">
       <div style="font-weight:800;font-size:22px">我的订单</div>
-      <button class="btn small" id="closeDrawer">关闭</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn small" id="viewOrders">查看订单</button>
+        <button class="btn small" id="closeDrawer">关闭</button>
+      </div>
     </div>
   </header>
   <div class="items" id="cartItems"></div>
@@ -190,11 +201,24 @@
     <div class="summary"><span class="t">合计</span><strong id="cartTotal">¥0</strong></div>
     <div class="checkout">
       <button class="btn" id="clearCart">清空</button>
-      <button class="btn primary" id="placeOrder">生成订单</button>
+      <button class="btn primary" id="placeOrder">生成订单并查看</button>
     </div>
-    <div class="notice">下单后请将订单编号出示给店员。图片为占位；后续可替换为真实酒标/出品图。</div>
+    <div class="notice">下单后会进入“订单列表”，可随时返回菜单继续点单。</div>
   </div>
 </aside>
+
+<!-- Orders Page -->
+<section class="page" id="ordersPage" aria-label="订单列表页面">
+  <header>
+    <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;">
+      <div style="font-weight:800;font-size:22px">订单列表</div>
+      <div style="display:flex;gap:8px">
+        <button class="btn small" id="backToMenu">返回菜单</button>
+      </div>
+    </div>
+  </header>
+  <div class="order-list" id="ordersList"></div>
+</section>
 
 <script>
 // ---------- Data: Categories & Items ----------
@@ -288,7 +312,7 @@ CATS.forEach(cat=>{
     activeCat = cat.id;
     [...tabs.children].forEach(x=>x.setAttribute('aria-selected','false'));
     b.setAttribute('aria-selected','true');
-    drawCarousel();
+    drawCarousel(true); // 切换分类时重置轮播位置
   }}, cat.name);
   tabs.appendChild(b);
 });
@@ -313,12 +337,13 @@ function slideCard(m){
   slide.appendChild(ov);
   return slide;
 }
-function drawCarousel(){
+function drawCarousel(reset=false){
   track.innerHTML='';
   const list = MENU.filter(m=> m.cat===activeCat);
   list.forEach(m=> track.appendChild(slideCard(m)));
+  if(reset){ track.scrollTo({left:0, top:0, behavior:'auto'}); } // 重置滚动
 }
-drawCarousel();
+drawCarousel(true);
 
 // ---------- Carousel Arrows ----------
 const prev = document.getElementById('prev');
@@ -326,14 +351,19 @@ const next = document.getElementById('next');
 prev.addEventListener('click', ()=> track.scrollBy({left:-Math.round(track.clientWidth*0.9), behavior:'smooth'}));
 next.addEventListener('click', ()=> track.scrollBy({left: Math.round(track.clientWidth*0.9), behavior:'smooth'}));
 
-// ---------- Cart Logic ----------
+// ---------- Cart & Orders ----------
 let CART = JSON.parse(localStorage.getItem('LC_CART_TAB')||'[]');
+let ORDERS = JSON.parse(localStorage.getItem('LC_ORDERS')||'[]');
+
 const drawer = document.getElementById('drawer');
 const cartBtn = document.getElementById('cartBtn');
 const cartItems = document.getElementById('cartItems');
 const cartTotal = document.getElementById('cartTotal');
+const ordersPage = document.getElementById('ordersPage');
+const ordersList = document.getElementById('ordersList');
 
-function persist(){ localStorage.setItem('LC_CART_TAB', JSON.stringify(CART)); }
+function persistCart(){ localStorage.setItem('LC_CART_TAB', JSON.stringify(CART)); }
+function persistOrders(){ localStorage.setItem('LC_ORDERS', JSON.stringify(ORDERS)); }
 function cartCount(){ return CART.reduce((a,b)=>a+b.qty,0); }
 function cartSum(){ return CART.reduce((a,b)=>a+b.qty*b.price,0); }
 function syncBtn(){ cartBtn.textContent = '购物车 · ' + cartCount(); }
@@ -343,12 +373,12 @@ function addToCart(m){
   const ex = CART.find(x=>x.key===key);
   if(ex){ ex.qty += 1; }
   else { CART.push({key, id:m.id, title:m.title, price:m.price, unit:m.unit, qty:1}); }
-  persist(); renderCart(); openDrawer();
+  persistCart(); renderCart(); openDrawer();
 }
-function removeLine(key){ CART = CART.filter(x=>x.key!==key); persist(); renderCart(); }
+function removeLine(key){ CART = CART.filter(x=>x.key!==key); persistCart(); renderCart(); }
 function changeQty(key, delta){
   const ex = CART.find(x=>x.key===key); if(!ex) return;
-  ex.qty += delta; if(ex.qty<=0){ removeLine(key); } else { persist(); renderCart(); }
+  ex.qty += delta; if(ex.qty<=0){ removeLine(key); } else { persistCart(); renderCart(); }
 }
 
 function renderCart(){
@@ -378,25 +408,54 @@ function openDrawer(){ drawer.classList.add('open'); drawer.setAttribute('aria-h
 function closeDrawer(){ drawer.classList.remove('open'); drawer.setAttribute('aria-hidden','true'); }
 document.getElementById('closeDrawer').addEventListener('click', closeDrawer);
 cartBtn.addEventListener('click', ()=> drawer.classList.contains('open') ? closeDrawer() : openDrawer());
-document.getElementById('clearCart').addEventListener('click', ()=>{ CART=[]; persist(); renderCart(); });
+document.getElementById('clearCart').addEventListener('click', ()=>{ CART=[]; persistCart(); renderCart(); });
 
-// ----- Place Order -----
+// 订单页
+function showOrders(){
+  renderOrders();
+  ordersPage.classList.add('show');
+  closeDrawer();
+}
+function hideOrders(){
+  ordersPage.classList.remove('show');
+}
+function renderOrders(){
+  ordersList.innerHTML='';
+  if(ORDERS.length===0){
+    ordersList.appendChild(el('div',{class:'muted', style:'padding:24px;text-align:center'}, '暂无订单。'));
+    return;
+  }
+  [...ORDERS].reverse().forEach(o=>{
+    const itemsText = o.items.map(l=>`${l.title} × ${l.qty}  ${fmtY(l.qty*l.price)}`).join('\n');
+    const card = el('div',{class:'order-card'},
+      el('h3',{}, `订单 ${o.id}`),
+      el('div',{class:'order-items'}, itemsText),
+      el('div',{class:'order-meta'},
+        el('span',{}, new Date(o.created_at).toLocaleString('zh-CN')),
+        el('strong',{}, fmtY(o.total))
+      )
+    );
+    ordersList.appendChild(card);
+  });
+}
+
 document.getElementById('placeOrder').addEventListener('click', ()=>{
   if(CART.length===0){ alert('您的购物车是空的'); return; }
-  const orderId = 'LC' + Date.now().toString().slice(-8);
-  const lines = CART.map(l=>`${l.title} × ${l.qty}  ${fmtY(l.qty*l.price)}`).join('\\n');
-  const total = fmtY(cartSum());
-  const txt = `订单号：${orderId}\\n${lines}\\n合计：${total}\\n\\n请将此订单展示给店员结算。`;
-  const w = window.open('', '_blank');
-  w.document.write(`<pre style="font:18px/1.7 -apple-system, BlinkMacSystemFont, 'PingFang SC', Arial; padding:24px;">${txt}</pre>`);
-  w.document.close();
+  const order = {
+    id: 'LC' + Date.now().toString().slice(-8),
+    items: CART.map(l=>({title:l.title, qty:l.qty, price:l.price})),
+    total: cartSum(),
+    created_at: Date.now()
+  };
+  ORDERS.push(order);
+  persistOrders();
+  CART = []; persistCart(); renderCart();
+  showOrders();
 });
 
-// ----- Image replacement (future) -----
-// 将 MENU[*].img 替换为真实图片 URL；在 slideCard 中用 <img> 替换 .imgph：
-//   const img = new Image(); img.src = m.img; img.alt = m.title;
-//   img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
-//   slide.replaceChild(img, ph);
+document.getElementById('viewOrders').addEventListener('click', showOrders);
+document.getElementById('backToMenu').addEventListener('click', hideOrders);
+
 syncBtn();
 </script>
 </body>
