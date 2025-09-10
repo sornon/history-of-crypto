@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La Casa 专属隐藏款 · 电子菜单（分类 Tab + 轮播）</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#111">
+<style>
+  :root{
+    --bg:#0f0f12;
+    --panel:#14141a;
+    --card:#17171c;
+    --ink:#eaeaea;
+    --muted:#a9abb3;
+    --accent:#d4b06a;
+    --accent-2:#9f7840;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro",PingFang SC,Hiragino Sans GB,Segoe UI,Roboto,"Helvetica Neue",Arial,"Noto Sans CJK SC","Microsoft YaHei",sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  header{
+    position:sticky; top:0; z-index:50;
+    background:linear-gradient(180deg, rgba(15,15,18,.98), rgba(15,15,18,.84) 70%, rgba(15,15,18,0));
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid rgba(255,255,255,.06);
+  }
+  .wrap{max-width:1120px;margin:0 auto;padding:12px 16px}
+  h1{font-size:22px;margin:4px 0 6px}
+  .sub{color:var(--muted); font-size:13px; line-height:1.5; margin-bottom:8px}
+  /* Tabs */
+  .tabs{display:flex; gap:8px; overflow:auto; padding:8px 16px; border-top:1px solid rgba(255,255,255,.06); border-bottom:1px solid rgba(255,255,255,.06); background:var(--panel)}
+  .tab{
+    white-space:nowrap; padding:10px 14px; border-radius:999px;
+    background:#1a1a22; color:#ddd; border:1px solid rgba(255,255,255,.12);
+    font-weight:600; letter-spacing:.2px;
+  }
+  .tab[aria-selected="true"]{background:var(--accent-2); color:#fff; border-color:transparent}
+  /* Carousel */
+  main{max-width:1120px;margin:0 auto;padding:12px 0 96px}
+  .carousel{
+    position:relative; margin:8px 16px 0; 
+    border-radius:16px; overflow:hidden; background:#0c0c0f; border:1px solid rgba(255,255,255,.06);
+  }
+  .track{
+    display:flex; gap:12px; padding:12px;
+    overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth;
+  }
+  .slide{ 
+    position:relative; flex: 0 0 88%; max-width:88%; height:56vw; max-height:520px;
+    scroll-snap-align:center; border-radius:14px; overflow:hidden;
+    background:linear-gradient(135deg,#23232b 0%,#1a1a21 100%);
+    border:1px solid rgba(255,255,255,.08);
+  }
+  @media (min-width:900px){ .slide{ flex-basis: 48%; max-width:48%; height:420px } }
+  .imgph{
+    width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:#666; font-size:12px; letter-spacing:.4px;
+    background:repeating-linear-gradient(45deg,#202028,#202028 12px,#1a1a21 12px,#1a1a21 24px);
+  }
+  /* overlay */
+  .overlay{
+    position:absolute; left:0; right:0; bottom:0;
+    background:linear-gradient(180deg, transparent, rgba(0,0,0,.6) 35%, rgba(0,0,0,.75) 75%);
+    color:#fff; padding:14px 14px 12px;
+  }
+  .overlay .name{ font-size:16px; font-weight:700; line-height:1.2; margin-bottom:4px }
+  .overlay .desc{ font-size:13px; color:#e7e7e7; line-height:1.5; }
+  .overlay .row{ display:flex; align-items:center; justify-content:space-between; margin-top:8px }
+  .overlay .price{ color:var(--accent); font-weight:800 }
+  .overlay .actions{ display:flex; gap:8px; }
+  .btn{
+    -webkit-tap-highlight-color: transparent;
+    background:#23232b; color:#fff; border:1px solid rgba(255,255,255,.14); border-radius:10px;
+    padding:8px 12px; font-size:14px; font-weight:600;
+  }
+  .btn.primary{ background:var(--accent-2); border-color:transparent }
+  .btn.small{ padding:6px 10px; font-size:13px }
+  /* Carousel nav */
+  .nav{
+    position:absolute; inset:0; display:flex; justify-content:space-between; align-items:center; pointer-events:none;
+  }
+  .arrow{
+    pointer-events:auto; border:none; width:40px; height:40px; border-radius:50%; 
+    background:rgba(0,0,0,.4); color:#fff; font-size:20px; display:grid; place-items:center; margin:0 8px;
+    border:1px solid rgba(255,255,255,.2);
+  }
+  /* Cart */
+  .cart-fab{
+    position:fixed; right:18px; bottom:20px; z-index:60;
+    border-radius:999px; padding:14px 18px; font-size:16px; line-height:1;
+    background:var(--accent-2); color:#fff; border:none; box-shadow:0 10px 20px rgba(0,0,0,.35);
+  }
+  .drawer{
+    position:fixed; right:0; top:0; height:100%; width:min(520px,92vw); z-index:70;
+    transform:translateX(100%); transition:.35s ease;
+    background:var(--panel); border-left:1px solid rgba(255,255,255,.12); display:flex; flex-direction:column;
+  }
+  .drawer.open{transform:translateX(0)}
+  .drawer header{background:#111117;border-bottom:1px solid rgba(255,255,255,.12)}
+  .drawer .items{flex:1; overflow:auto; padding:12px}
+  .item{display:grid; grid-template-columns: 64px 1fr auto; gap:10px; padding:10px 8px; border-bottom:1px dashed rgba(255,255,255,.08)}
+  .thumb{width:64px; height:64px; border-radius:8px; background:#222; display:flex; align-items:center; justify-content:center; font-size:11px; color:#777}
+  .item-title{font-size:15px; margin:0 0 2px}
+  .muted{color:var(--muted); font-size:12px}
+  .qty{display:flex; align-items:center; gap:8px; margin-top:6px}
+  .qty button{background:#2b2b33; border:1px solid rgba(255,255,255,.15); color:#fff; width:28px; height:28px; border-radius:8px; font-size:18px}
+  .line-total{font-weight:700; color:var(--accent); align-self:center}
+  .drawer .footer{padding:12px; border-top:1px solid rgba(255,255,255,.12); background:#111117}
+  .summary{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px}
+  .summary .t{color:var(--muted)}
+  .checkout{display:flex; gap:8px}
+  .notice{font-size:12px; color:var(--muted); margin-top:8px}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>La Casa 专属隐藏款 · Hidden Treasures</h1>
+    <div class="sub">一级分类作为 Tab 切换；每个 Tab 内为可滑动的轮播图。图片底部有半透明涂层，显示产品名称与介绍。</div>
+  </div>
+  <nav class="tabs" id="tabs"></nav>
+</header>
+
+<main>
+  <section class="carousel" id="carousel">
+    <div class="track" id="track"></div>
+    <div class="nav">
+      <button class="arrow" id="prev" aria-label="上一页">‹</button>
+      <button class="arrow" id="next" aria-label="下一页">›</button>
+    </div>
+  </section>
+</main>
+
+<!-- Cart -->
+<button class="cart-fab" id="cartBtn">购物车 · 0</button>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <header>
+    <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;">
+      <div style="font-weight:600;font-size:16px">我的订单</div>
+      <button class="btn small" id="closeDrawer">关闭</button>
+    </div>
+  </header>
+  <div class="items" id="cartItems"></div>
+  <div class="footer">
+    <div class="summary"><span class="t">合计</span><strong id="cartTotal">¥0</strong></div>
+    <div class="checkout">
+      <button class="btn" id="clearCart">清空</button>
+      <button class="btn primary" id="placeOrder">生成订单</button>
+    </div>
+    <div class="notice">下单后请将订单编号出示给店员。图片为占位；后续可替换为真实酒标/出品图。</div>
+  </div>
+</aside>
+
+<script>
+// ---------- Data: Categories & Items ----------
+const CATS = [
+  {id:'coffee', name:'精品咖啡 Coffee'},
+  {id:'rum', name:'古巴朗姆 Rum for Cigar'},
+  {id:'white', name:'白葡萄酒 White Wine'},
+  {id:'red', name:'红葡萄酒 Red Wine'},
+  {id:'rose', name:'桃红葡萄酒 Rosé'},
+  {id:'rare', name:'小众烈酒 Rare Spirits'},
+  {id:'sig', name:'La Casa 特调 Signature Cocktails'},
+  {id:'easter', name:'La Casa 小彩蛋'},
+  {id:'snack', name:'茄客小食'}
+];
+
+const MENU = [
+  // Coffee - Cold Brew
+  {id:'ice-1', cat:'coffee', title:'极品冰滴｜淡雅芳香系（百搭雪茄）', desc:'0℃冰水滴滤 1 天，发酵 3–7 天，口感清冽冰爽。', price:11900, unit:'/杯', img:''},
+  {id:'ice-2', cat:'coffee', title:'极品冰滴｜果香红茶系（提升风味）', desc:'果香跳跃、红茶感明显，激发雪茄香气。', price:11900, unit:'/杯', img:''},
+  {id:'ice-3', cat:'coffee', title:'极品冰滴｜浆果活泼系（适配强度）', desc:'更有劲道的风味线，适配高强度雪茄。', price:11900, unit:'/杯', img:''},
+  // Coffee - Pour Over
+  {id:'hot-1', cat:'coffee', title:'精品手冲｜万花', desc:'参赛级参数调校，层次丰富。', price:7900, unit:'/杯', img:''},
+  {id:'hot-2', cat:'coffee', title:'精品手冲｜耶加莱德', desc:'花果香突出，酸甜平衡。', price:7900, unit:'/杯', img:''},
+  {id:'hot-3', cat:'coffee', title:'精品手冲｜桃莓优格', desc:'桃与莓果气息，酸乳感顺滑。', price:7900, unit:'/杯', img:''},
+
+  // Rum
+  {id:'santiago-20-g', cat:'rum', title:'圣地亚哥 20 年（绝版）', desc:'加勒比热辣与陈年复杂度的平衡。', price:43900, unit:'/杯', img:''},
+  {id:'treasure', cat:'rum', title:'金银岛宝藏（国礼）', desc:'收藏级古巴朗姆，气派之选。', price:1799900, unit:'/瓶', img:''},
+  {id:'cubaney-10', cat:'rum', title:'古巴邑 10 年', desc:'顺喉易饮，入门之选。', price:6900, unit:'/杯', img:''},
+  {id:'cubaney-20', cat:'rum', title:'古巴邑 20 年', desc:'陈年香气浓郁，回味悠长。', price:23800, unit:'/杯', img:''},
+
+  // White Wine
+  {id:'ww-1', cat:'white', title:'新西兰十字星 马尔堡 长相思 干白 2021', desc:'单宁近零，激发味蕾，适合灰茄前/中。', price:6900, unit:'/杯', img:''},
+  {id:'ww-2', cat:'white', title:'法拉利酒庄 小夏布利 村庄 干白 2023', desc:'矿物感清晰，酸度爽脆。', price:6900, unit:'/杯', img:''},
+  {id:'ww-3', cat:'white', title:'法国 杜索 传统佳酿 香槟 NV', desc:'气泡细腻，活力十足。', price:6900, unit:'/杯', img:''},
+
+  // Red Wine
+  {id:'rw-1', cat:'red', title:'摩尔多瓦 梅洛 干红 2012', desc:'适合灰茄后饮用。', price:6900, unit:'/杯', img:''},
+  {id:'rw-2', cat:'red', title:'意大利 法芭雅 蒙特布查诺 红 2022', desc:'成熟红果与香料气息。', price:6900, unit:'/杯', img:''},
+  {id:'rw-3', cat:'red', title:'意大利 曼都利亚 利嘉 红 2021', desc:'饱满酒体，余味绵长。', price:6900, unit:'/杯', img:''},
+  {id:'rw-4', cat:'red', title:'意大利 格兰吉雅 经典 阿玛罗尼 红 2022', desc:'力度与甜美并存。', price:6900, unit:'/杯', img:''},
+
+  // Rosé
+  {id:'rose-1', cat:'rose', title:'意大利 特莎蒂洛 蓝布鲁斯科 桃红起泡 NV', desc:'全程兼容雪茄，轻松畅饮。', price:6900, unit:'/杯', img:''},
+  {id:'rose-2', cat:'rose', title:'意大利 时尚控 桃红起泡 NV', desc:'派对气质，愉悦开胃。', price:6900, unit:'/杯', img:''},
+
+  // Rare Spirits
+  {id:'rare-1', cat:'rare', title:'拉达米尔 白兰地', desc:'适合灰茄中/后。', price:6900, unit:'/杯', img:''},
+  {id:'rare-2', cat:'rare', title:'梅斯赫蒂 五年 白兰地', desc:'顺滑果干风味。', price:6900, unit:'/杯', img:''},
+  {id:'rare-3', cat:'rare', title:'麦伦多 单一微醺麦芽', desc:'麦芽香气，轻盈微醺。', price:11800, unit:'/杯', img:''},
+
+  // Signature Cocktails
+  {id:'mojito', cat:'sig', title:'比那尔德里奥的莫吉托', desc:'Pinar del Río Mojito · 与雪茄全程兼容。', price:9800, unit:'/杯', img:''},
+  {id:'cubalibre', cat:'sig', title:'自由古巴之烟草时光', desc:'Cigar Time of Cuba Libre · 经典新演绎。', price:9800, unit:'/杯', img:''},
+  {id:'castle', cat:'sig', title:'夜之古堡', desc:'Castle in the Night · 夜色与余味。', price:9800, unit:'/杯', img:''},
+
+  // Easter Eggs
+  {id:'bucket-1', cat:'easter', title:'好彩头冰桶｜好运杯', desc:'内含可饮用白桦树汁，可冰镇任意酒水，会发光。', price:5900, unit:'/桶', img:''},
+  {id:'bucket-2', cat:'easter', title:'好彩头冰桶｜招财杯', desc:'同款彩光冰桶。', price:5900, unit:'/桶', img:''},
+  {id:'bucket-3', cat:'easter', title:'好彩头冰桶｜吉祥杯', desc:'同款彩光冰桶。', price:5900, unit:'/桶', img:''},
+  {id:'bucket-4', cat:'easter', title:'好彩头冰桶｜平安杯', desc:'同款彩光冰桶。', price:5900, unit:'/桶', img:''},
+
+  // Snacks
+  {id:'snack-1', cat:'snack', title:'坚果拼盘', desc:'小胡桃、松子、杏仁、腰果等随机拼盘。', price:8800, unit:'/盘', img:''},
+  {id:'snack-2', cat:'snack', title:'伊比利亚火腿', desc:'咸香与脂香，雪茄绝配。', price:19800, unit:'/盘', img:''},
+  {id:'snack-3', cat:'snack', title:'黑松露饼干', desc:'幽微松露香气，酥脆可口。', price:4900, unit:'/盘', img:''}
+];
+
+// ---------- Helpers ----------
+const fmtY = n => '¥' + (n/100).toLocaleString('zh-CN',{minimumFractionDigits:0});
+function el(tag, attrs={}, ...children){
+  const node = document.createElement(tag);
+  for(const [k,v] of Object.entries(attrs||{})){
+    if(k==='class') node.className=v;
+    else if(k.startsWith('on') && typeof v==='function') node.addEventListener(k.slice(2), v);
+    else if(k==='html') node.innerHTML=v;
+    else node.setAttribute(k,v);
+  }
+  for(const c of children.flat()){
+    if(c==null) continue;
+    node.appendChild(typeof c==='string' ? document.createTextNode(c) : c);
+  }
+  return node;
+}
+
+// ---------- Tabs ----------
+const tabs = document.getElementById('tabs');
+let activeCat = CATS[0].id;
+CATS.forEach(cat=>{
+  const b = el('button',{class:'tab','aria-selected': cat.id===activeCat?'true':'false', onclick:()=>{
+    activeCat = cat.id;
+    [...tabs.children].forEach(x=>x.setAttribute('aria-selected','false'));
+    b.setAttribute('aria-selected','true');
+    drawCarousel();
+  }}, cat.name);
+  tabs.appendChild(b);
+});
+
+// ---------- Carousel Rendering ----------
+const track = document.getElementById('track');
+function slideCard(m){
+  const slide = el('div',{class:'slide'});
+  const ph = el('div',{class:'imgph'}, '图片占位');
+  slide.appendChild(ph);
+  const ov = el('div',{class:'overlay'});
+  ov.appendChild(el('div',{class:'name'}, m.title));
+  ov.appendChild(el('div',{class:'desc'}, m.desc||''));
+  const row = el('div',{class:'row'},
+    el('div',{class:'price'}, fmtY(m.price)+m.unit ),
+    el('div',{class:'actions'},
+      el('button',{class:'btn small', onclick:()=>alert('图片为占位，后续可替换为真实出品图。')}, '详情'),
+      el('button',{class:'btn small primary', onclick:()=>addToCart(m)}, '加入购物车')
+    )
+  );
+  ov.appendChild(row);
+  slide.appendChild(ov);
+  return slide;
+}
+function drawCarousel(){
+  track.innerHTML='';
+  const list = MENU.filter(m=> m.cat===activeCat);
+  list.forEach(m=> track.appendChild(slideCard(m)));
+}
+drawCarousel();
+
+// ---------- Carousel Arrows ----------
+const prev = document.getElementById('prev');
+const next = document.getElementById('next');
+prev.addEventListener('click', ()=> track.scrollBy({left:-Math.round(track.clientWidth*0.9), behavior:'smooth'}));
+next.addEventListener('click', ()=> track.scrollBy({left: Math.round(track.clientWidth*0.9), behavior:'smooth'}));
+
+// ---------- Cart Logic ----------
+let CART = JSON.parse(localStorage.getItem('LC_CART_TAB')||'[]');
+const drawer = document.getElementById('drawer');
+const cartBtn = document.getElementById('cartBtn');
+const cartItems = document.getElementById('cartItems');
+const cartTotal = document.getElementById('cartTotal');
+
+function persist(){ localStorage.setItem('LC_CART_TAB', JSON.stringify(CART)); }
+function cartCount(){ return CART.reduce((a,b)=>a+b.qty,0); }
+function cartSum(){ return CART.reduce((a,b)=>a+b.qty*b.price,0); }
+function syncBtn(){ cartBtn.textContent = '购物车 · ' + cartCount(); }
+
+function addToCart(m){
+  const key = m.id;
+  const ex = CART.find(x=>x.key===key);
+  if(ex){ ex.qty += 1; }
+  else { CART.push({key, id:m.id, title:m.title, price:m.price, unit:m.unit, qty:1}); }
+  persist(); renderCart(); openDrawer();
+}
+function removeLine(key){ CART = CART.filter(x=>x.key!==key); persist(); renderCart(); }
+function changeQty(key, delta){
+  const ex = CART.find(x=>x.key===key); if(!ex) return;
+  ex.qty += delta; if(ex.qty<=0){ removeLine(key); } else { persist(); renderCart(); }
+}
+
+function renderCart(){
+  cartItems.innerHTML='';
+  if(CART.length===0){ cartItems.appendChild(el('div',{class:'muted', style:'padding:24px; text-align:center'}, '购物车是空的。')); }
+  CART.forEach(line=>{
+    cartItems.appendChild(el('div',{class:'item'},
+      el('div',{class:'thumb'}, '图片'),
+      el('div',{},
+        el('div',{class:'item-title'}, line.title),
+        el('div',{class:'muted'}, line.unit),
+        el('div',{class:'qty'},
+          el('button',{onclick:()=>changeQty(line.key,-1)},'−'),
+          el('span',{}, String(line.qty)),
+          el('button',{onclick:()=>changeQty(line.key,1)},'+'),
+          el('button',{class:'btn small', style:'margin-left:8px', onclick:()=>removeLine(line.key)},'移除')
+        )
+      ),
+      el('div',{class:'line-total'}, fmtY(line.price*line.qty))
+    ));
+  });
+  cartTotal.textContent = fmtY(cartSum());
+  syncBtn();
+}
+renderCart();
+function openDrawer(){ drawer.classList.add('open'); drawer.setAttribute('aria-hidden','false'); }
+function closeDrawer(){ drawer.classList.remove('open'); drawer.setAttribute('aria-hidden','true'); }
+document.getElementById('closeDrawer').addEventListener('click', closeDrawer);
+cartBtn.addEventListener('click', ()=> drawer.classList.contains('open') ? closeDrawer() : openDrawer());
+document.getElementById('clearCart').addEventListener('click', ()=>{ CART=[]; persist(); renderCart(); });
+
+// ----- Place Order -----
+document.getElementById('placeOrder').addEventListener('click', ()=>{
+  if(CART.length===0){ alert('您的购物车是空的'); return; }
+  const orderId = 'LC' + Date.now().toString().slice(-8);
+  const lines = CART.map(l=>`${l.title} × ${l.qty}  ${fmtY(l.qty*l.price)}`).join('\\n');
+  const total = fmtY(cartSum());
+  const txt = `订单号：${orderId}\\n${lines}\\n合计：${total}\\n\\n请将此订单展示给店员结算。`;
+  const w = window.open('', '_blank');
+  w.document.write(`<pre style="font:16px/1.6 -apple-system, BlinkMacSystemFont, 'PingFang SC', Arial; padding:24px;">${txt}</pre>`);
+  w.document.close();
+});
+
+// ----- Image replacement (future) -----
+// 将 MENU[*].img 替换为真实图片 URL；在 slideCard 中用 <img> 替换 .imgph：
+//   const img = new Image(); img.src = m.img; img.alt = m.title;
+//   img.style.width='100%'; img.style.height='100%'; img.style.objectFit='cover';
+//   slide.replaceChild(img, ph);
+syncBtn();
+</script>
+</body>
+</html>
