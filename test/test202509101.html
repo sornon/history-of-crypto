@@ -55,10 +55,10 @@
   .arrow{pointer-events:auto;border:none;width:56px;height:56px;border-radius:50%;background:rgba(0,0,0,.42);color:#fff;font-size:28px;display:grid;place-items:center;margin:0 8px;border:1px solid rgba(255,255,255,.24);transition:.2s}
   .arrow[disabled]{opacity:.35}
   /* Cart Drawer + Backdrop */
-  .cart-fab{position:fixed;right:22px;bottom:24px;z-index:10002;border-radius:999px;padding:20px 26px;font-size:22px;background:var(--accent-2);color:#fff;border:none;box-shadow:0 10px 20px rgba(0,0,0,.35)}
+  .cart-fab{position:fixed;right:22px;bottom:24px;z-index:1;border-radius:999px;padding:20px 26px;font-size:22px;background:var(--accent-2);color:#fff;border:none;box-shadow:0 10px 20px rgba(0,0,0,.35)}
   .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(1px);opacity:0;pointer-events:none;transition:.25s;z-index:10000}
   .backdrop.show{opacity:1;pointer-events:auto}
-  .drawer{position:fixed;right:0;top:0;height:100%;width:min(560px,94vw);z-index:10001;transform:translateX(100%);transition:.35s ease;background:var(--panel);border-left:1px solid var(--border);display:flex;flex-direction:column;box-shadow:-20px 0 40px rgba(0,0,0,.45)}
+  .drawer{position:fixed;right:0;top:0;height:100%;width:min(560px,94vw);z-index:8888;transform:translateX(100%);transition:.35s ease;background:var(--panel);border-left:1px solid var(--border);display:flex;flex-direction:column;box-shadow:-20px 0 40px rgba(0,0,0,.45)}
   .drawer.open{transform:translateX(0)}
   .drawer header{background:#111117;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1;padding-top:max(0px, env(safe-area-inset-top))}
   .drawer .items{flex:1;overflow:auto;padding:16px}
