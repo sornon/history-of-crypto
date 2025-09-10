@@ -8,55 +8,71 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="La Casa 菜单">
 <meta name="theme-color" content="#111">
-<title>La Casa 专属隐藏款 · 电子菜单</title>
+<title>La Casa 电子菜单（长者友好·PWA·一体化 v4）</title>
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
-  html,body{height:100%}
-  body{margin:0;background:#0f0f12;color:#f1f1f3;
-       font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
-       -webkit-text-size-adjust:100%;
-       font-size:20px;line-height:1.6;letter-spacing:.2px}
+  :root{
+    --bg:#0f0f12; --panel:#14141a; --ink:#f1f1f3; --muted:#b6b8c0;
+    --accent:#e3be77; --accent-2:#a88146; --border:rgba(255,255,255,.12);
+    --fs-base:20px; --fs-h1:30px; --fs-sub:18px; --fs-tab:20px;
+    --fs-name:22px; --fs-desc:18px; --fs-price:22px; --fs-btn:20px;
+  }
   *{box-sizing:border-box}
-  header{position:sticky;top:0;z-index:100;background:linear-gradient(180deg, rgba(15,15,18,.98), rgba(15,15,18,.88) 70%, rgba(15,15,18,0));backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.12)}
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Noto Sans CJK SC","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
+       -webkit-text-size-adjust:100%; font-size:var(--fs-base); line-height:1.6; letter-spacing:.2px;}
+  header{position:sticky;top:0;z-index:100;background:linear-gradient(180deg, rgba(15,15,18,.98), rgba(15,15,18,.88) 70%, rgba(15,15,18,0));backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
   .wrap{max-width:1200px;margin:0 auto;padding:12px 16px}
-  h1{font-size:30px;margin:4px 0 8px}
-  .sub{color:#b6b8c0;font-size:18px;margin:0 0 10px}
+  h1{font-size:var(--fs-h1);margin:2px 0 6px}
+  .sub{color:var(--muted);font-size:var(--fs-sub);margin:0 0 10px}
   .toolbar{display:flex;gap:8px;align-items:center;justify-content:space-between}
-  .btn{background:#a88146;color:#fff;border:none;border-radius:12px;padding:10px 14px;font-weight:800;font-size:18px;min-height:44px}
-  .tabs{display:flex;gap:12px;overflow:auto;padding:14px 16px;background:#14141a;border-top:1px solid rgba(255,255,255,.12);border-bottom:1px solid rgba(255,255,255,.12)}
-  .tab{white-space:nowrap;padding:14px 20px;border-radius:999px;background:#1b1b23;color:#fff;border:1px solid rgba(255,255,255,.12);font-weight:800;font-size:20px}
-  .tab[aria-selected="true"]{background:#a88146;border-color:transparent}
+  .btn{background:#23232b;color:#fff;border:1px solid var(--border);border-radius:12px;padding:10px 14px;font-weight:800;font-size:var(--fs-btn);min-height:44px}
+  .btn.primary{background:var(--accent-2);border-color:transparent}
+  .btn.small{font-size:18px;padding:10px 12px}
+  .tabs{display:flex;gap:12px;overflow:auto;padding:14px 16px;background:var(--panel);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{white-space:nowrap;padding:14px 20px;border-radius:999px;background:#1b1b23;color:#fff;border:1px solid var(--border);font-weight:800;font-size:var(--fs-tab)}
+  .tab[aria-selected="true"]{background:var(--accent-2);border-color:transparent}
   main{max-width:1200px;margin:0 auto;padding:16px 0 128px}
-  .carousel{position:relative;margin:12px 16px 0;border-radius:18px;overflow:hidden;background:#0c0c0f;border:1px solid rgba(255,255,255,.12)}
+  .carousel{position:relative;margin:12px 16px 0;border-radius:18px;overflow:hidden;background:#0c0c0f;border:1px solid var(--border)}
   .track{display:flex;gap:16px;padding:16px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth}
-  .slide{position:relative;flex:0 0 92%;max-width:92%;height:68vw;max-height:640px;scroll-snap-align:center;border-radius:16px;overflow:hidden;background:linear-gradient(135deg,#23232b 0%,#1a1a21 100%);border:1px solid rgba(255,255,255,.12)}
+  .slide{position:relative;flex:0 0 92%;max-width:92%;height:68vw;max-height:640px;scroll-snap-align:center;border-radius:16px;overflow:hidden;background:linear-gradient(135deg,#23232b 0%,#1a1a21 100%);border:1px solid var(--border)}
   @media (min-width:1024px){ .slide{flex-basis:48%;max-width:48%;height:520px} }
   .imgph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#80838f;font-size:18px;background:repeating-linear-gradient(45deg,#202028,#202028 12px,#1a1a21 12px,#1a1a21 24px)}
   .overlay{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(180deg,transparent,rgba(0,0,0,.55) 30%,rgba(0,0,0,.75) 78%);color:#fff;padding:16px 16px 14px}
-  .overlay .name{font-size:22px;font-weight:800;line-height:1.25;margin:0 0 6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-  .overlay .desc{font-size:18px;color:#e9e9ee;line-height:1.5;margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .overlay .name{font-size:var(--fs-name);font-weight:800;line-height:1.25;margin:0 0 6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .overlay .desc{font-size:var(--fs-desc);color:#e9e9ee;line-height:1.5;margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
   .overlay .row{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-top:10px;flex-wrap:wrap}
-  .overlay .price{color:#e3be77;font-weight:900;font-size:22px;white-space:nowrap}
+  .overlay .price{color:var(--accent);font-weight:900;font-size:var(--fs-price);white-space:nowrap}
   .overlay .actions{display:flex;gap:10px}
-  .btn.small{padding:10px 12px;font-size:18px}
-  .btn.secondary{background:#23232b;border:1px solid rgba(255,255,255,.12)}
   .nav{position:absolute;inset:0;display:flex;justify-content:space-between;align-items:center;pointer-events:none}
   .arrow{pointer-events:auto;border:none;width:56px;height:56px;border-radius:50%;background:rgba(0,0,0,.42);color:#fff;font-size:28px;display:grid;place-items:center;margin:0 8px;border:1px solid rgba(255,255,255,.24)}
-  .cart-fab{position:fixed;right:22px;bottom:24px;z-index:65;border-radius:999px;padding:20px 26px;font-size:22px;background:#a88146;color:#fff;border:none;box-shadow:0 10px 20px rgba(0,0,0,.35)}
-  .drawer{position:fixed;right:0;top:0;height:100%;width:min(560px,94vw);z-index:70;transform:translateX(100%);transition:.35s ease;background:#14141a;border-left:1px solid rgba(255,255,255,.12);display:flex;flex-direction:column}
+  /* Cart Drawer */
+  .cart-fab{position:fixed;right:22px;bottom:24px;z-index:65;border-radius:999px;padding:20px 26px;font-size:22px;background:var(--accent-2);color:#fff;border:none;box-shadow:0 10px 20px rgba(0,0,0,.35)}
+  .drawer{position:fixed;right:0;top:0;height:100%;width:min(560px,94vw);z-index:70;transform:translateX(100%);transition:.35s ease;background:var(--panel);border-left:1px solid var(--border);display:flex;flex-direction:column}
   .drawer.open{transform:translateX(0)}
-  .drawer header{background:#111117;border-bottom:1px solid rgba(255,255,255,.12)}
+  .drawer header{background:#111117;border-bottom:1px solid var(--border)}
   .drawer .items{flex:1;overflow:auto;padding:16px}
   .item{display:grid;grid-template-columns:80px 1fr auto;gap:14px;padding:14px 10px;border-bottom:1px dashed rgba(255,255,255,.1)}
   .thumb{width:80px;height:80px;border-radius:12px;background:#222;display:flex;align-items:center;justify-content:center;font-size:14px;color:#777}
   .item-title{font-size:20px;margin:0 0 4px;word-break:break-word}
-  .muted{color:#b6b8c0;font-size:16px}
+  .muted{color:var(--muted);font-size:16px}
   .qty{display:flex;align-items:center;gap:10px;margin-top:8px}
-  .qty button{background:#2b2b33;border:1px solid rgba(255,255,255,.12);color:#fff;width:42px;height:42px;border-radius:10px;font-size:26px}
-  .line-total{font-weight:900;color:#e3be77;align-self:center;font-size:22px}
-  .drawer .footer{padding:16px;border-top:1px solid rgba(255,255,255,.12);background:#111117}
+  .qty button{background:#2b2b33;border:1px solid var(--border);color:#fff;width:42px;height:42px;border-radius:10px;font-size:26px}
+  .line-total{font-weight:900;color:var(--accent);align-self:center;font-size:22px}
+  .drawer .footer{padding:16px;border-top:1px solid var(--border);background:#111117}
   .summary{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:22px}
   .checkout{display:flex;gap:10px;flex-wrap:wrap}
+  /* Orders Page */
+  .page{position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;z-index:80}
+  .page.show{display:flex}
+  .page header{background:#111117;border-bottom:1px solid var(--border)}
+  .order-list{flex:1;overflow:auto;padding:16px 20px}
+  .order-card{background:#17171d;border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px}
+  .order-card h3{margin:0 0 8px;font-size:22px}
+  .order-items{color:#dcdde4;font-size:18px;line-height:1.6;white-space:pre-wrap}
+  .order-meta{display:flex;justify-content:space-between;align-items:center;margin-top:10px;color:var(--muted);font-size:16px}
 </style>
 </head>
 <body>
@@ -65,7 +81,10 @@
     <div class="toolbar">
       <div>
         <h1>La Casa 专属隐藏款 · Hidden Treasures</h1>
-        <p class="sub">酒隐之茄专为雪茄客打造的雪茄配饮，经过了反复的测评，能够带来非凡的品茄体验。不同类型的酒，在灰茄前、茄中、茄后兼容性不同。</p>
+        <p class="sub">大字号 · 分类Tab + 轮播 · 半透明涂层 · 禁止缩放 · 同页下单与订单列表 · 一键生成主屏图标。</p>
+      </div>
+      <div>
+        <button id="dlIcon" class="btn primary">下载图标PNG（LICOR）</button>
       </div>
     </div>
   </div>
@@ -87,10 +106,8 @@
 <aside class="drawer" id="drawer" aria-label="购物车" aria-hidden="true">
   <header>
     <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;">
-      <div style="font-weight:800;font-size:22px">我的订单</div>
-      <div style="display:flex;gap:8px">
-        <button class="btn small" id="closeDrawer">关闭</button>
-      </div>
+      <div style="font-weight:800;font-size:22px">我的购物车</div>
+      <button class="btn small" id="closeDrawer">关闭</button>
     </div>
   </header>
   <div class="items" id="cartItems"></div>
@@ -98,16 +115,29 @@
     <div class="summary"><span class="t">合计</span><strong id="cartTotal">¥0</strong></div>
     <div class="checkout">
       <button class="btn" id="clearCart">清空</button>
-      <button class="btn" id="placeOrder">生成订单</button>
+      <button class="btn primary" id="placeOrder">生成订单并查看</button>
+      <button class="btn" id="viewOrders">查看订单</button>
     </div>
+    <div class="sub" style="margin-top:8px">下单后会进入“订单列表”，供服务员照单手工下单。</div>
   </div>
 </aside>
 
+<!-- Orders Page -->
+<section class="page" id="ordersPage" aria-label="订单列表页面">
+  <header>
+    <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;">
+      <div style="font-weight:800;font-size:22px">订单列表</div>
+      <div style="display:flex;gap:8px">
+        <button class="btn small" id="backToMenu">返回菜单</button>
+      </div>
+    </div>
+  </header>
+  <div class="order-list" id="ordersList"></div>
+</section>
+
 <script>
-// 禁止双指缩放（旧设备）
 document.addEventListener('gesturestart', e=>e.preventDefault());
 
-// 数据（与前版一致，省略注释）
 const CATS=[
   {id:'coffee',name:'精品咖啡 Coffee'},{id:'rum',name:'古巴朗姆 Rum for Cigar'},
   {id:'white',name:'白葡萄酒 White Wine'},{id:'red',name:'红葡萄酒 Red Wine'},
@@ -133,7 +163,7 @@ const MENU=[
   {id:'rw-2',cat:'red',title:'意大利 法芭雅 蒙特布查诺 红 2022',desc:'成熟红果与香料气息。',price:6900,unit:'/杯'},
   {id:'rw-3',cat:'red',title:'意大利 曼都利亚 利嘉 红 2021',desc:'饱满酒体，余味绵长。',price:6900,unit:'/杯'},
   {id:'rw-4',cat:'red',title:'意大利 格兰吉雅 经典 阿玛罗尼 红 2022',desc:'力度与甜美并存。',price:6900,unit:'/杯'},
-  {id:'rose-1',cat:'rose',title:'意大利 特莎蒂洛 桃红起泡 NV',desc:'全程兼容雪茄，轻松畅饮。',price:6900,unit:'/杯'},
+  {id:'rose-1',cat:'rose',title:'意大利 特莎蒂洛 蓝布鲁斯科 桃红起泡 NV',desc:'全程兼容雪茄，轻松畅饮。',price:6900,unit:'/杯'},
   {id:'rose-2',cat:'rose',title:'意大利 时尚控 桃红起泡 NV',desc:'派对气质，愉悦开胃。',price:6900,unit:'/杯'},
   {id:'rare-1',cat:'rare',title:'拉达米尔 白兰地',desc:'适合灰茄中/后。',price:6900,unit:'/杯'},
   {id:'rare-2',cat:'rare',title:'梅斯赫蒂 五年 白兰地',desc:'顺滑果干风味。',price:6900,unit:'/杯'},
@@ -150,117 +180,182 @@ const MENU=[
   {id:'snack-3',cat:'snack',title:'黑松露饼干',desc:'幽微松露香气，酥脆可口。',price:4900,unit:'/盘'}
 ];
 
-const tabs=document.getElementById('tabs');
-let activeCat=CATS[0].id;
-function el(tag,attrs={},...children){
-  const n=document.createElement(tag);
-  for(const [k,v] of Object.entries(attrs)){
-    if(k==='class') n.className=v;
-    else if(k.startsWith('on')) n.addEventListener(k.slice(2),v);
-    else if(k==='html') n.innerHTML=v;
-    else n.setAttribute(k,v);
+const fmtY = n => '¥' + (n/100).toLocaleString('zh-CN',{minimumFractionDigits:0});
+function el(tag, attrs={}, ...children){
+  const node = document.createElement(tag);
+  for(const [k,v] of Object.entries(attrs||{})){
+    if(k==='class') node.className=v;
+    else if(k.startsWith('on') && typeof v==='function') node.addEventListener(k.slice(2), v);
+    else if(k==='html') node.innerHTML=v;
+    else node.setAttribute(k,v);
   }
-  for(const c of children.flat()) if(c!=null) n.appendChild(typeof c==='string'?document.createTextNode(c):c);
-  return n;
+  for(const c of children.flat()){
+    if(c==null) continue;
+    node.appendChild(typeof c==='string' ? document.createTextNode(c) : c);
+  }
+  return node;
 }
+
+const tabs = document.getElementById('tabs');
+let activeCat = CATS[0].id;
 CATS.forEach(cat=>{
-  const b=el('button',{class:'tab','aria-selected':cat.id===activeCat?'true':'false',onclick:()=>{
-    activeCat=cat.id;[...tabs.children].forEach(x=>x.setAttribute('aria-selected','false'));b.setAttribute('aria-selected','true');drawCarousel(true);
-  }},cat.name);tabs.appendChild(b);
+  const b = el('button',{class:'tab', 'aria-selected': cat.id===activeCat?'true':'false', onclick:()=>{
+    activeCat = cat.id;
+    [...tabs.children].forEach(x=>x.setAttribute('aria-selected','false'));
+    b.setAttribute('aria-selected','true');
+    drawCarousel(true);
+  }}, cat.name);
+  tabs.appendChild(b);
 });
-const track=document.getElementById('track');
+
+const track = document.getElementById('track');
 function slideCard(m){
-  const s=el('div',{class:'slide'});
-  s.appendChild(el('div',{class:'imgph'},'图片占位'));
-  const ov=el('div',{class:'overlay'});
-  ov.appendChild(el('div',{class:'name'},m.title));
-  ov.appendChild(el('div',{class:'desc'},m.desc||''));
-  const row=el('div',{class:'row'},
-    el('div',{class:'price'},('¥'+(m.price/100)).replace(/\.00$/,'' )+m.unit),
+  const slide = el('div',{class:'slide'});
+  slide.appendChild(el('div',{class:'imgph'}, '图片占位'));
+  const ov = el('div',{class:'overlay'});
+  ov.appendChild(el('div',{class:'name'}, m.title));
+  ov.appendChild(el('div',{class:'desc'}, m.desc||''));
+  const row = el('div',{class:'row'},
+    el('div',{class:'price'}, fmtY(m.price)+m.unit),
     el('div',{class:'actions'},
-      el('button',{class:'btn small secondary',onclick:()=>alert('图片为占位，后续可替换为真实出品图。')},'详情'),
-      el('button',{class:'btn small',onclick:()=>addToCart(m)},'加入购物车')
+      el('button',{class:'btn small', onclick:()=>alert('图片为占位，后续可替换为真实出品图。')}, '详情'),
+      el('button',{class:'btn small primary', onclick:()=>addToCart(m)}, '加入购物车')
     )
   );
-  ov.appendChild(row); s.appendChild(ov); return s;
+  ov.appendChild(row);
+  slide.appendChild(ov);
+  return slide;
 }
 function drawCarousel(reset=false){
-  track.innerHTML=''; MENU.filter(m=>m.cat===activeCat).forEach(m=>track.appendChild(slideCard(m)));
-  if(reset) track.scrollTo({left:0,top:0,behavior:'auto'});
+  track.innerHTML='';
+  MENU.filter(m=>m.cat===activeCat).forEach(m=> track.appendChild(slideCard(m)));
+  if(reset){ track.scrollTo({left:0, top:0, behavior:'auto'}); }
 }
 drawCarousel(true);
 
-// 箭头
-document.getElementById('prev').addEventListener('click',()=>track.scrollBy({left:-Math.round(track.clientWidth*0.9),behavior:'smooth'}));
-document.getElementById('next').addEventListener('click',()=>track.scrollBy({left: Math.round(track.clientWidth*0.9),behavior:'smooth'}));
+document.getElementById('prev').addEventListener('click', ()=> track.scrollBy({left:-Math.round(track.clientWidth*0.9), behavior:'smooth'}));
+document.getElementById('next').addEventListener('click', ()=> track.scrollBy({left: Math.round(track.clientWidth*0.9), behavior:'smooth'}));
 
-// 购物车（简化）
-let CART=JSON.parse(localStorage.getItem('LC_CART_TAB')||'[]');
-const drawer=document.getElementById('drawer'), cartBtn=document.getElementById('cartBtn'), cartItems=document.getElementById('cartItems'), cartTotal=document.getElementById('cartTotal');
-function persist(){ localStorage.setItem('LC_CART_TAB', JSON.stringify(CART)); }
+let CART = JSON.parse(localStorage.getItem('LC_CART_TAB')||'[]');
+let ORDERS = JSON.parse(localStorage.getItem('LC_ORDERS')||'[]');
+const drawer = document.getElementById('drawer');
+const cartBtn = document.getElementById('cartBtn');
+const cartItems = document.getElementById('cartItems');
+const cartTotal = document.getElementById('cartTotal');
+const ordersPage = document.getElementById('ordersPage');
+const ordersList = document.getElementById('ordersList');
+
+function persistCart(){ localStorage.setItem('LC_CART_TAB', JSON.stringify(CART)); }
+function persistOrders(){ localStorage.setItem('LC_ORDERS', JSON.stringify(ORDERS)); }
 function cartCount(){ return CART.reduce((a,b)=>a+b.qty,0); }
 function cartSum(){ return CART.reduce((a,b)=>a+b.qty*b.price,0); }
-function syncBtn(){ cartBtn.textContent='购物车 · '+cartCount(); }
-function addToCart(m){ const ex=CART.find(x=>x.id===m.id); if(ex) ex.qty++; else CART.push({id:m.id,title:m.title,price:m.price,unit:m.unit,qty:1}); persist(); renderCart(); openDrawer(); }
-function removeLine(id){ CART=CART.filter(x=>x.id!==id); persist(); renderCart(); }
-function changeQty(id,d){ const ex=CART.find(x=>x.id===id); if(!ex) return; ex.qty+=d; if(ex.qty<=0) removeLine(id); persist(); renderCart(); }
+function syncBtn(){ cartBtn.textContent = '购物车 · ' + cartCount(); }
+
+function addToCart(m){
+  const ex = CART.find(x=>x.id===m.id);
+  if(ex){ ex.qty += 1; } else { CART.push({id:m.id, title:m.title, price:m.price, unit:m.unit, qty:1}); }
+  persistCart(); renderCart(); openDrawer();
+}
+function removeLine(id){ CART = CART.filter(x=>x.id!==id); persistCart(); renderCart(); }
+function changeQty(id, delta){
+  const ex = CART.find(x=>x.id===id); if(!ex) return;
+  ex.qty += delta; if(ex.qty<=0){ removeLine(id); } else { persistCart(); renderCart(); }
+}
+
 function renderCart(){
   cartItems.innerHTML='';
-  if(!CART.length){ cartItems.appendChild(el('div',{class:'muted',style:'padding:24px;text-align:center'},'购物车是空的。')); }
-  CART.forEach(l=>{
+  if(CART.length===0){ cartItems.appendChild(el('div',{class:'muted', style:'padding:24px; text-align:center'}, '购物车是空的。')); }
+  CART.forEach(line=>{
     cartItems.appendChild(el('div',{class:'item'},
-      el('div',{class:'thumb'},'图片'),
+      el('div',{class:'thumb'}, '图片'),
       el('div',{},
-        el('div',{class:'item-title'},l.title),
-        el('div',{class:'muted'},l.unit),
+        el('div',{class:'item-title'}, line.title),
+        el('div',{class:'muted'}, line.unit),
         el('div',{class:'qty'},
-          el('button',{onclick:()=>changeQty(l.id,-1)},'−'),
-          el('span',{},String(l.qty)),
-          el('button',{onclick:()=>changeQty(l.id, 1)},'+'),
-          el('button',{class:'btn small',style:'margin-left:8px',onclick:()=>removeLine(l.id)},'移除')
+          el('button',{onclick:()=>changeQty(line.id,-1)},'−'),
+          el('span',{}, String(line.qty)),
+          el('button',{onclick:()=>changeQty(line.id,1)},'+'),
+          el('button',{class:'btn small', style:'margin-left:8px', onclick:()=>removeLine(line.id)},'移除')
         )
       ),
-      el('div',{class:'line-total'},'¥'+(l.qty*l.price/100))
+      el('div',{class:'line-total'}, fmtY(line.price*line.qty))
     ));
   });
-  cartTotal.textContent='¥'+(cartSum()/100);
+  cartTotal.textContent = fmtY(cartSum());
   syncBtn();
 }
 renderCart();
 function openDrawer(){ drawer.classList.add('open'); drawer.setAttribute('aria-hidden','false'); }
 function closeDrawer(){ drawer.classList.remove('open'); drawer.setAttribute('aria-hidden','true'); }
 document.getElementById('closeDrawer').addEventListener('click', closeDrawer);
-cartBtn.addEventListener('click', ()=> drawer.classList.contains('open')?closeDrawer():openDrawer());
-document.getElementById('clearCart').addEventListener('click', ()=>{ CART=[]; persist(); renderCart(); });
-document.getElementById('placeOrder').addEventListener('click', ()=>{ if(!CART.length){ alert('您的购物车是空的'); return;} alert('订单已生成（本地示例）。合计：¥'+(cartSum()/100)); CART=[]; persist(); renderCart(); closeDrawer(); });
+cartBtn.addEventListener('click', ()=> drawer.classList.contains('open') ? closeDrawer() : openDrawer());
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && drawer.classList.contains('open')) closeDrawer(); });
+document.getElementById('clearCart').addEventListener('click', ()=>{ CART=[]; persistCart(); renderCart(); });
 
-// 生成图标（LA CASA DEL LICOR，中心“茄”完全居中）
+function showOrders(){ renderOrders(); ordersPage.classList.add('show'); window.scrollTo(0,0); }
+function hideOrders(){ ordersPage.classList.remove('show'); }
+document.getElementById('backToMenu').addEventListener('click', hideOrders);
+document.getElementById('viewOrders').addEventListener('click', showOrders);
+
+function renderOrders(){
+  ordersList.innerHTML='';
+  if(!ORDERS.length){
+    ordersList.appendChild(el('div',{class:'muted',style:'padding:24px;text-align:center'},'暂无订单。'));
+    return;
+  }
+  [...ORDERS].slice().reverse().forEach(o=>{
+    const itemsText = o.items.map(l=>`• ${l.title}  × ${l.qty}   ${fmtY(l.qty*l.price)}`).join('\n');
+    const card = el('div',{class:'order-card'},
+      el('h3',{}, `订单 ${o.id}`),
+      el('div',{class:'order-items'}, itemsText),
+      el('div',{class:'order-meta'},
+        el('span',{}, new Date(o.created_at).toLocaleString('zh-CN')),
+        el('strong',{}, fmtY(o.total))
+      )
+    );
+    ordersList.appendChild(card);
+  });
+}
+
+document.getElementById('placeOrder').addEventListener('click', ()=>{
+  if(!CART.length){ alert('您的购物车是空的'); return; }
+  const order = {
+    id: 'LC' + Date.now().toString().slice(-8),
+    items: CART.map(l=>({title:l.title, qty:l.qty, price:l.price})),
+    total: cartSum(),
+    created_at: Date.now()
+  };
+  ORDERS.push(order); persistOrders();
+  CART=[]; persistCart(); renderCart(); closeDrawer();
+  showOrders();
+});
+
 document.getElementById('dlIcon').addEventListener('click', ()=>{
   const size=1024, r=size/2;
   const canvas=Object.assign(document.createElement('canvas'),{width:size,height:size});
   const ctx=canvas.getContext('2d');
-  // 背景与内圆
   ctx.fillStyle='#0f0f12'; ctx.fillRect(0,0,size,size);
   ctx.beginPath(); ctx.arc(r,r,r*0.9,0,Math.PI*2); ctx.fillStyle='#1b1b23'; ctx.fill();
-  // 环绕字母
-  const ringText='LA CASA DEL LICOR';
+  const base='LA CASA DEL LICOR';
+  const ringText=('      '+base+'      ' + '   •   ' + '      '+base+'      ');
   ctx.save(); ctx.translate(r,r); ctx.rotate(-Math.PI/2);
-  const radius=r*0.75; ctx.fillStyle='#e3be77'; ctx.font='bold 72px -apple-system, PingFang SC, "Noto Sans CJK SC", "Microsoft YaHei", Arial';
-  for(let i=0;i<ringText.length;i++){
-    const ch=ringText[i]; const angle=(i/ringText.length)*Math.PI*2;
+  const radius=r*0.75; ctx.fillStyle='#e3be77';
+  ctx.font='bold 72px -apple-system, PingFang SC, "Noto Sans CJK SC", "Microsoft YaHei", Arial';
+  const chars=[...ringText];
+  const step=(Math.PI*2)/chars.length;
+  for(let i=0;i<chars.length;i++){
+    const ch=chars[i];
+    const angle=i*step;
     ctx.save(); ctx.rotate(angle); ctx.translate(0,-radius); ctx.rotate(Math.PI/2);
     const w=ctx.measureText(ch).width; ctx.fillText(ch,-w/2,0);
     ctx.restore();
   }
   ctx.restore();
-  // 中心“茄” —— 完全居中：textAlign=center + textBaseline=middle（取消之前的 +10 偏移）
-  ctx.fillStyle='#e3be77';
-  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillStyle='#e3be77'; ctx.textAlign='center'; ctx.textBaseline='middle';
   ctx.font='900 420px PingFang SC, "-apple-system", "Noto Sans CJK SC", "Microsoft YaHei", Arial';
   ctx.fillText('茄', r, r);
-  // 下载
   const a=document.createElement('a'); a.href=canvas.toDataURL('image/png'); a.download='apple-touch-icon.png'; a.click();
-  alert('已下载新版图标（LA CASA DEL LICOR，中心“茄”居中）。将 PNG 与本 HTML 放同一目录后添加到主屏即可。');
+  alert('已下载图标：LA CASA DEL LICOR（首尾留大间隔），中心“茄”居中。将 PNG 与本 HTML 放同一目录后添加到主屏。');
 });
 </script>
 </body>
