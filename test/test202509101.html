@@ -44,9 +44,16 @@
   @media (orientation: landscape) and (max-height: 744px){
     .wrap {padding: 0 16px;}
     h1{font-size:14px}
-    .sub{font-size:12px}
+    .sub{font-size:12px; float: right;}
   }
   .imgph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#80838f;font-size:18px;background:repeating-linear-gradient(45deg,#202028,#202028 12px,#1a1a21 12px,#1a1a21 24px)}
+  .slide>img,
+  .thumb img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
   .overlay{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(180deg,transparent,rgba(0,0,0,.55) 30%,rgba(0,0,0,.75) 78%);color:#fff;padding:16px 16px 14px}
   .overlay .name{font-size:var(--fs-name);font-weight:800;line-height:1.25;margin:0 0 6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .overlay .desc{font-size:var(--fs-desc);color:#e9e9ee;line-height:1.5;margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
@@ -245,7 +252,11 @@ const prevBtn=document.getElementById('prev'); const nextBtn=document.getElement
 
 function slideCard(m){
   const slide = el('div',{class:'slide'});
-  slide.appendChild(el('div',{class:'imgph'}, '图片占位'));
+  if(m.img){
+    slide.appendChild(el('img',{src:m.img, alt:m.title}));
+  }else{
+    slide.appendChild(el('div',{class:'imgph'}, '图片占位'));
+  }
   const ov = el('div',{class:'overlay'});
   ov.appendChild(el('div',{class:'name'}, m.title));
   ov.appendChild(el('div',{class:'desc'}, m.desc||''));
@@ -333,7 +344,11 @@ function addToCart(m, chosen){
   const unit = (chosen?.unit || m.variants[0].unit);
   const price = (chosen?.price || m.variants[0].price);
   const ex = CART.find(x=>x._key===key);
-  if(ex){ ex.qty += 1; } else { CART.push({_key:key, id:m.id, title:m.title, spec:(chosen?.label||m.variants[0].label), unit:unit, price:price, qty:1}); }
+  if(ex){
+    ex.qty += 1;
+  }else{
+    CART.push({_key:key, id:m.id, title:m.title, img:m.img, spec:(chosen?.label||m.variants[0].label), unit:unit, price:price, qty:1});
+  }
   persistCart(); renderCart(); openDrawer();
   cartItems.scrollTop = cartItems.scrollHeight;
   const last = cartItems.lastElementChild; if(last){ last.classList.add('flash'); setTimeout(()=>last.classList.remove('flash'), 1200); }
@@ -349,7 +364,7 @@ function renderCart(){
   if(CART.length===0){ cartItems.appendChild(el('div',{class:'muted', style:'padding:24px; text-align:center'}, '购物车是空的。')); }
   CART.forEach(line=>{
     cartItems.appendChild(el('div',{class:'item'},
-      el('div',{class:'thumb'}, '图片'),
+      el('div',{class:'thumb'}, line.img ? el('img',{src:line.img, alt:''}) : '图片'),
       el('div',{},
         el('div',{class:'item-title'}, line.title),
         el('div',{class:'muted'}, `${line.spec}${line.unit}`),
