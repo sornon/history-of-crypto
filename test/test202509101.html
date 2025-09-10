@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>La Casa 专属隐藏款 · 电子菜单（分类 Tab + 轮播）</title>
+<title>La Casa 专属隐藏款 · 电子菜单（长者友好版）</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#111">
 <style>
@@ -11,136 +11,177 @@
     --bg:#0f0f12;
     --panel:#14141a;
     --card:#17171c;
-    --ink:#eaeaea;
-    --muted:#a9abb3;
-    --accent:#d4b06a;
-    --accent-2:#9f7840;
+    --ink:#f1f1f3;
+    --muted:#b6b8c0;
+    --accent:#e3be77;
+    --accent-2:#a88146;
+    --border:rgba(255,255,255,.12);
+
+    /* Typography scale */
+    --fs-base:20px;         /* base text */
+    --fs-tab:20px;          /* tab text */
+    --fs-h1:30px;           /* header title */
+    --fs-sub:18px;          /* subtitle */
+    --fs-name:22px;         /* overlay name */
+    --fs-desc:18px;         /* overlay desc */
+    --fs-price:22px;        /* price */
+    --fs-btn:20px;          /* buttons */
+    --fs-small:16px;        /* small text */
   }
+
   *{box-sizing:border-box}
   html,body{height:100%}
   body{
     margin:0; background:var(--bg); color:var(--ink);
-    font-family:-apple-system,BlinkMacSystemFont,"SF Pro",PingFang SC,Hiragino Sans GB,Segoe UI,Roboto,"Helvetica Neue",Arial,"Noto Sans CJK SC","Microsoft YaHei",sans-serif;
+    font-family: -apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
     -webkit-font-smoothing:antialiased;
+    font-size:var(--fs-base);
+    line-height:1.6;
+    letter-spacing:.2px;
   }
+
+  /* Header */
   header{
-    position:sticky; top:0; z-index:50;
-    background:linear-gradient(180deg, rgba(15,15,18,.98), rgba(15,15,18,.84) 70%, rgba(15,15,18,0));
+    position:sticky; top:0; z-index:60;
+    background:linear-gradient(180deg, rgba(15,15,18,.98), rgba(15,15,18,.88) 70%, rgba(15,15,18,0));
     backdrop-filter: blur(10px);
-    border-bottom:1px solid rgba(255,255,255,.06);
+    border-bottom:1px solid var(--border);
   }
-  .wrap{max-width:1120px;margin:0 auto;padding:12px 16px}
-  h1{font-size:22px;margin:4px 0 6px}
-  .sub{color:var(--muted); font-size:13px; line-height:1.5; margin-bottom:8px}
+  .wrap{max-width:1200px;margin:0 auto;padding:16px 20px}
+  h1{font-size:var(--fs-h1); margin:4px 0 8px}
+  .sub{color:var(--muted); font-size:var(--fs-sub); line-height:1.6; margin:0 0 10px;}
+
   /* Tabs */
-  .tabs{display:flex; gap:8px; overflow:auto; padding:8px 16px; border-top:1px solid rgba(255,255,255,.06); border-bottom:1px solid rgba(255,255,255,.06); background:var(--panel)}
+  .tabs{
+    display:flex; gap:12px; overflow:auto; padding:14px 20px;
+    border-top:1px solid var(--border); border-bottom:1px solid var(--border); background:var(--panel);
+    scrollbar-width:none;
+  }
+  .tabs::-webkit-scrollbar{display:none}
   .tab{
-    white-space:nowrap; padding:10px 14px; border-radius:999px;
-    background:#1a1a22; color:#ddd; border:1px solid rgba(255,255,255,.12);
-    font-weight:600; letter-spacing:.2px;
+    white-space:nowrap; padding:14px 20px; border-radius:999px;
+    background:#1b1b23; color:#fff; border:1px solid var(--border);
+    font-weight:700; letter-spacing:.2px; font-size:var(--fs-tab);
+    line-height:1; min-height:48px; /* touch target */
   }
   .tab[aria-selected="true"]{background:var(--accent-2); color:#fff; border-color:transparent}
+
   /* Carousel */
-  main{max-width:1120px;margin:0 auto;padding:12px 0 96px}
+  main{max-width:1200px;margin:0 auto;padding:16px 0 128px}
   .carousel{
-    position:relative; margin:8px 16px 0; 
-    border-radius:16px; overflow:hidden; background:#0c0c0f; border:1px solid rgba(255,255,255,.06);
+    position:relative; margin:12px 20px 0; 
+    border-radius:18px; overflow:hidden; background:#0c0c0f; border:1px solid var(--border);
   }
   .track{
-    display:flex; gap:12px; padding:12px;
+    display:flex; gap:16px; padding:16px;
     overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth;
+    scrollbar-width:none;
   }
+  .track::-webkit-scrollbar{height:10px}
+  .track::-webkit-scrollbar-thumb{background:#2a2a33; border-radius:10px}
+
   .slide{ 
-    position:relative; flex: 0 0 88%; max-width:88%; height:56vw; max-height:520px;
-    scroll-snap-align:center; border-radius:14px; overflow:hidden;
+    position:relative; flex: 0 0 92%; max-width:92%;
+    height:68vw; max-height:640px;
+    scroll-snap-align:center; border-radius:16px; overflow:hidden;
     background:linear-gradient(135deg,#23232b 0%,#1a1a21 100%);
-    border:1px solid rgba(255,255,255,.08);
+    border:1px solid var(--border);
   }
-  @media (min-width:900px){ .slide{ flex-basis: 48%; max-width:48%; height:420px } }
+  @media (min-width:1024px){ .slide{ flex-basis: 48%; max-width:48%; height:520px } }
+
   .imgph{
-    width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:#666; font-size:12px; letter-spacing:.4px;
+    width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:#80838f; font-size:18px; letter-spacing:.4px;
     background:repeating-linear-gradient(45deg,#202028,#202028 12px,#1a1a21 12px,#1a1a21 24px);
   }
+
   /* overlay */
   .overlay{
     position:absolute; left:0; right:0; bottom:0;
-    background:linear-gradient(180deg, transparent, rgba(0,0,0,.6) 35%, rgba(0,0,0,.75) 75%);
-    color:#fff; padding:14px 14px 12px;
+    background:linear-gradient(180deg, transparent, rgba(0,0,0,.55) 30%, rgba(0,0,0,.75) 78%);
+    color:#fff; padding:16px 16px 14px;
   }
-  .overlay .name{ font-size:16px; font-weight:700; line-height:1.2; margin-bottom:4px }
-  .overlay .desc{ font-size:13px; color:#e7e7e7; line-height:1.5; }
-  .overlay .row{ display:flex; align-items:center; justify-content:space-between; margin-top:8px }
-  .overlay .price{ color:var(--accent); font-weight:800 }
-  .overlay .actions{ display:flex; gap:8px; }
+  .overlay .name{ font-size:var(--fs-name); font-weight:800; line-height:1.25; margin:0 0 6px;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .overlay .desc{ font-size:var(--fs-desc); color:#e9e9ee; line-height:1.5; margin:0;
+    display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+  .overlay .row{ display:flex; align-items:flex-end; justify-content:space-between; gap:12px; margin-top:10px; flex-wrap:wrap }
+  .overlay .price{ color:var(--accent); font-weight:900; font-size:var(--fs-price); white-space:nowrap }
+  .overlay .actions{ display:flex; gap:10px; }
   .btn{
     -webkit-tap-highlight-color: transparent;
-    background:#23232b; color:#fff; border:1px solid rgba(255,255,255,.14); border-radius:10px;
-    padding:8px 12px; font-size:14px; font-weight:600;
+    background:#23232b; color:#fff; border:1px solid var(--border); border-radius:14px;
+    padding:12px 18px; font-size:var(--fs-btn); font-weight:800; line-height:1;
+    min-height:48px; min-width:120px; text-align:center;
   }
   .btn.primary{ background:var(--accent-2); border-color:transparent }
-  .btn.small{ padding:6px 10px; font-size:13px }
+  .btn.small{ padding:12px 16px; }
+
   /* Carousel nav */
   .nav{
     position:absolute; inset:0; display:flex; justify-content:space-between; align-items:center; pointer-events:none;
   }
   .arrow{
-    pointer-events:auto; border:none; width:40px; height:40px; border-radius:50%; 
-    background:rgba(0,0,0,.4); color:#fff; font-size:20px; display:grid; place-items:center; margin:0 8px;
-    border:1px solid rgba(255,255,255,.2);
+    pointer-events:auto; border:none; width:56px; height:56px; border-radius:50%; 
+    background:rgba(0,0,0,.42); color:#fff; font-size:28px; display:grid; place-items:center; margin:0 8px;
+    border:1px solid rgba(255,255,255,.24);
   }
+
   /* Cart */
   .cart-fab{
-    position:fixed; right:18px; bottom:20px; z-index:60;
-    border-radius:999px; padding:14px 18px; font-size:16px; line-height:1;
+    position:fixed; right:22px; bottom:24px; z-index:65;
+    border-radius:999px; padding:20px 26px; font-size:22px; line-height:1;
     background:var(--accent-2); color:#fff; border:none; box-shadow:0 10px 20px rgba(0,0,0,.35);
   }
   .drawer{
-    position:fixed; right:0; top:0; height:100%; width:min(520px,92vw); z-index:70;
+    position:fixed; right:0; top:0; height:100%; width:min(560px,94vw); z-index:70;
     transform:translateX(100%); transition:.35s ease;
-    background:var(--panel); border-left:1px solid rgba(255,255,255,.12); display:flex; flex-direction:column;
+    background:var(--panel); border-left:1px solid var(--border); display:flex; flex-direction:column;
   }
   .drawer.open{transform:translateX(0)}
-  .drawer header{background:#111117;border-bottom:1px solid rgba(255,255,255,.12)}
-  .drawer .items{flex:1; overflow:auto; padding:12px}
-  .item{display:grid; grid-template-columns: 64px 1fr auto; gap:10px; padding:10px 8px; border-bottom:1px dashed rgba(255,255,255,.08)}
-  .thumb{width:64px; height:64px; border-radius:8px; background:#222; display:flex; align-items:center; justify-content:center; font-size:11px; color:#777}
-  .item-title{font-size:15px; margin:0 0 2px}
-  .muted{color:var(--muted); font-size:12px}
-  .qty{display:flex; align-items:center; gap:8px; margin-top:6px}
-  .qty button{background:#2b2b33; border:1px solid rgba(255,255,255,.15); color:#fff; width:28px; height:28px; border-radius:8px; font-size:18px}
-  .line-total{font-weight:700; color:var(--accent); align-self:center}
-  .drawer .footer{padding:12px; border-top:1px solid rgba(255,255,255,.12); background:#111117}
-  .summary{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px}
+  .drawer header{background:#111117;border-bottom:1px solid var(--border)}
+  .drawer .items{flex:1; overflow:auto; padding:16px}
+  .item{display:grid; grid-template-columns: 80px 1fr auto; gap:14px; padding:14px 10px; border-bottom:1px dashed rgba(255,255,255,.1)}
+  .thumb{width:80px; height:80px; border-radius:12px; background:#222; display:flex; align-items:center; justify-content:center; font-size:14px; color:#777}
+  .item-title{font-size:20px; margin:0 0 4px; word-break:break-word}
+  .muted{color:var(--muted); font-size:16px}
+  .qty{display:flex; align-items:center; gap:10px; margin-top:8px}
+  .qty button{background:#2b2b33; border:1px solid var(--border); color:#fff; width:42px; height:42px; border-radius:10px; font-size:26px}
+  .line-total{font-weight:900; color:var(--accent); align-self:center; font-size:22px}
+  .drawer .footer{padding:16px; border-top:1px solid var(--border); background:#111117}
+  .summary{display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; font-size:22px}
   .summary .t{color:var(--muted)}
-  .checkout{display:flex; gap:8px}
-  .notice{font-size:12px; color:var(--muted); margin-top:8px}
+  .checkout{display:flex; gap:10px}
+  .notice{font-size:16px; color:var(--muted); margin-top:10px}
+
+  /* Accessibility helpers */
+  .sr-only{position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden}
 </style>
 </head>
 <body>
 <header>
   <div class="wrap">
     <h1>La Casa 专属隐藏款 · Hidden Treasures</h1>
-    <div class="sub">一级分类作为 Tab 切换；每个 Tab 内为可滑动的轮播图。图片底部有半透明涂层，显示产品名称与介绍。</div>
+    <div class="sub">一级分类作为 Tab 切换；每个 Tab 内为可左右滑动的轮播。底部半透明涂层显示产品名称、简介与价格。</div>
   </div>
-  <nav class="tabs" id="tabs"></nav>
+  <nav class="tabs" id="tabs" aria-label="分类切换"></nav>
 </header>
 
 <main>
-  <section class="carousel" id="carousel">
+  <section class="carousel" id="carousel" aria-label="商品轮播">
     <div class="track" id="track"></div>
-    <div class="nav">
-      <button class="arrow" id="prev" aria-label="上一页">‹</button>
-      <button class="arrow" id="next" aria-label="下一页">›</button>
+    <div class="nav" aria-hidden="true">
+      <button class="arrow" id="prev" aria-label="上一屏">‹</button>
+      <button class="arrow" id="next" aria-label="下一屏">›</button>
     </div>
   </section>
 </main>
 
 <!-- Cart -->
-<button class="cart-fab" id="cartBtn">购物车 · 0</button>
-<aside class="drawer" id="drawer" aria-hidden="true">
+<button class="cart-fab" id="cartBtn" aria-label="查看购物车">购物车 · 0</button>
+<aside class="drawer" id="drawer" aria-label="购物车" aria-hidden="true">
   <header>
     <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;">
-      <div style="font-weight:600;font-size:16px">我的订单</div>
+      <div style="font-weight:800;font-size:22px">我的订单</div>
       <button class="btn small" id="closeDrawer">关闭</button>
     </div>
   </header>
@@ -347,7 +388,7 @@ document.getElementById('placeOrder').addEventListener('click', ()=>{
   const total = fmtY(cartSum());
   const txt = `订单号：${orderId}\\n${lines}\\n合计：${total}\\n\\n请将此订单展示给店员结算。`;
   const w = window.open('', '_blank');
-  w.document.write(`<pre style="font:16px/1.6 -apple-system, BlinkMacSystemFont, 'PingFang SC', Arial; padding:24px;">${txt}</pre>`);
+  w.document.write(`<pre style="font:18px/1.7 -apple-system, BlinkMacSystemFont, 'PingFang SC', Arial; padding:24px;">${txt}</pre>`);
   w.document.close();
 });
 
