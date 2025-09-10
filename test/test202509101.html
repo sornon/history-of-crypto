@@ -22,12 +22,13 @@
   body{margin:0;background:var(--bg);color:var(--ink);
        font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Noto Sans CJK SC","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
        -webkit-text-size-adjust:100%; font-size:var(--fs-base); line-height:1.6; letter-spacing:.2px;}
-  header{position:sticky;top:0;z-index:100;background:linear-gradient(180deg, rgba(15,15,18,.98), rgba(15,15,18,.88) 70%, rgba(15,15,18,0));backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+  body.standalone header{ padding-top: calc(env(safe-area-inset-top) + 6px); }
+  header{position:sticky;top:0;z-index:100;background:linear-gradient(180deg, rgba(15,15,18,.98), rgba(15,15,18,.88) 70%, rgba(15,15,18,0));backdrop-filter:blur(10px);border-bottom:1px solid var(--border); padding-top: max(0px, env(safe-area-inset-top));}
   .wrap{max-width:1200px;margin:0 auto;padding:12px 16px}
   h1{font-size:var(--fs-h1);margin:2px 0 6px}
   .sub{color:var(--muted);font-size:var(--fs-sub);margin:0 0 10px}
   .toolbar{display:flex;gap:8px;align-items:center;justify-content:space-between}
-  .btn{background:#23232b;color:#fff;border:1px solid var(--border);border-radius:12px;padding:10px 14px;font-weight:800;font-size:var(--fs-btn);min-height:44px;transition:.2s}
+  .btn{background:#23232b;color:#fff;border:1px solid var(--border);border-radius:12px;padding:10px 14px;font-weight:800;font-size:var(--fs-btn);min-height:44px;transition:.2s;white-space:nowrap}
   .btn[disabled]{opacity:.45}
   .btn.primary{background:var(--accent-2);border-color:transparent}
   .btn.small{font-size:18px;padding:10px 12px}
@@ -38,7 +39,7 @@
   main{max-width:1200px;margin:0 auto;padding:16px 0 128px}
   .carousel{position:relative;margin:12px 16px 0;border-radius:18px;overflow:hidden;background:#0c0c0f;border:1px solid var(--border)}
   .track{display:flex;gap:16px;padding:16px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth}
-  .slide{position:relative;flex:0 0 92%;max-width:92%;height:68vw;max-height:640px;scroll-snap-align:center;border-radius:16px;overflow:hidden;background:linear-gradient(135deg,#23232b 0%,#1a1a21 100%);border:1px solid var(--border)}
+  .slide{position:relative;flex:0 0 92%;max-width:92%;height:72vw;max-height:660px;scroll-snap-align:center;border-radius:16px;overflow:hidden;background:linear-gradient(135deg,#23232b 0%,#1a1a21 100%);border:1px solid var(--border)}
   @media (min-width:1024px){ .slide{flex-basis:48%;max-width:48%;height:520px} }
   .imgph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#80838f;font-size:18px;background:repeating-linear-gradient(45deg,#202028,#202028 12px,#1a1a21 12px,#1a1a21 24px)}
   .overlay{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(180deg,transparent,rgba(0,0,0,.55) 30%,rgba(0,0,0,.75) 78%);color:#fff;padding:16px 16px 14px}
@@ -46,7 +47,10 @@
   .overlay .desc{font-size:var(--fs-desc);color:#e9e9ee;line-height:1.5;margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
   .overlay .row{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-top:10px;flex-wrap:wrap}
   .overlay .price{color:var(--accent);font-weight:900;font-size:var(--fs-price);white-space:nowrap}
-  .overlay .actions{display:flex;gap:10px}
+  .overlay .actions{display:flex;gap:10px;flex-wrap:wrap}
+  .variant{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .chip{border:1px solid var(--border);background:#242430;border-radius:999px;padding:6px 10px;font-size:16px;white-space:nowrap;cursor:pointer}
+  .chip.active{background:var(--accent-2);border-color:transparent;color:#fff}
   .nav{position:absolute;inset:0;display:flex;justify-content:space-between;align-items:center;pointer-events:none}
   .arrow{pointer-events:auto;border:none;width:56px;height:56px;border-radius:50%;background:rgba(0,0,0,.42);color:#fff;font-size:28px;display:grid;place-items:center;margin:0 8px;border:1px solid rgba(255,255,255,.24);transition:.2s}
   .arrow[disabled]{opacity:.35}
@@ -56,25 +60,27 @@
   .backdrop.show{opacity:1;pointer-events:auto}
   .drawer{position:fixed;right:0;top:0;height:100%;width:min(560px,94vw);z-index:10001;transform:translateX(100%);transition:.35s ease;background:var(--panel);border-left:1px solid var(--border);display:flex;flex-direction:column;box-shadow:-20px 0 40px rgba(0,0,0,.45)}
   .drawer.open{transform:translateX(0)}
-  .drawer header{background:#111117;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1}
+  .drawer header{background:#111117;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1;padding-top:max(0px, env(safe-area-inset-top))}
   .drawer .items{flex:1;overflow:auto;padding:16px}
   .item{display:grid;grid-template-columns:80px 1fr auto;gap:14px;padding:14px 10px;border-bottom:1px dashed rgba(255,255,255,.1)}
   .thumb{width:80px;height:80px;border-radius:12px;background:#222;display:flex;align-items:center;justify-content:center;font-size:14px;color:#777}
   .item-title{font-size:20px;margin:0 0 4px;word-break:break-word}
   .muted{color:var(--muted);font-size:16px}
-  .qty{display:flex;align-items:center;gap:10px;margin-top:8px}
-  .qty button{background:#2b2b33;border:1px solid var(--border);color:#fff;width:42px;height:42px;border-radius:10px;font-size:26px}
-  .line-total{font-weight:900;color:var(--accent);align-self:center;font-size:22px}
+  .qty{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:nowrap}
+  .qty button{background:#2b2b33;border:1px solid var(--border);color:#fff;min-width:42px;height:42px;border-radius:10px;font-size:26px;white-space:nowrap}
+  .qty .remove-btn{margin-left:8px}
+  .line-total{font-weight:900;color:var(--accent);align-self:center;font-size:22px;white-space:nowrap}
   .drawer .footer{padding:16px;border-top:1px solid var(--border);background:#111117}
   .summary{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:22px}
   .checkout{display:flex;gap:10px;flex-wrap:wrap}
+  .nowrap{white-space:nowrap}
   /* highlight new line */
   @keyframes flash{0%{background:rgba(227,190,119,.25)}100%{background:transparent}}
   .flash{animation:flash 1.2s ease-out 1}
   /* Orders Page */
   .page{position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;z-index:900}
   .page.show{display:flex}
-  .page header{background:#111117;border-bottom:1px solid var(--border)}
+  .page header{background:#111117;border-bottom:1px solid var(--border);padding-top:max(0px, env(safe-area-inset-top))}
   .order-list{flex:1;overflow:auto;padding:16px 20px}
   .order-card{background:#17171d;border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px}
   .order-card h3{margin:0 0 8px;font-size:22px}
@@ -124,7 +130,6 @@
       <button class="btn primary" id="placeOrder">生成订单并查看</button>
       <button class="btn" id="viewOrders">查看订单</button>
     </div>
-    <div class="sub" style="margin-top:8px">下单后会进入“订单列表”，供服务员照单手工下单。</div>
   </div>
 </aside>
 
@@ -142,9 +147,15 @@
 </section>
 
 <script>
+// iOS PWA 独立模式检测，给 body 增加 safe-area 顶部内边距
+(function(){
+  const isStandalone = (window.navigator.standalone === true) || window.matchMedia('(display-mode: standalone)').matches;
+  if(isStandalone){ document.body.classList.add('standalone'); }
+})();
+
 document.addEventListener('gesturestart', e=>e.preventDefault());
 
-// 数据
+// 分类与菜单（支持多规格）
 const CATS=[
   {id:'coffee',name:'精品咖啡 Coffee'},{id:'rum',name:'古巴朗姆 Rum for Cigar'},
   {id:'white',name:'白葡萄酒 White Wine'},{id:'red',name:'红葡萄酒 Red Wine'},
@@ -153,38 +164,46 @@ const CATS=[
   {id:'snack',name:'茄客小食'}
 ];
 const MENU=[
-  {id:'ice-1',cat:'coffee',title:'极品冰滴｜淡雅芳香系（百搭雪茄）',desc:'0℃冰水滴滤 1 天，发酵 3–7 天，口感清冽冰爽。',price:11900,unit:'/杯'},
-  {id:'ice-2',cat:'coffee',title:'极品冰滴｜果香红茶系（提升风味）',desc:'果香跳跃、红茶感明显，激发雪茄香气。',price:11900,unit:'/杯'},
-  {id:'ice-3',cat:'coffee',title:'极品冰滴｜浆果活泼系（适配强度）',desc:'更有劲道的风味线，适配高强度雪茄。',price:11900,unit:'/杯'},
-  {id:'hot-1',cat:'coffee',title:'精品手冲｜万花',desc:'参赛级参数调校，层次丰富。',price:7900,unit:'/杯'},
-  {id:'hot-2',cat:'coffee',title:'精品手冲｜耶加莱德',desc:'花果香突出，酸甜平衡。',price:7900,unit:'/杯'},
-  {id:'hot-3',cat:'coffee',title:'精品手冲｜桃莓优格',desc:'桃与莓果气息，酸乳感顺滑。',price:7900,unit:'/杯'},
-  {id:'santiago-20-g',cat:'rum',title:'圣地亚哥 20 年（绝版）',desc:'加勒比热辣与陈年复杂度的平衡。',price:43900,unit:'/杯'},
-  {id:'treasure',cat:'rum',title:'金银岛宝藏（国礼）',desc:'收藏级古巴朗姆，气派之选。',price:1799900,unit:'/瓶'},
-  {id:'cubaney-10',cat:'rum',title:'古巴邑 10 年',desc:'顺喉易饮，入门之选。',price:6900,unit:'/杯'},
-  {id:'cubaney-20',cat:'rum',title:'古巴邑 20 年',desc:'陈年香气浓郁，回味悠长。',price:23800,unit:'/杯'},
-  {id:'ww-1',cat:'white',title:'新西兰十字星 马尔堡 长相思 干白 2021',desc:'单宁近零，激发味蕾，适合灰茄前/中。',price:6900,unit:'/杯'},
-  {id:'ww-2',cat:'white',title:'法拉利酒庄 小夏布利 村庄 干白 2023',desc:'矿物感清晰，酸度爽脆。',price:6900,unit:'/杯'},
-  {id:'ww-3',cat:'white',title:'法国 杜索 传统佳酿 香槟 NV',desc:'气泡细腻，活力十足。',price:6900,unit:'/杯'},
-  {id:'rw-1',cat:'red',title:'摩尔多瓦 梅洛 干红 2012',desc:'适合灰茄后饮用。',price:6900,unit:'/杯'},
-  {id:'rw-2',cat:'red',title:'意大利 法芭雅 蒙特布查诺 红 2022',desc:'成熟红果与香料气息。',price:6900,unit:'/杯'},
-  {id:'rw-3',cat:'red',title:'意大利 曼都利亚 利嘉 红 2021',desc:'饱满酒体，余味绵长。',price:6900,unit:'/杯'},
-  {id:'rw-4',cat:'red',title:'意大利 格兰吉雅 经典 阿玛罗尼 红 2022',desc:'力度与甜美并存。',price:6900,unit:'/杯'},
-  {id:'rose-1',cat:'rose',title:'意大利 特莎蒂洛 蓝布鲁斯科 桃红起泡 NV',desc:'全程兼容雪茄，轻松畅饮。',price:6900,unit:'/杯'},
-  {id:'rose-2',cat:'rose',title:'意大利 时尚控 桃红起泡 NV',desc:'派对气质，愉悦开胃。',price:6900,unit:'/杯'},
-  {id:'rare-1',cat:'rare',title:'拉达米尔 白兰地',desc:'适合灰茄中/后。',price:6900,unit:'/杯'},
-  {id:'rare-2',cat:'rare',title:'梅斯赫蒂 五年 白兰地',desc:'顺滑果干风味。',price:6900,unit:'/杯'},
-  {id:'rare-3',cat:'rare',title:'麦伦多 单一微醺麦芽',desc:'麦芽香气，轻盈微醺。',price:11800,unit:'/杯'},
-  {id:'mojito',cat:'sig',title:'比那尔德里奥的莫吉托',desc:'Pinar del Río Mojito · 与雪茄全程兼容。',price:9800,unit:'/杯'},
-  {id:'cubalibre',cat:'sig',title:'自由古巴之烟草时光',desc:'Cigar Time of Cuba Libre · 经典新演绎。',price:9800,unit:'/杯'},
-  {id:'castle',cat:'sig',title:'夜之古堡',desc:'Castle in the Night · 夜色与余味。',price:9800,unit:'/杯'},
-  {id:'bucket-1',cat:'easter',title:'好彩头冰桶｜好运杯',desc:'含可饮白桦树汁，可冰镇任意酒水，会发光。',price:5900,unit:'/桶'},
-  {id:'bucket-2',cat:'easter',title:'好彩头冰桶｜招财杯',desc:'同款彩光冰桶。',price:5900,unit:'/桶'},
-  {id:'bucket-3',cat:'easter',title:'好彩头冰桶｜吉祥杯',desc:'同款彩光冰桶。',price:5900,unit:'/桶'},
-  {id:'bucket-4',cat:'easter',title:'好彩头冰桶｜平安杯',desc:'同款彩光冰桶。',price:5900,unit:'/桶'},
-  {id:'snack-1',cat:'snack',title:'坚果拼盘',desc:'小胡桃、松子、杏仁、腰果等随机拼盘。',price:8800,unit:'/盘'},
-  {id:'snack-2',cat:'snack',title:'伊比利亚火腿',desc:'咸香与脂香，雪茄绝配。',price:19800,unit:'/盘'},
-  {id:'snack-3',cat:'snack',title:'黑松露饼干',desc:'幽微松露香气，酥脆可口。',price:4900,unit:'/盘'}
+  // 咖啡（单规格：杯）
+  {id:'ice-1',cat:'coffee',title:'极品冰滴｜淡雅芳香系（百搭雪茄）',desc:'0℃冰水滴滤 1 天，发酵 3–7 天，口感清冽冰爽。',variants:[{label:'杯', unit:'/杯', price:11900}]},
+  {id:'ice-2',cat:'coffee',title:'极品冰滴｜果香红茶系（提升风味）',desc:'果香跳跃、红茶感明显，激发雪茄香气。',variants:[{label:'杯', unit:'/杯', price:11900}]},
+  {id:'ice-3',cat:'coffee',title:'极品冰滴｜浆果活泼系（适配强度）',desc:'更有劲道的风味线，适配高强度雪茄。',variants:[{label:'杯', unit:'/杯', price:11900}]},
+  {id:'hot-1',cat:'coffee',title:'精品手冲｜万花',desc:'参赛级参数调校，层次丰富。',variants:[{label:'杯', unit:'/杯', price:7900}]},
+  {id:'hot-2',cat:'coffee',title:'精品手冲｜耶加莱德',desc:'花果香突出，酸甜平衡。',variants:[{label:'杯', unit:'/杯', price:7900}]},
+  {id:'hot-3',cat:'coffee',title:'精品手冲｜桃莓优格',desc:'桃与莓果气息，酸乳感顺滑。',variants:[{label:'杯', unit:'/杯', price:7900}]},
+  // 朗姆（多规格：杯/瓶）
+  {id:'santiago-20',cat:'rum',title:'圣地亚哥 20 年（绝版）',desc:'加勒比热辣与陈年复杂度的平衡。',variants:[{label:'杯',unit:'/杯',price:43900},{label:'瓶',unit:'/瓶',price:655900}]},
+  {id:'treasure',cat:'rum',title:'金银岛宝藏（国礼）',desc:'收藏级古巴朗姆，气派之选。',variants:[{label:'瓶',unit:'/瓶',price:1799900}]},
+  {id:'cubaney-10',cat:'rum',title:'古巴邑 10 年',desc:'顺喉易饮，入门之选。',variants:[{label:'杯',unit:'/杯',price:6900},{label:'瓶',unit:'/瓶',price:98000}]},
+  {id:'cubaney-20',cat:'rum',title:'古巴邑 20 年',desc:'陈年香气浓郁，回味悠长。',variants:[{label:'杯',unit:'/杯',price:23800},{label:'瓶',unit:'/瓶',price:339600}]},
+  // 白葡萄酒
+  {id:'ww-1',cat:'white',title:'新西兰十字星 马尔堡 长相思 干白 2021',desc:'单宁近零，激发味蕾，适合灰茄前/中。',variants:[{label:'杯',unit:'/杯',price:6900},{label:'瓶',unit:'/瓶',price:32800}]},
+  {id:'ww-2',cat:'white',title:'法拉利酒庄 小夏布利 村庄 干白 2023',desc:'矿物感清晰，酸度爽脆。',variants:[{label:'杯',unit:'/杯',price:6900},{label:'瓶',unit:'/瓶',price:32800}]},
+  {id:'ww-3',cat:'white',title:'法国 杜索 传统佳酿 香槟 NV',desc:'气泡细腻，活力十足。',variants:[{label:'杯',unit:'/杯',price:6900},{label:'瓶',unit:'/瓶',price:32800}]},
+  // 红葡萄酒
+  {id:'rw-1',cat:'red',title:'摩尔多瓦 梅洛 干红 2012',desc:'适合灰茄后饮用。',variants:[{label:'杯',unit:'/杯',price:6900},{label:'瓶',unit:'/瓶',price:32800}]},
+  {id:'rw-2',cat:'red',title:'意大利 法芭雅 蒙特布查诺 红 2022',desc:'成熟红果与香料气息。',variants:[{label:'杯',unit:'/杯',price:6900},{label:'瓶',unit:'/瓶',price:32800}]},
+  {id:'rw-3',cat:'red',title:'意大利 曼都利亚 利嘉 红 2021',desc:'饱满酒体，余味绵长。',variants:[{label:'杯',unit:'/杯',price:6900},{label:'瓶',unit:'/瓶',price:32800}]},
+  {id:'rw-4',cat:'red',title:'意大利 格兰吉雅 经典 阿玛罗尼 红 2022',desc:'力度与甜美并存。',variants:[{label:'杯',unit:'/杯',price:6900},{label:'瓶',unit:'/瓶',price:32800}]},
+  // 桃红
+  {id:'rose-1',cat:'rose',title:'意大利 特莎蒂洛 蓝布鲁斯科 桃红起泡 NV',desc:'全程兼容雪茄，轻松畅饮。',variants:[{label:'杯',unit:'/杯',price:6900},{label:'瓶',unit:'/瓶',price:32800}]},
+  {id:'rose-2',cat:'rose',title:'意大利 时尚控 桃红起泡 NV',desc:'派对气质，愉悦开胃。',variants:[{label:'杯',unit:'/杯',price:6900},{label:'瓶',unit:'/瓶',price:32800}]},
+  // 小众烈酒
+  {id:'rare-1',cat:'rare',title:'拉达米尔 白兰地',desc:'适合灰茄中/后。',variants:[{label:'杯',unit:'/杯',price:6900},{label:'瓶',unit:'/瓶',price:68900}]},
+  {id:'rare-2',cat:'rare',title:'梅斯赫蒂 五年 白兰地',desc:'顺滑果干风味。',variants:[{label:'杯',unit:'/杯',price:6900},{label:'瓶',unit:'/瓶',price:68900}]},
+  {id:'rare-3',cat:'rare',title:'麦伦多 单一微醺麦芽',desc:'麦芽香气，轻盈微醺。',variants:[{label:'杯',unit:'/杯',price:11800},{label:'瓶',unit:'/瓶',price:118000}]},
+  // 特调
+  {id:'mojito',cat:'sig',title:'比那尔德里奥的莫吉托',desc:'Pinar del Río Mojito · 与雪茄全程兼容。',variants:[{label:'杯',unit:'/杯',price:9800}]},
+  {id:'cubalibre',cat:'sig',title:'自由古巴之烟草时光',desc:'Cigar Time of Cuba Libre · 经典新演绎。',variants:[{label:'杯',unit:'/杯',price:9800}]},
+  {id:'castle',cat:'sig',title:'夜之古堡',desc:'Castle in the Night · 夜色与余味。',variants:[{label:'杯',unit:'/杯',price:9800}]},
+  // 小彩蛋 & 小食（单规格）
+  {id:'bucket-1',cat:'easter',title:'好彩头冰桶｜好运杯',desc:'含可饮白桦树汁，可冰镇任意酒水，会发光。',variants:[{label:'桶',unit:'/桶',price:5900}]},
+  {id:'bucket-2',cat:'easter',title:'好彩头冰桶｜招财杯',desc:'同款彩光冰桶。',variants:[{label:'桶',unit:'/桶',price:5900}]},
+  {id:'bucket-3',cat:'easter',title:'好彩头冰桶｜吉祥杯',desc:'同款彩光冰桶。',variants:[{label:'桶',unit:'/桶',price:5900}]},
+  {id:'bucket-4',cat:'easter',title:'好彩头冰桶｜平安杯',desc:'同款彩光冰桶。',variants:[{label:'桶',unit:'/桶',price:5900}]},
+  {id:'snack-1',cat:'snack',title:'坚果拼盘',desc:'小胡桃、松子、杏仁、腰果等随机拼盘。',variants:[{label:'盘',unit:'/盘',price:8800}]},
+  {id:'snack-2',cat:'snack',title:'伊比利亚火腿',desc:'咸香与脂香，雪茄绝配。',variants:[{label:'盘',unit:'/盘',price:19800}]},
+  {id:'snack-3',cat:'snack',title:'黑松露饼干',desc:'幽微松露香气，酥脆可口。',variants:[{label:'盘',unit:'/盘',price:4900}]}
 ];
 
 const fmtY = n => '¥' + (n/100).toLocaleString('zh-CN',{minimumFractionDigits:0});
@@ -225,11 +244,30 @@ function slideCard(m){
   const ov = el('div',{class:'overlay'});
   ov.appendChild(el('div',{class:'name'}, m.title));
   ov.appendChild(el('div',{class:'desc'}, m.desc||''));
+
+  // 规格选择（若多规格则显示 chips）
+  let chosen = m.variants[0];
+  let chips = null;
+  if(m.variants.length>1){
+    chips = el('div',{class:'variant'},
+      ...m.variants.map((v,idx)=>{
+        const c = el('button',{class:'chip'+(idx===0?' active':''), onclick:()=>{
+          chosen = v;
+          [...chips.children].forEach(x=>x.classList.remove('active'));
+          c.classList.add('active');
+          priceEl.textContent = fmtY(v.price) + v.unit;
+        }}, `${v.label}${v.unit}`);
+        return c;
+      })
+    );
+    ov.appendChild(chips);
+  }
+  const priceEl = el('div',{class:'price'}, fmtY(chosen.price)+chosen.unit);
   const row = el('div',{class:'row'},
-    el('div',{class:'price'}, fmtY(m.price)+m.unit),
+    priceEl,
     el('div',{class:'actions'},
       el('button',{class:'btn small', onclick:()=>alert('图片为占位，后续可替换为真实出品图。')}, '详情'),
-      el('button',{class:'btn small primary', onclick:()=>addToCart(m)}, '加入购物车')
+      el('button',{class:'btn small primary', onclick:()=>addToCart(m, chosen)}, '加入购物车')
     )
   );
   ov.appendChild(row);
@@ -250,7 +288,6 @@ function updateArrows(){
   const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 1;
   prevBtn.disabled = atStart; nextBtn.disabled = atEnd;
 }
-
 track.addEventListener('scroll', updateArrows);
 window.addEventListener('resize', updateArrows);
 
@@ -270,7 +307,7 @@ nextBtn.addEventListener('click', ()=>{
 });
 
 // Cart + Orders
-let CART = JSON.parse(localStorage.getItem('LC_CART_TAB')||'[]');
+let CART = JSON.parse(localStorage.getItem('LC_CART_TAB_V9')||'[]'); // 新 key，避免旧数据结构冲突
 let ORDERS = JSON.parse(localStorage.getItem('LC_ORDERS')||'[]');
 const drawer = document.getElementById('drawer');
 const backdrop = document.getElementById('backdrop');
@@ -280,23 +317,26 @@ const cartTotal = document.getElementById('cartTotal');
 const ordersPage = document.getElementById('ordersPage');
 const ordersList = document.getElementById('ordersList');
 
-function persistCart(){ localStorage.setItem('LC_CART_TAB', JSON.stringify(CART)); }
+function persistCart(){ localStorage.setItem('LC_CART_TAB_V9', JSON.stringify(CART)); }
 function persistOrders(){ localStorage.setItem('LC_ORDERS', JSON.stringify(ORDERS)); }
 function cartCount(){ return CART.reduce((a,b)=>a+b.qty,0); }
 function cartSum(){ return CART.reduce((a,b)=>a+b.qty*b.price,0); }
 function syncBtn(){ cartBtn.textContent = '购物车 · ' + cartCount(); }
 
-function addToCart(m){
-  const ex = CART.find(x=>x.id===m.id);
-  if(ex){ ex.qty += 1; } else { CART.push({id:m.id, title:m.title, price:m.price, unit:m.unit, qty:1}); }
+function addToCart(m, chosen){
+  const key = m.id + '|' + (chosen?.label || m.variants[0].label);
+  const unit = (chosen?.unit || m.variants[0].unit);
+  const price = (chosen?.price || m.variants[0].price);
+  const ex = CART.find(x=>x._key===key);
+  if(ex){ ex.qty += 1; } else { CART.push({_key:key, id:m.id, title:m.title, spec:(chosen?.label||m.variants[0].label), unit:unit, price:price, qty:1}); }
   persistCart(); renderCart(); openDrawer();
   cartItems.scrollTop = cartItems.scrollHeight;
   const last = cartItems.lastElementChild; if(last){ last.classList.add('flash'); setTimeout(()=>last.classList.remove('flash'), 1200); }
 }
-function removeLine(id){ CART = CART.filter(x=>x.id!==id); persistCart(); renderCart(); }
-function changeQty(id, delta){
-  const ex = CART.find(x=>x.id===id); if(!ex) return;
-  ex.qty += delta; if(ex.qty<=0){ removeLine(id); } else { persistCart(); renderCart(); }
+function removeLine(key){ CART = CART.filter(x=>x._key!==key); persistCart(); renderCart(); }
+function changeQty(key, delta){
+  const ex = CART.find(x=>x._key===key); if(!ex) return;
+  ex.qty += delta; if(ex.qty<=0){ removeLine(key); } else { persistCart(); renderCart(); }
 }
 
 function renderCart(){
@@ -307,12 +347,12 @@ function renderCart(){
       el('div',{class:'thumb'}, '图片'),
       el('div',{},
         el('div',{class:'item-title'}, line.title),
-        el('div',{class:'muted'}, line.unit),
+        el('div',{class:'muted'}, `${line.spec}${line.unit}`),
         el('div',{class:'qty'},
-          el('button',{onclick:()=>changeQty(line.id,-1)},'−'),
+          el('button',{onclick:()=>changeQty(line._key,-1)},'−'),
           el('span',{}, String(line.qty)),
-          el('button',{onclick:()=>changeQty(line.id,1)},'+'),
-          el('button',{class:'btn small', style:'margin-left:8px', onclick:()=>removeLine(line.id)},'移除')
+          el('button',{onclick:()=>changeQty(line._key,1)},'+'),
+          el('button',{class:'btn small remove-btn nowrap', onclick:()=>removeLine(line._key)},'移除')
         )
       ),
       el('div',{class:'line-total'}, fmtY(line.price*line.qty))
@@ -343,7 +383,7 @@ function renderOrders(){
     return;
   }
   [...ORDERS].slice().reverse().forEach(o=>{
-    const itemsText = o.items.map(l=>`• ${l.title}  × ${l.qty}   ${fmtY(l.qty*l.price)}`).join('\n');
+    const itemsText = o.items.map(l=>`• ${l.title}（${l.spec}${l.unit}） × ${l.qty}   ${fmtY(l.qty*l.price)}`).join('\n');
     const card = el('div',{class:'order-card'},
       el('h3',{}, `订单 ${o.id}`),
       el('div',{class:'order-items'}, itemsText),
@@ -360,7 +400,7 @@ document.getElementById('placeOrder').addEventListener('click', ()=>{
   if(!CART.length){ alert('您的购物车是空的'); return; }
   const order = {
     id: 'LC' + Date.now().toString().slice(-8),
-    items: CART.map(l=>({title:l.title, qty:l.qty, price:l.price})),
+    items: CART.map(l=>({title:l.title, spec:l.spec, unit:l.unit, qty:l.qty, price:l.price})),
     total: cartSum(),
     created_at: Date.now()
   };
@@ -369,7 +409,7 @@ document.getElementById('placeOrder').addEventListener('click', ()=>{
   showOrders();
 });
 
-// 绘制环形文字（按字符宽度分配角度）
+// 绘制环形文字（按字符宽度分配角度；带 30° 间隔；中心“茄”）
 function drawRingText(ctx, text, radius, startAngle, spacingPx){
   ctx.save(); ctx.rotate(startAngle);
   const chars=[...text];
