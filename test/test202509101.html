@@ -353,7 +353,7 @@ function addToCart(m, chosen){
   if(ex){
     ex.qty += 1;
   }else{
-    CART.push({_key:key, id:m.id, title:m.title, img:m.img, spec:(chosen?.label||m.variants[0].label), unit:unit, price:price, qty:1});
+    CART.push({_key:key, id:m.id, title:m.title, img:m.img, spec:(chosen?.label||m.variants[0].label), price:price, qty:1});
   }
   persistCart(); renderCart(); openDrawer();
   cartItems.scrollTop = cartItems.scrollHeight;
